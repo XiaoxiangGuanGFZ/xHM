@@ -174,7 +174,7 @@ $$
 CR_m = 2.788 \times 10^{-6} c_3 c_4 e^{-0.04(273.15-T_s)}
 $$
 
-where, if $\rho_s$ <= 150 $km/m^3$, then $c_3$=1, otherwise $c_3=e^{-0.046(\rho_s-150)}$. $c_4$=1 when $\rho_l$=0, otherwise ($\rho_l$>0) $c_4$=2. And:
+where, if $\rho_s$ <= 150 $kg/m^3$, then $c_3$ = 1, otherwise $c_3=e^{-0.046(\rho_s-150)}$. $c_4$ = 1 when $\rho_l$ = 0, otherwise ($\rho_l$ > 0) $c_4$ = 2. And:
 - $T_s$ is the snowpack temperature
 - $\rho_l$ is the bulk density of the liquid water in the pack.
 
