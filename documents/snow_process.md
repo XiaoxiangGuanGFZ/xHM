@@ -170,10 +170,10 @@ where:
 - $\Delta t$ is time interval in hours
 
 Snowpack depth $d_s$ (unit: m) can be updated by:
+
 $$
 d_s \rho_s = W \rho_w
 $$
-
 
 Destructive metamorphism is important for newer snow, and the following empirical function is used:
 
