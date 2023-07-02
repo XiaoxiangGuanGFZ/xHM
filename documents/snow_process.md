@@ -3,12 +3,12 @@
 The model represents the snowpack as a two-layer medium (a thin surface, and a thick deeper layer), and solves an energy and mass balance for the ground surface snowpack similarly to other cold land processes models [Anderson, 1976; Wigmosta et al., 1994; Tarboton et al., 1995]. Energy exchange between the atmosphere, forest canopy and snowpack occurs only with the surface layer. The energy balance of the surface layer is:
 
 $$
-  	{\rho_w}{c_s} \frac{dWT_s}{dt}=Q_r+Q_s+Q_e+Q_p+Q_m
+  	{\rho_w}{c_s} \frac{d(WT_s)}{dt}=Q_r+Q_s+Q_e+Q_p+Q_m
 $$
 
 where:
 - $c_s$ is the specific heat of ice
-- $\rho_w$ is the density of water
+- $\rho_w$ is the density of water, 1000 $kg/m^3$
 - $W$ is the water equivalent, If the flux terms are expressed in watts per square meter then $W$ is given in meters.
 - $T_s$ is the temperature of the surface layer
 - $Q_r$ is the net radiation flux
@@ -99,7 +99,7 @@ $$
 P_r = P- P_s
 $$
 
-The snowpack receives water in both liquid ($P_L$) and solid ($P_I$) phases. In cells without an overstory canopy, this is simply the depths of rainfall ($P_r$) and snowfall ($P_s$), respectively; i.e., $P_L = P_r$, and $P_I = P_s$.
+The snowpack receives water in both liquid ($P_L$) and solid ($P_I$) phases. In cells without an overstory canopy, this is simply the depths of rainfall ($P_r$) and snowfall ($P_s$), respectively; i.e., $P_L = P_r$, and $P_I = P_s$. Tipically, the air temperature thresholds are taken as -1.1 and 3.3 $\degree C$ .
 
 ## Mass balance for snowpack
 The total energy available for refreezing liquid water or melting the snowpack over a given time step depends on the net energy exchange at the snow surface:
@@ -165,8 +165,15 @@ $$
 $$
 
 where:
-- $\rho_s$ is the snow density
+- $\rho_s$ is the snow density, in unit $kg/m^3$
 - $CR_m$ and $CR_o$ are the compaction rates due to metamorphism and overburden, respectively
+- $\Delta t$ is time interval in hours
+
+Snowpack depth $d_s$ (unit: m) can be updated by:
+$$
+d_s \rho_s = W \rho_w
+$$
+
 
 Destructive metamorphism is important for newer snow, and the following empirical function is used:
 
@@ -176,7 +183,7 @@ $$
 
 where, if $\rho_s$ <= 150 $kg/m^3$, then $c_3$ = 1, otherwise $c_3=e^{-0.046(\rho_s-150)}$. $c_4$ = 1 when $\rho_l$ = 0, otherwise ($\rho_l$ > 0) $c_4$ = 2. And:
 - $T_s$ is the snowpack temperature
-- $\rho_l$ is the bulk density of the liquid water in the pack.
+- $\rho_l$ is the bulk density of the liquid water in the snowpack. Therefore, $c_4$ is largely determined by whether there is liquid water in the snowpack.
 
 After the initial settling stage, the densification rate is controlled by the overburden snow, and the corresponding compaction rate can be estimated by:
 
@@ -188,6 +195,7 @@ where:
 - $\eta_0 = 3.6 \times 10^6 N s/m^2$ is the viscosity coefficient at $0 \degree C$
 - $c_5=0.08 k^{-1}$, and $c_6=0.021m^3/kg$
 - $P_{load}$ is the load pressure
+- $T_s$ is the temperature of snowpack surface in $\degree C$
 
 Snowpacks are naturally layered media, therefore
 the load pressure is different for each layer of the pack
@@ -200,8 +208,8 @@ P_{load} = \frac{1}{2} g \rho_w (W_{ns} + f_{com} W_s)
 $$
 
 where:
-- $g$ is the the acceleration of gravity
-- $W_{ns}$ and $W_s$ are the amounts of newly fallen snow and snow on the ground (in water equivalent units), respectively
+- $g$ is the the acceleration of gravity, 9.8 $m/s^2$
+- $W_{ns}$ and $W_s$ are the amounts of newly fallen snow and snow on the ground (in water equivalent units, m), respectively
 - $f_{com}$ is the internal compaction rate coefficient taken as 0.6 after calibration to measurements from the Cold Land Processes Experiment in Fraser Park, Colorado [Andreadis et al., 2008]. 
 
 ## Snow albedo
