@@ -59,7 +59,7 @@ where:
 the flux of latent heat to the snow surface is given by:
 
 $$
-Q_e = {\lambda}_i \rho \frac{0.622}{P_a} \frac{e(T_a) - e_s(T_s)}{r_{a,s}}
+Q_e = \lambda_i \rho \frac{0.622}{P_a} \frac{e(T_a) - e_s(T_s)}{r_{a,s}}
 $$
 
 where:
