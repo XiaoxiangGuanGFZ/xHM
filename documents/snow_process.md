@@ -4,7 +4,7 @@ The model represents the snowpack as a two-layer medium (a thin surface, and a t
 
 $$
   	{\rho_w}{c_s} \frac{dWT_s}{dt}=Q_r+Q_s+Q_e+Q_p+Q_m
-$${#eq:snow_EB}
+$$
 
 where:
 - $c_s$ is the specific heat of ice
@@ -21,14 +21,14 @@ This equation can be solved via a forward finite difference scheme over the mode
 
 $$
 W^{t+\Delta t} {T_s}^{t+\Delta t} - W^{t} {T_s}^{t} = \frac{\Delta t}{\rho_w c_s}(Q_r+Q_s+Q_e+Q_p+Q_m)
-$${#eq:snow_EB_diff}
+$$
 
 ## Energy compoments
 Net radiation $Q_r$ at the snow surface is either measured or calculated given incoming shortwave and longwave radiation as:
 
 $$
     Q_r=L_i + S_i (1-\alpha) - \sigma {T_s}^4
-$${#eq:Q_r}
+$$
 
 where:
 - $L_i$ and $S_i$ are incoming long and shortwave radiation
@@ -38,7 +38,7 @@ The flux of sensible heat to the snowpack is given by:
 
 $$
     Q_s = \frac{\rho c_p (T_a - T_s)}{r_{a,s}}
-$${#eq:Q_s} 
+$$
 
 where:
 - $\rho$ is the air density
@@ -48,7 +48,7 @@ where:
 
 $$
 r_{a,s}=\frac{[\ln{(\frac{z-d_s}{z_0})}]^2}{k^2 U_z}
-$${#eq:r_as}
+$$
 
 where:
 - $k$ is von Karman's constant
@@ -60,7 +60,7 @@ the flux of latent heat to the snow surface is given by:
 
 $$
 Q_e = {\lambda}_i \rho \frac{0.622}{P_a} \frac{e(T_a) - e_s(T_s)}{r_{a,s}}
-$${#eq:Q_e}
+$$
 
 where:
 - ${\lambda}_i$ is the latent heat of vaporization when liquid water
@@ -72,7 +72,7 @@ Advected energy to the snowpack via precipitation (rain or snow) is given by:
 
 $$
 Q_P = \frac{\rho_w c_w T_a P_L + \rho_w c_s T_a P_I}{\Delta t}
-$${#eq:Q_p}
+$$
 
 where:
 - $c_w$ is the specific heat of water
@@ -97,7 +97,7 @@ $$
 
 $$
 P_r = P- P_s
-$${#eq:P_partition}
+$$
 
 The snowpack receives water in both liquid ($P_L$) and solid ($P_I$) phases. In cells without an overstory canopy, this is simply the depths of rainfall ($P_r$) and snowfall ($P_s$), respectively; i.e., $P_L = P_r$, and $P_I = P_s$.
 
@@ -106,7 +106,7 @@ The total energy available for refreezing liquid water or melting the snowpack o
 
 $$
 Q_{net} = (Q_r + Q_s + Q_e + Q_p) \Delta t
-$${#eq:Q_net}
+$$
 
 If $Q_{net}$ is negative, then energy is being lost by the pack, and liquid water (if present) is refrozen. If $Q_{net}$ is sufficiently negative to refreeze all liquid water, then the pack may cool. If $Q_{net}$ is positive, then the excess energy available after the cold content has been satisfied, produces snowmelt
 
@@ -162,7 +162,7 @@ due to metamorphism and overburden, respectively:
 
 $$
 \frac{\Delta \rho_s}{\Delta t} = (CR_m + CR_o) \rho_s
-$${#eq:rho_s_diff}
+$$
 
 where:
 - $\rho_s$ is the snow density
@@ -172,7 +172,7 @@ Destructive metamorphism is important for newer snow, and the following empirica
 
 $$
 CR_m = 2.788 \times 10^{-6} c_3 c_4 e^{-0.04(273.15-T_s)}
-$${#eq:CR_m}
+$$
 
 where, if $\rho_s$ <= 150 $km/m^3$, then $c_3$=1, otherwise $c_3=e^{-0.046(\rho_s-150)}$. $c_4$=1 when $\rho_l$=0, otherwise ($\rho_l$>0) $c_4$=2. And:
 - $T_s$ is the snowpack temperature
@@ -182,7 +182,7 @@ After the initial settling stage, the densification rate is controlled by the ov
 
 $$
 CR_o=\frac{P_{load}}{\eta_0} e^{-c_5 (273.15-T_s)} e^{-c_6 \rho_s}
-$${#eq:CT_o}
+$$
 
 where:
 - $\eta_0 = 3.6 \times 10^6 N s/m^2$ is the viscosity coefficient at $0 \degree C$
@@ -197,7 +197,7 @@ pressure, i.e.,
 
 $$
 P_{load} = \frac{1}{2} g \rho_w (W_{ns} + f_{com} W_s)
-$${#eq:P_load}
+$$
 
 where:
 - $g$ is the the acceleration of gravity
@@ -209,11 +209,11 @@ Snow albedo is assumed to decay with age on the basis of observations from the D
 
 $$
 \alpha_a = 0.85 {\lambda_a}^{t^{0.58}}
-$$ {#eq:alpha_a}
+$$
 
 $$
 \alpha_m = 0.85 {\lambda_m}^{t^{0.46}}
-$${#eq:alpha_m}
+$$
 
 where:
 - $\alpha_a$ and $\alpha_m$ are the albedo during the accumulation and melting seasons. Accumulation and melt seasons are defined on the basis of the absence and presence of liquid water in the snow surface layer, respectively.
@@ -234,7 +234,7 @@ turbulent eddies) acting on a parcel of air [Anderson, 1976]:
 
 $$
 Ri_b = \frac{2gz(T_a-T_s)}{(T_a+ T_s) U_z^2}
-$${#eq:Ri_b}
+$$
 
 with the correction for stable conditions given as:
 
@@ -273,7 +273,7 @@ according to:
 
 $$
 I=fP_s
-$${#eq:snow_int}
+$$
 
 where:
 - $I$ is the water equivalent of snow intercepted during a time step
@@ -284,7 +284,7 @@ The maximum interception capacity is given by:
 
 $$
 B=L_R \times m \times LAI
-$${#eq:inter_capa}
+$$
 
 where:
 - $LAI$ is the single-sided leaf area index of the canopy
@@ -302,7 +302,7 @@ $$
 
 $$
 L_R=1.0, T_a <= -3
-$${#eq:L_r}
+$$
 
 which is based on observations from previous studies of
 intercepted snow as well as data collected during the field
@@ -319,7 +319,7 @@ bare branches:
 
 $$
 W_c = hW_{ice} + e^{-4}(LAI_2)
-$${#eq:W_c}
+$$
 
 where $h$ is the water holding capacity of snow (taken
 approximately as 3.5%) and $LAI_2$ is the all sided leaf area
@@ -335,7 +335,7 @@ $$
 
 $$
 \Delta W_{liq} = P_r - P_{tf} + (\frac{Q_e}{\rho_w \lambda_v} - \frac{Q_m}{\rho_w \lambda_f}) \Delta t
-$${#eq:snow_delta_inter}
+$$
 
 where:
 - $M$ is the snow mass release from the canopy
@@ -384,13 +384,13 @@ snowpack. The depth of liquid delivered to the ground snowpack ($P_L$) is equal 
 
 $$
 P_L = P_r(1-F) + T_{co} + D_r
-$${#eq:P_L_update}
+$$
 
 The (liquid) water equivalent depth of solid phase ($P_I$) is given by:
 
 $$
 P_I = P_s(1-f)F + P_s(1-F) + M
-$${#eq:P_I_update}
+$$
 
 where:
 - $F$ is the fractional ground cover of the overstory
