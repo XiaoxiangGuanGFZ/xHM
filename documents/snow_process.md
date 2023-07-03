@@ -126,11 +126,11 @@ where:
 The mass balance of the surface layer is given by:
 
 $$
-\Delta W_{liq} = P_r + (\frac{Q_e}{\rho_w \lambda_v} - \frac{Q_m}{\rho_w \lambda_f}) \Delta t
+\Delta W_{liq} = P_L + (\frac{Q_e}{\rho_w \lambda_v} - \frac{Q_m}{\rho_w \lambda_f}) \Delta t
 $$
 
 $$
-\Delta W_{ice} = P_s + (\frac{Q_e}{\rho_w \lambda_s} + \frac{Q_m}{\rho_w \lambda_f}) \Delta t
+\Delta W_{ice} = P_I + (\frac{Q_e}{\rho_w \lambda_s} + \frac{Q_m}{\rho_w \lambda_f}) \Delta t
 $$
 
 where:
