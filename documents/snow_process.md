@@ -7,7 +7,7 @@ $$
 $$
 
 where:
-- $c_s$ is the specific heat of ice
+- $c_s$ is the specific heat of ice, 2.1 kJ/(kg°C).
 - $\rho_w$ is the density of water, 1000 $kg/m^3$
 - $W$ is the water equivalent, If the flux terms are expressed in watts per square meter then $W$ is given in meters.
 - $T_s$ is the temperature of the surface layer
@@ -41,9 +41,9 @@ $$
 $$
 
 where:
-- $\rho$ is the air density
-- $c_p$ is the specific heat of air
-- $T_a$ is the air temperature
+- $\rho$ is the air density, assumed as 1.2922 $kg/m^3$
+- $c_p$ is the specific heat of air, 1.005 kJ/(kg°C)
+- $T_a$ is the air temperature [°C]
 - $r_{a,s}$ is the aerodynamic resistance between the snow surface and the near-surface reference height, given by:
 
 $$
@@ -51,7 +51,7 @@ r_{a,s}=\frac{[\ln{(\frac{z-d_s}{z_0})}]^2}{k^2 U_z}
 $$
 
 where:
-- $k$ is von Karman's constant
+- $k$ is von Karman's constant, which is dimensionless and assumed as 0.4
 - $z_0$ is the snow surface roughness
 - $d_s$ is the snow depth
 - $U_z$ is the wind speed at the near-surface reference height $z$
@@ -63,8 +63,7 @@ Q_e = \lambda_i \rho \frac{0.622}{P_a} \frac{e(T_a) - e_s(T_s)}{r_{a,s}}
 $$
 
 where:
-- ${\lambda}_i$ is the latent heat of vaporization when liquid water
-is present in the surface layer and the latent heat of sublimation in the absence of it
+- ${\lambda}_i$ is the latent heat of vaporization when liquid water is present in the surface layer and the latent heat of sublimation in the absence of it. The latent heat of vaporization is set as 2,500 kJ/kg (although it changes with water temperature).  The latent heat of sublimation is taken as 2,838 kJ/kg for ice at 0°C.
 - $P_a$ is the atmospheric pressure
 - $e$ and $e_s$ are the vapor and saturation vapor pressure, respectively
 
@@ -75,7 +74,7 @@ Q_P = \frac{\rho_w c_w T_a P_L + \rho_w c_s T_a P_I}{\Delta t}
 $$
 
 where:
-- $c_w$ is the specific heat of water
+- $c_w$ is the specific heat of water, assumed as 4.22 kJ/(kg°C)
 - $P_L$ is depth of water in the liquid phrase
 - $P_I$ is the (liquid) water equivalent of the solid phase
 
@@ -134,8 +133,8 @@ $$
 $$
 
 where:
-- $\lambda_v$ is the latent heat of vaporization
-- $\lambda_s$ is the latent heat of sublimation
+- $\lambda_v$ is the latent heat of vaporization [2500 kJ/kg]
+- $\lambda_s$ is the latent heat of sublimation [2838 kJ/kg]
 - $\lambda_f$ is the latent heat of fusion [334 kJ/kg]
 
 where $Q_e$ exchanges water with the liquid phase if liquid
