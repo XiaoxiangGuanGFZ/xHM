@@ -108,3 +108,12 @@ double FLUX_advect(
     return Heat_advect;
 }
 
+/**
+ * radiation 
+ * components: 
+ * - extraterrestial radiation from sun
+ * - longwave radiation 
+ * - 
+*/
+
+

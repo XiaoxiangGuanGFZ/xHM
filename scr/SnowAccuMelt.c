@@ -91,18 +91,16 @@ void SnowDensity(
             // *Depth_snow = Ws * DensityWater / *Density_snow;
         }
     }
-    
-
 }
 
 void SnowMassBalance(
-    double Qr,
-    double Qs,
-    double Qe,
-    double Qp,
+    double Qr,  // net radiation flux, kJ/(m2 * h)
+    double Qs,  // sensible radiation flux,
+    double Qe,  // latent heat flux,
+    double Qp,  // adverted flux to snowpack from precipitation
     double *Tem_snow, // temperature of snowpack, [Celsius degree]
-    double *Wliq,
-    double *Wsol,
+    double *Wliq,  // liquid phase mass in the snowpack, [m]
+    double *Wsol,  // solid phase mass in the snowpack, [m]
     double Prec_liq, // input liquid phase water, [m]
     double Prec_sol, // input solid phase water, [m]
     double Time_step,  // time interval for each iteration, [hours]
