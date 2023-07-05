@@ -165,6 +165,7 @@ temporal and spatial resolutions of the model (typically 1 to
 3 h and 50–100 km2, respectively) [Lundquist and
 Dettinger, 2005].
 
+During melting, $Q_m$ is negative, removing mass from the ice phase and increasing the liquid phase. Water is removed from snowpack when the liquid phase exceeds the current liquid water storage of the snowpack, taken as $0.06W$ (Wigmosta et al., 1994) 
 
 ## Snowpack densification
 Following a similar approach to Anderson [1976],
@@ -429,15 +430,15 @@ Andreadis, K. M., D. Liang, L. Tsang, D. P. Lettenmaier, and E. G. Josberger (20
 
 Jordan, R. (1991), A one-dimensional temperature model for a snow cover: Technical documentation for SNTHERM89, Tech. Rep. 91-16, Cold Reg. Res. and Eng. Lab., U.S. Army Corps of Eng., Hanover, N. H.
 
-Kobayashi, D. (1987), Snow accumulation on a narrow board, Cold Reg. Sc. Technol., 13, 239- 245.
+Kobayashi, D. (1987), Snow accumulation on a narrow board, Cold Reg. Sc. Technol., 13, 239-245.
 
-Pfister, R., and M. Schneebeli (1999), Snow accumulation on boards of different sizes and shapes, Hydrol. Processes, 13, 2345- 2355.
+Pfister, R., and M. Schneebeli (1999), Snow accumulation on boards of different sizes and shapes, Hydrol. Processes, 13, 2345-2355.
 
 Storck, P., D. P. Lettenmaier, and S. M. Bolton (2002), Measurement of snow interception and canopy effects on snow accumulation and melt in a mountainous maritime climate, Oregon, United States, Water Resour. Res., 38(11), 1223, doi:10.1029/2002WR001281.
 
 Tarboton, D. G., T. G. Chowdhury, and T. H. Jackson (1995), A spatially distributed energy balance snowmelt model, in Biogeochemistry of Seasonally Snow Covered Catchments, vol. 228, edited by K. A. Tonneson, W. Williams, and M. Tranter, pp. 141-155, Int. Assoc. of Hydrol. Sci., Wallingford, U. K.
 
-Wigmosta, M. S., L. W. Vail, and D. P. Lettenmaier (1994), A distributed hydrology-vegetation model for complex terrain, Water Resour. Res., 30, 1665- 1679.
+Wigmosta, M. S., L. W. Vail, and D. P. Lettenmaier (1994), A distributed hydrology-vegetation model for complex terrain, Water Resour. Res., 30, 1665-1679.
 
 
 
