@@ -13,9 +13,9 @@ where:
 - $T_s$ is the temperature of the surface layer
 - $Q_r$ is the net radiation flux
 - $Q_s$ is the sensible heat flux
-- $Q_e$ is the laten heat flux
+- $Q_e$ is the latent heat flux
 - $Q_p$ is the energy flux adverted to the snowpack by rain or snow
-- $Q_m$ is the energy flux given to the pack because of liquid water refreezing or removed from the pack during melt
+- $Q_m$ is the energy flux given to the pack because of liquid water refreezing or removed from the pack during melt.
 
 This equation can be solved via a forward finite difference scheme over the model time step (${\Delta}t$):
 
