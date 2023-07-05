@@ -9,8 +9,8 @@
 double RichardsonNumber(
     double Tem_Air,  // air temperature, [celsius degree]
     double Tem_snow,  // temperature of snow surface, [celsius degree]
-    double WindSpeed_z, // wind speed at the height of z, 
-    double z         // the height of the layer where the air temperature and wind speed are recored
+    double WindSpeed_z, // wind speed at the height of z, [m/s]
+    double z         // the height (with unit of [m]) of the layer where the air temperature and wind speed are recored
 ){
     
     double Ri_b; // Richardson’s number
