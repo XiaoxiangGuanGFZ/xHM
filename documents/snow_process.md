@@ -139,7 +139,7 @@ where:
 
 where $Q_e$ exchanges water with the liquid phase if liquid
 water is present and $Q_e$ exchanges water with the ice phase
-in the absence of liquid water. That means, when liquid water is present in the snowpack, the vaporization or condensation is determined by (vapor-water latent heat) the deficit between wapor pressure and saturated vapor pressure near the snowpack surface ($e(T_a) - e_s(T_s)$). In the absence of liquid water, the snowpack exchanges with atmosphere through sublimation or deposition (vapor to solid).
+in the absence of liquid water. That means, when liquid water is present in the snowpack, the vaporization or condensation is determined by (vapor-water latent heat) the deficit between wapor pressure and saturated vapor pressure near the snowpack surface ( $e(T_a) - e_s(T_s)$ ). In the absence of liquid water, the snowpack exchanges with atmosphere through sublimation or deposition (vapor to solid).
 
 |scenario ($W$ > 0) | description | snow mass process |
 | ------------- | ------------- | -------------- |
