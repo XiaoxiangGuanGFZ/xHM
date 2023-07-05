@@ -52,7 +52,7 @@ $$
 
 where:
 - $k$ is von Karman's constant, which is dimensionless and assumed as 0.4
-- $z_0$ is the snow surface roughness
+- $z_0$ is the snow surface roughness, assumed as 0.0003 m
 - $d_s$ is the snow depth
 - $U_z$ is the wind speed at the near-surface reference height $z$
 
@@ -63,7 +63,7 @@ Q_e = \lambda_i \rho \frac{0.622}{P_a} \frac{e(T_a) - e_s(T_s)}{r_{a,s}}
 $$
 
 where:
-- ${\lambda}_i$ is the latent heat of vaporization when liquid water is present in the surface layer and the latent heat of sublimation in the absence of it. The latent heat of vaporization is set as 2,500 kJ/kg (although it changes with water temperature).  The latent heat of sublimation is taken as 2,838 kJ/kg for ice at 0°C.
+- ${\lambda}_i$ is the latent heat of vaporization when liquid water is present in the surface layer and the latent heat of sublimation in the absence of it. The latent heat of vaporization is set as 2,500 kJ/kg (although it changes with water temperature). The latent heat of sublimation is taken as 2,838 kJ/kg for ice at 0°C.
 - $P_a$ is the atmospheric pressure
 - $e$ and $e_s$ are the vapor and saturation vapor pressure, respectively
 
@@ -139,12 +139,23 @@ where:
 
 where $Q_e$ exchanges water with the liquid phase if liquid
 water is present and $Q_e$ exchanges water with the ice phase
-in the absence of liquid water. If $W_{ice}$ exceeds the maximum
+in the absence of liquid water. That means, when liquid water is present in the snowpack, the vaporization or condensation is determined by (vapor-water latent heat) the deficit between wapor pressure and saturated vapor pressure near the snowpack surface ($e(T_a) - e_s(T_s)$). In the absence of liquid water, the snowpack exchanges with atmosphere through sublimation or deposition (vapor to solid).
+
+|scenario ($W$ > 0) | description | snow mass process |
+| ------------- | ------------- | -------------- |
+| $W_{liq}$ > 0.0, $Q_{net}$ > 0| liquid water exists in the snowpack and receives net energy from environment | water fusion (ice melts from solid to liquid) |
+| $W_{liq}$ > 0.0, $Q_{net}$ < 0| liquid water exists in the snowpack and transmits net energy to the environment| liquid water refreezes (from liquid to solid phase)|
+| $W_{liq}$ = 0.0, $Q_{net}$ > 0| no liquid water in the snowpack and receives net energy| melting from solid to liquid occurs in the snowpack |
+| $W_{liq}$ = 0.0, $Q_{net}$ < 0| no liquid water in the snowpack and transmits net energy to environment | snowpack (solid phase) becomes colder (temperature decreases)|
+
+
+If $W_{ice}$ exceeds the maximum
 thickness of the surface layer (typically taken as 0.10 m of
 SWE), then the excess, along with its cold content, is
-distributed to the deeper (pack) layer. Similarly, if Wliq
+distributed to the deeper (pack) layer. Similarly, if $W_{liq}$
 exceeds the liquid water holding capacity of the surface
-layer, the excess is drained to the pack layer. If the temperature of the pack layer is below freezing then liquid
+layer, the excess is drained to the pack layer. 
+If the temperature of the pack layer is below freezing then liquid
 water transferred from the surface layer can refreeze. Liquid
 water remaining in the pack above its holding capacity is
 immediately routed to the soil as snowpack outflow. The
@@ -153,6 +164,8 @@ not considered in this model because of the relatively coarse
 temporal and spatial resolutions of the model (typically 1 to
 3 h and 50–100 km2, respectively) [Lundquist and
 Dettinger, 2005].
+
+
 ## Snowpack densification
 Following a similar approach to Anderson [1976],
 compaction (due to snow densification) is calculated as the
