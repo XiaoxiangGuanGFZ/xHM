@@ -53,6 +53,7 @@ $$
 $$
 N = \frac{24}{\pi} \omega_s
 $$
+
 where
 - $n$ is actual sunshine duration recorded in a day (hours)
 - $N$ is the maximum possible duration of sunshine (hours)
@@ -64,6 +65,7 @@ the effect of forest canopy on insolation is related to the ratio od the horizon
 $$
 \tau_F = (1-a_F) (1-a_s) \exp(-LAI)
 $$
+
 where:
 - $a_F$ is the albedo of the vegetation
 - $a_s$ is the albedo of the snow under the canopy (assumed to be 0.5)
@@ -71,6 +73,7 @@ where:
 
 ### Effect of slope and aspect
 as the grid cells in the model setup are assumed to horizontal, the effect of slope and aspect on solar insolation is neglected here.
+
 $$
 \tau_s = 1
 $$
@@ -102,6 +105,7 @@ The major problem is to find expressions for $\varepsilon_{at}$ and $T_{at}$, or
 $$
 L_{in} = \varepsilon_{clr} \cdot \sigma \cdot {T_{a}}^4
 $$
+
 where:
 - $T_{a}$ is near-surface air temperature, [K]
 - $\varepsilon_{clr}$ is the clear-sky emissivity, which is estimated as: $ \varepsilon_{clr} = 0.83 - 0.18 \exp(-1.54 \cdot e_a) $ when $ e_a > 0.285 $ kPa. $e_a$ is the near-surface vapor pressure, in unit of kPa. 
@@ -111,6 +115,7 @@ where:
 $$
 \varepsilon_{sky} = (1-\frac{n}{N}) + \frac{n}{N} \cdot \varepsilon_{clr}
 $$
+
 where:
 - $n/N$ is the ratio of actual insolation to clear-sky insolation. 
 
@@ -119,6 +124,7 @@ Abramowitz et al. (2012) found that under both clear and cloudy conditions, $L_{
 $$
 L_{in} = 2.7 e_a + 0.245 T_a - 45.14
 $$
+
 where $L_{in}$ is in $MJ/(m^2 \cdot d)$ and $e_a$ is in kPa.
 
 
