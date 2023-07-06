@@ -163,16 +163,17 @@ void SnowMassBalance(
     *Wsol = *Wsol + d_Wsol;
     if (*Wliq > 0.06 * W)
     {
-        *Snow_runoff = Wliq - 0.06 * W; 
+        *Snow_runoff = Wliq - C * W;  // C * W is the liquid water holding capacity of snowpack, [m]
         *Wliq = *Wliq - *Snow_runoff;
     } else {
         *Snow_runoff = 0.0;
     }
-    // mass check
+    // mass conservation check
     if (*Wliq < 0.0)
     {
         *Wliq = 0.0;
     }
+
     if (*Wsol < 0.0)
     {
         *Wsol = 0.0;
@@ -186,3 +187,18 @@ void SnowMassBalance(
     
 }
 
+/**
+ * - design the radiation functions
+ * - snow interception process
+ * - iteration (time step by time step)
+ * - how to output the intermediate variables, at the same time balancing the memory comsumption
+ * - startup of snow process, initialize the snow variables
+ * 
+*/
+
+
+// preprocessor
+// header files
+// C functions with variable arguments
+// GNU make
+// 
