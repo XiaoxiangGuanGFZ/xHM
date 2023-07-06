@@ -108,7 +108,13 @@ $$
 
 where:
 - $T_{a}$ is near-surface air temperature, [K]
-- $\varepsilon_{clr}$ is the clear-sky emissivity, which is estimated as: $ \varepsilon_{clr} = 0.83 - 0.18 \exp(-1.54 \cdot e_a) $ when $ e_a > 0.285 $ kPa. $e_a$ is the near-surface vapor pressure, in unit of kPa. 
+- $\varepsilon_{clr}$ is the clear-sky emissivity,  estimated as: 
+
+$$
+\varepsilon_{clr} = 0.83 - 0.18 \exp(-1.54 \cdot e_a)
+$$
+
+where $e_a$ is the near-surface vapor pressure, in unit of kPa and $e_a > 0.285$ kPa. 
 
 ### Effect of cloud cover
 
