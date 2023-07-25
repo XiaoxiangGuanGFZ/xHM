@@ -2,6 +2,7 @@
 define some global (environment) variables
 */
 
+#define PI 3.1415926
 #define g 9.80  // acceleration of gravity, 9.8 m/s2
 #define Density_water 1000   // density of (liquid) water, 1000 kg/m3
 #define Density_air  1.2922  // air density, kg/m3
@@ -127,6 +128,7 @@ double FLUX_advect(
 
 // include the customized functions in 
 
+#include "Radiation_Calc.c"
 #include "SnowEnergy.c"
 #include "SnowAtmosphericStability.c"
 #include "SnowInterception.c"
