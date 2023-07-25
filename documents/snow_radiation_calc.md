@@ -60,7 +60,7 @@ where
 
 
 ### Effect of forest canopy
-the effect of forest canopy on insolation is related to the ratio od the horizontally projected area of forest canopy to the total area of interest and the thickness and type of canopy. The leaf-area index ( $LAI$ ) is used to reflects both canopy extent and thickness, which is the ratio of total leaf area to ground-surface area. 
+the effect of forest canopy on insolation is related to the ratio of the horizontally projected area of forest canopy to the total area of interest and the thickness and type of canopy. The leaf-area index ( $LAI$ ) is used to reflects both canopy extent and thickness, which is the ratio of total leaf area to ground-surface area. 
 
 $$
 \tau_F = (1-a_F) (1-a_s) \exp(-LAI)
