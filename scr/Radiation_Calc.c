@@ -14,10 +14,11 @@
  * - 
 */
 
+
 /*******
  * required variables:
  * - date (year-month-day)
- * - latitude (decimal degree)
+ * - latitude (decimal degree, location info)
  * - daily average air temperature, celsius degree (°C)
  * - relative humidity, %
  * - sunshine duration, hours
@@ -120,7 +121,7 @@ double Radiation_downward_long(
     reference: Abramowitz et al. (2012) 
     */
     double delta = 4.90 * pow(10, -9);  // Stefan-Boltzmann constant, MJ/m2/k4/d
-    double Lin;  // longwave radiation considering cloudiness, MJ/m2/d
+    double Lin;  // downward longwave radiation considering cloudiness, MJ/m2/d
 
     double emissivity_clr, emissivity_sky, emissivity_at;
     double es;  // saturated vapor pressure, kPa;
