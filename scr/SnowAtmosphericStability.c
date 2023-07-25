@@ -18,18 +18,22 @@ double RichardsonNumber(
     return Ri_b;
 }
 
-void AerodynamicResistance(
-    double *r_as, // the aerodynamic resistance between the snow surface and the near-surface reference height
+
+double AerodynamicResistance(
+    double r_as, // the aerodynamic resistance between the snow surface and the near-surface reference height
     double Ri_b, // Richardson’s number
 ){
     double Ri_cr = 0.2; 
+    double r_as_update; 
     /* Ri_cr is the critical value of the Richardson’s number (commonly taken as 0.2).*/
     if (Ri_b < 0) {
         /*unstable conditions*/
-        *r_as = *r_as / pow(1 - 16 * Ri_b, 0.5);
+        r_as_update = r_as / pow(1 - 16 * Ri_b, 0.5);
     } else if (Ri_b <= Ri_cr)
     {
         /*stable conditions*/
-        *r_as = *r_as / pow(1 - Ri_b / Ri_cr, 2);
+        r_as_update = r_as / pow(1 - Ri_b / Ri_cr, 2);
     }
+    
+    return r_as_update;
 }

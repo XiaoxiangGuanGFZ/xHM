@@ -26,8 +26,9 @@ double FLUX_sensible(
      * compute the flux of sensible heat to the snowpack
      * 
     */
-   double Density_air = 1.2922;     // air density, kg/m3
-   double SpecificHeat_air = 1.005; // specific heat of air, 1.005 kJ/(kg°C) or kJ/(kg * K)
+   // double Density_air = 1.2922;     // air density, kg/m3
+   // double SpecificHeat_air = 1.005; // specific heat of air, 1.005 kJ/(kg°C) or kJ/(kg * K)
+   
    double Heat_sensible;  // flux of sensible heat to the snow surface, unit: kJ/(m2 * h)
    Heat_sensible = Density_air * SpecificHeat_air * (Tem_air - Tem_snow) / Resistance_AirSnow;
    return Heat_sensible;
@@ -58,10 +59,10 @@ double FLUX_latent(
     double Resistance_AirSnow, // aerodynamic resistance between the snow surface and the near-surface reference height, [h/m]
     int L // whether liquid water exists in the snowpack, yes: 1
 ){
-    double lambda_v = 2500; // latent heat of vaporization, [kJ/kg]
-    double lambda_s = 2838; // latent heat of sublimation, [kJ/kg]
+    // double lambda_v = 2500; // latent heat of vaporization, [kJ/kg]
+    // double lambda_s = 2838; // latent heat of sublimation, [kJ/kg]
     double lambda;
-    double Density_air = 1.2922;  // air density, kg/m3
+    // double Density_air = 1.2922;  // air density, kg/m3
     double Heat_latent; // flux of latent heat to the snow surface, kJ/(m2 * h)
     
     double VaporPressure_air;  // vapor pressure at the measurement height, kPa
@@ -99,19 +100,28 @@ double FLUX_advect(
     double Prec_sol, // input solid phase water, [m]
     double Time_step  // time interval for each iteration, [hours]
 ){
-    double SpecificHeat_water = 4.22; // the specific heat of water, 4.22 kJ/(kg°C).
-    double SpecificHeat_ice = 2.1; // the specific heat of ice, 2.1 kJ/(kg°C).
-    double Density_water = 1000;   // water density, kg/m3
+    // double SpecificHeat_water = 4.22; // the specific heat of water, 4.22 kJ/(kg°C).
+    // double SpecificHeat_ice = 2.1; // the specific heat of ice, 2.1 kJ/(kg°C).
+    // double Density_water = 1000;   // water density, kg/m3
 
     double Heat_advect;  //Advected energy to the snowpack via precipitation (rain or snow), unit: kJ/(m2 * h)
     Heat_advect = (Density_water * SpecificHeat_water * Tem_air * Prec_liq + Density_water * SpecificHeat_ice * Tem_air * Prec_sol) / Time_step;
     return Heat_advect;
 }
 
+
 /**
- * radiation 
- * components: 
- * - extraterrestial radiation from sun
+ * to simulate the snow accumulation and melting process in a physical-based manner,
+ * the information about (shortwave and longwave) radiation flux
+ * is required as input for energy balance iteration. The radiation flux is either obtained from 
+ * instrumental observation or empirically estimated from other meteorological variables, like 
+ * air temperature, relative humidity, atmospheric pressure, sunshine duration and wind speed. 
+*/
+
+
+/***
+ * empirical formula for radiation computation:
+ * - extraterrestial (shortwave) radiation from sun
  * - longwave radiation 
  * - 
 */

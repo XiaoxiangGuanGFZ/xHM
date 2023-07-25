@@ -65,7 +65,7 @@ void SnowDensity(
         *Density_snow = 120; // kg/m3, the density of new snow
     } else {
         /* update the density of an old snowpack */
-        Pload = 0.5 * g * DensityWater * (Wns + f_com * Ws);
+        Pload = 0.5 * g * Density_water * (Wns + f_com * Ws);
         CR0 = Pload / eta0 * exp(- c5 * (273.15 - Tem_snow)) * exp(-c6 * *Density_snow);
 
         if (*Density_snow <= 150)
@@ -113,11 +113,11 @@ void SnowMassBalance(
     double Heat_ice;
     double Heat_m; // energy for ice melting
     double Qm;     // heat flux for ice melting; unit: kJ/(m2 * h)
-    double lambda_v = 2500; // latent heat of vaporization, [kJ/kg]
-    double lambda_s = 2838; // latent heat of sublimation, [kJ/kg]
-    double lambda_f = 334;  // latent heat of fusion, [kJ/kg]
-    double Density_water = 1000;   // water density, kg/m3
-    double SpecificHeat_ice = 2.1; // the specific heat of ice, 2.1 kJ/(kg°C).
+    // double lambda_v = 2500; // latent heat of vaporization, [kJ/kg]
+    // double lambda_s = 2838; // latent heat of sublimation, [kJ/kg]
+    // double lambda_f = 334;  // latent heat of fusion, [kJ/kg]
+    // double Density_water = 1000;   // water density, kg/m3
+    // double SpecificHeat_ice = 2.1; // the specific heat of ice, 2.1 kJ/(kg°C).
     double C = 0.06; // the liquid water holding capacity coefficient of snowpack
     double d_Wsol;   // changes of solid water volumn (SWE) in the snowpack
     double d_Wliq;   // changes of liquid water (SWE) in the snowpack
