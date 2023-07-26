@@ -58,18 +58,14 @@ double Radiation_downward_short(
     int day,
     double lat,  // the latitute of the location
     double n,   // sunshine duration in a day, hours
-    double albedo_forest,  //  the albedo of the vegetation
-    double LAI,
-    double albedo_snow,    // the albedo of the snow under the canopy (assumed to be 0.5)
     // two parameters, 0.25 and 0.5 by default
     double as,
     double bs    
 ){
     /*
-    received shortwave radiation on the surface
+    received shortwave radiation, considering the effect of cloudiness
     */
     double tau_cloud;  // effect of cloud cover on insolation
-    double tau_canopy; // effect of forest canopy on insolation
 
     double R_et;  // extraterrestrial radiation
     double R_cs;  // clear-sky radiation
@@ -96,15 +92,75 @@ double Radiation_downward_short(
     // 37.59: 24(60)/PI*Gsc; Gsc is the solar constant and equals to 0.082MJ⋅m(-2)⋅min(-1)
 
     R_cs = (as + bs) * R_et;
-
-
     
     tau_cloud = as + bs * n / (24/PI * w_s);
-    tau_canopy = (1 - albedo_forest) * (1 - albedo_snow) * exp(-LAI);
+    
+    // double tau_canopy; // effect of forest canopy on insolation
+    // double albedo_forest,  //  the albedo of the vegetation
+    // double LAI,
+    // double albedo_snow,    // the albedo of the snow under the canopy (assumed to be 0.5)
+    // tau_canopy = (1 - albedo_forest) * (1 - albedo_snow) * exp(-LAI);
 
-    return R_cs * tau_cloud * tau_canopy; 
+    return R_cs * tau_cloud; //* tau_canopy
 
 }
+
+double Radiation_short_surface(
+    double R_sky,  /*the received solar radiation, considering the effect of cloudiness, output from 
+     from function Radiation_downward_short() */ 
+    double albedo_forest,  //  the albedo of the vegetation
+    double LAI,    // leaf area index, dimensionless
+    double albedo_snow     // the albedo of the snow under the canopy (assumed to be 0.5)
+){
+    /*
+    received shortwave radiation on the SURFACE of
+    - canopy: albedo_snow = 0.0
+    - canopy snow: albedo_snow = 0.5
+    - ground: albedo_snow = 0.0
+    - ground snow: albedo_snow = 0.5
+    when there is no canopy, albedo_forest = 0.0 and LAI = 0.0
+    */
+
+   double tau; // effect of forest canopy and snow on insolation
+   tau = (1 - albedo_forest) * (1 - albedo_snow) * exp(-LAI);
+   return R_sky * tau; 
+}
+
+double Radiation_long_surface(
+    double Tem_air,  // air temperature, Celsius degree
+    double RHU,   // relative humidity, unit: %
+    double FF  // the fractional forest cover, between 0.0 and 1.0
+){
+    /*
+    received longwave radiation on the surface
+    reference: 
+        Abramowitz G., L. Pouyanné, and H. Ajami (2012). 
+        On the information content of surface meteorology for 
+        downward atmospheric long-wave radiation synthesis. 
+        Geographical Research Letters 39(5), 
+        doi: https://doi.org/10.1029/2011GL050726
+    */
+
+    double es;  // saturated vapor pressure, kPa;
+    double ea;  // actual vapor pressure, kPa;
+    es = 0.6108 * exp(17.277 * Tem_air / (Tem_air + 273.3));
+    ea = RHU * es / 100;
+    
+    double delta = 4.90 * pow(10, -9);  // Stefan-Boltzmann constant, MJ/m2/k4/d
+    double Lin;  // downward longwave radiation considering cloudiness, MJ/m2/d
+    Lin = 2.7 * ea + 0.245 * Tem_air - 45.14; // see Abramowitz et al. (2012) 
+
+    /***
+     * two part:
+     * - canopy covered area: FF * delta * pow(Tem_air + 273.15, 4)
+     *      canopy temperature is assumed close to the near-surface air temperature
+     * - open area (without canopy cover): Lin * (1 - FF)
+     * 
+     * */ 
+    return FF * delta * pow(Tem_air + 273.15, 4) + Lin * (1 - FF);
+}
+
+
 
 double Radiation_downward_long(
     int year,
@@ -118,7 +174,6 @@ double Radiation_downward_long(
 ){
     /*
     received longwave radiation on the surface
-    reference: Abramowitz et al. (2012) 
     */
     double delta = 4.90 * pow(10, -9);  // Stefan-Boltzmann constant, MJ/m2/k4/d
     double Lin;  // downward longwave radiation considering cloudiness, MJ/m2/d

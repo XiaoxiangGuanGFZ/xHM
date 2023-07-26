@@ -1,6 +1,7 @@
 #define PI 3.1415925
 
 
+/* declare functions from "Radiation_Calc.c" */
 int NOD(
     int year,
     int month,
@@ -14,14 +15,26 @@ double Radiation_downward_short(
     int day,
     double lat,  // the latitute of the location
     double n,   // sunshine duration in a day, hours
-    double albedo_forest,  //  the albedo of the vegetation
-    double LAI,
-    double albedo_snow,    // the albedo of the snow under the canopy (assumed to be 0.5)
     // two parameters, 0.25 and 0.5 by default
     double as,
     double bs    
 );
 
+
+double Radiation_short_surface(
+    double R_sky,  /*the received solar radiation, considering the effect of cloudiness, output from 
+     from function Radiation_downward_short() */ 
+    double albedo_forest,  //  the albedo of the vegetation
+    double LAI,    // leaf area index, dimensionless
+    double albedo_snow     // the albedo of the snow under the canopy (assumed to be 0.5)
+);
+
+
+double Radiation_long_surface(
+    double Tem_air,  // air temperature, Celsius degree
+    double RHU,   // relative humidity, unit: %
+    double FF  // the fractional forest cover, between 0.0 and 1.0
+);
 
 
 double Radiation_downward_long(
