@@ -94,8 +94,17 @@ int main(int argc, char * argv[]) {
     import_global(*(++argv), p_gp);
     
     printf("---- import global parameters ------- \n");
-    printf("");
-    
+    printf("START_YEAR: %d\nSTART_MONTH: %d\nSTART_DAY: %d\nSTEP: %d\n",
+        p_gp->START_YEAR, p_gp->START_MONTH, p_gp->START_DAY, p_gp->STEP
+        );
+    printf("LAT: %.2f\nLAI: %.2f\nALBEDO_CANOPY: %.2f\nALBEDO_SNOW: %.2f\nFOREST_FRAC: %.2f\n",
+        p_gp->LAT, p_gp->LAI, p_gp->ALBEDO_CANOPY, p_gp->ALBEDO_SNOW, p_gp->FOREST_FRAC
+        );
+    printf(
+        "FILE_PATH: %s\nFILE_OUT_RADIA: %s\n",
+        p_gp->FILE_PATH, p_gp->FILE_OUT_RADIA
+    );
+
     Struct_Meteo TS_Meteo[MAXrow];
     int nrow = 0; 
     nrow = import_Meteo(p_gp, TS_Meteo);
@@ -141,7 +150,7 @@ int main(int argc, char * argv[]) {
     Write_radiation(
         p_gp, TS_Meteo, nrow
     );
-
+    printf("---- Computation done! -------");
     return 0;
 };
 
