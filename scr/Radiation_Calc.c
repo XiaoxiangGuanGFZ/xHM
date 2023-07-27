@@ -148,7 +148,7 @@ double Radiation_long_surface(
     
     double delta = 4.90 * pow(10, -9);  // Stefan-Boltzmann constant, MJ/m2/k4/d
     double Lin;  // downward longwave radiation considering cloudiness, MJ/m2/d
-    Lin = 2.7 * ea + 0.245 * Tem_air - 45.14; // see Abramowitz et al. (2012) 
+    Lin = 2.7 * ea + 0.245 * (Tem_air + 273.15) - 45.14; // see Abramowitz et al. (2012) 
 
     /***
      * two part:
