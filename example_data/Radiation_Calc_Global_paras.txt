@@ -13,7 +13,7 @@ STEP,24
 
 # file path and name of the weather data 
 FILE_PATH,D:/xHM/example_data/Potsdam_Radiation_Calc_weather.txt
-
+FILE_OUT_RADIA,D:/xHM/example_data/Potsdam_Radiation_Calc_radiation.txt
 # not available data signal
 NA,-99.9
 
