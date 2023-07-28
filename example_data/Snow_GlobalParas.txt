@@ -1,0 +1,48 @@
+# property of the location (station)
+LAT,47.421
+LAI,0.0
+ALBEDO_CANOPY,0.0
+FOREST_FRAC,0.0
+
+# starting tdate
+START_YEAR,2013
+START_MONTH,1
+START_DAY,1
+STEP,24
+
+# file path and name of the weather data 
+FILE_PATH,D:/xHM/example_data/Zugspitze_weather.csv
+FILE_OUT,D:/xHM/example_data/Zugspitze_snow_sim.csv
+# not available data signal
+NA,-99.9
+
+# number of columns in the data file
+N_COL,11
+
+# the weather variables, list in the same order as in the data input file
+# WINSD: wind speed, m/s
+# TEM_AIR_AVG: average daily air temperature, celsius degree
+# SUNDUR: sunshine duration, hours
+# use the keyword SKIP, in case that column is useless:
+#	for example, VAR,SKIP
+VAR,YEAR
+VAR,MONTH
+VAR,DAY
+VAR,PREC #mm
+VAR,WINSD #m/s
+VAR,SUNDUR #h
+VAR,AIRPRE #kPa
+VAR,TEM_AIR_AVG #degree
+VAR,RHU #%
+VAR,R_LONG #MJ/m2/d
+VAR,R_SHORT #MJ/m2/d
+
+
+
+
+
+
+
+
+
+
