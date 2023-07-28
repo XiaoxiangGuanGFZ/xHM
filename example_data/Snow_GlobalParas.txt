@@ -12,7 +12,7 @@ STEP,24
 
 # file path and name of the weather data 
 FILE_PATH,D:/xHM/example_data/Zugspitze_weather.csv
-FILE_OUT,D:/xHM/example_data/Zugspitze_snow_sim.csv
+FILE_OUT,D:/xHM/output/Zugspitze_snow_sim.csv
 # not available data signal
 NA,-99.9
 
