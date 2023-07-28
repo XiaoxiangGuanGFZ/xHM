@@ -163,7 +163,7 @@ void SnowMassBalance(
     *Wsol = *Wsol + d_Wsol;
     if (*Wliq > 0.06 * W)
     {
-        *Snow_runoff = Wliq - C * W;  // C * W is the liquid water holding capacity of snowpack, [m]
+        *Snow_runoff = *Wliq - C * W;  // C * W is the liquid water holding capacity of snowpack, [m]
         *Wliq = *Wliq - *Snow_runoff;
     } else {
         *Snow_runoff = 0.0;

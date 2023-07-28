@@ -1,8 +1,7 @@
 /*
 define some global (environment) variables
 */
-
-#define PI 3.1415926
+#define PI 3.1415925
 #define g 9.80  // acceleration of gravity, 9.8 m/s2
 #define Density_water 1000   // density of (liquid) water, 1000 kg/m3
 #define Density_air  1.2922  // air density, kg/m3
@@ -33,7 +32,7 @@ double RichardsonNumber(
 
 double AerodynamicResistance(
     double r_as, // the aerodynamic resistance between the snow surface and the near-surface reference height
-    double Ri_b, // Richardson’s number
+    double Ri_b // Richardson’s number
 );
 
 
@@ -111,7 +110,7 @@ double FLUX_latent(
     double Tem_air,  // air temperature, [Celsius degree]
     double Tem_snow, // temperature of snowpack, [Celsius degree]
     double Pressure_air, // atmospheric pressure, 
-    double Rhu,  // relative humidity, [unit: not %]
+    double Rhu,  // relative humidity, [unit: %]
     double Resistance_AirSnow, // aerodynamic resistance between the snow surface and the near-surface reference height, [h/m]
     int L // whether liquid water exists in the snowpack, yes: 1
 );

@@ -21,7 +21,7 @@ double RichardsonNumber(
 
 double AerodynamicResistance(
     double r_as, // the aerodynamic resistance between the snow surface and the near-surface reference height
-    double Ri_b, // Richardson’s number
+    double Ri_b // Richardson’s number
 ){
     double Ri_cr = 0.2; 
     double r_as_update; 
