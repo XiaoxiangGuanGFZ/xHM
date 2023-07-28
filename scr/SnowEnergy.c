@@ -55,7 +55,7 @@ double FLUX_latent(
     double Tem_air,  // air temperature, [Celsius degree]
     double Tem_snow, // temperature of snowpack, [Celsius degree]
     double Pressure_air, // atmospheric pressure, 
-    double Rhu,  // relative humidity, [unit: not %]
+    double Rhu,  // relative humidity, [unit: %]
     double Resistance_AirSnow, // aerodynamic resistance between the snow surface and the near-surface reference height, [h/m]
     int L // whether liquid water exists in the snowpack, yes: 1
 ){
@@ -69,9 +69,9 @@ double FLUX_latent(
     double VaporPressure_snow; // saturated vapor pressure at the snow surface, kPa
     if (Tem_air >= 0.0)
     {
-        VaporPressure_air = 0.6108 * exp(17.277 * Tem_air / (Tem_air + 273.3)) * Rhu;
+        VaporPressure_air = 0.6108 * exp(17.277 * Tem_air / (Tem_air + 273.3)) * Rhu / 100.0;
     } else {
-        VaporPressure_air = 0.6108 * exp(21.870 * Tem_air / (Tem_air + 265.5)) * Rhu;
+        VaporPressure_air = 0.6108 * exp(21.870 * Tem_air / (Tem_air + 265.5)) * Rhu / 100.0;
     }
     
     if (Tem_snow >= 0.0)
