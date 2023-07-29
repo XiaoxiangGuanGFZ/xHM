@@ -1,7 +1,10 @@
 /*
 define some global (environment) variables
 */
-#define PI 3.1415925
+#undef  PI
+  #define PI 3.1415925
+
+// #define PI 3.1415925
 #define g 9.80  // acceleration of gravity, 9.8 m/s2
 #define Density_water 1000   // density of (liquid) water, 1000 kg/m3
 #define Density_air  1.2922  // air density, kg/m3
@@ -72,6 +75,7 @@ void SnowMassBalance(
     double *Tem_snow, // temperature of snowpack, [Celsius degree]
     double *Wliq,  // liquid phase mass in the snowpack, [m]
     double *Wsol,  // solid phase mass in the snowpack, [m]
+    double *W,     // SWE (snow water equivalent, m) of the snow pack
     double Prec_liq, // input liquid phase water, [m]
     double Prec_sol, // input solid phase water, [m]
     double Time_step,  // time interval for each iteration, [hours]
@@ -82,7 +86,6 @@ void SnowMassBalance(
 /*
 SnowEnergy.c
 energy balance compoments near the snow surface
-
 */
 
 double FLUX_net_radiation(
@@ -100,8 +103,8 @@ double FLUX_sensible(
 );
 
 double Resistance_AirSnow(
-    double Windspeed_z, // wind speed at the height of z, [m/s]
-    double z,  // the height of record, [m]
+    double Windspeed_m, // wind speed at the height of z, [m/s]
+    double z_m,  // the height of record, [m]
     double Depth_snow  // the depth of snowpack, [m]
 );
 
@@ -127,7 +130,6 @@ double FLUX_advect(
 
 // include the customized functions in 
 
-#include "Radiation_Calc.c"
 #include "SnowEnergy.c"
 #include "SnowAtmosphericStability.c"
 #include "SnowInterception.c"
