@@ -14,7 +14,7 @@ double RichardsonNumber(
 ){
     
     double Ri_b; // Richardson’s number
-    Ri_b = 2 * g * z * (Tem_Air - Tem_snow) / (Tem_Air + Tem_snow) / pow(WindSpeed_z, 2);
+    Ri_b = 2 * g * z * (Tem_Air - Tem_snow) / ((Tem_Air + Tem_snow) * pow(WindSpeed_z, 2));
     return Ri_b;
 }
 
@@ -26,7 +26,7 @@ double AerodynamicResistance(
     double Ri_cr = 0.2; 
     double r_as_update; 
     /* Ri_cr is the critical value of the Richardson’s number (commonly taken as 0.2).*/
-    if (Ri_b < 0) {
+    if (Ri_b < 0.0) {
         /*unstable conditions*/
         r_as_update = r_as / pow(1 - 16 * Ri_b, 0.5);
     } else if (Ri_b <= Ri_cr)
