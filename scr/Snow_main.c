@@ -3,10 +3,11 @@
 #include <math.h>
 #include <string.h>
 
+#include "Radiation_Calc.h"
 #include "Snow.h"
 
 #define MAXCHAR 3000
-#define MAXrow 20000  // almost 100 years long ts
+#define MAXrow 15000  // almost 100 years long ts
 
 struct Date {
     int y;
@@ -34,29 +35,40 @@ typedef struct
     double PREC;
     double RAINFALL;
     double SNOWFALL;
+    int SNOWFALL_Interval;  //the time since the last snowfall (in days)
     double WINSD;
     double TEM_AIR_AVG;
     double RHU;
     double SUNDUR;
     double AIRPRE;
-    double R_SHORT;
+    double R_SHORT; // unit: MJ/m2 in one day, or MJ/m2/d = 1000/24 (kJ/m2/h)
     double R_LONG;
 } Struct_Meteo;
 
 
 typedef struct 
 {
-    struct Date date;  
-    double SNOWDEPTH;
-    double SWE;  // snow water equivalent
-    double W;
+    // struct Date date;  
+    double SNOW_DEPTH;
+    double W; // snow water equivalent
     double Wice;
     double Wliq;
     double SNOW_ALBEDO;
     double SNOW_RUNOFF;
     double SNOW_TEM;
     double SNOW_DENSITY;
+    double SNOW_Ras; //aerodynamic resistance
 } Struct_Snow;
+
+typedef struct
+{   
+    // unit: kJ/(m2 * h)
+    double net_radiation;
+    double sensible;
+    double latent;
+    double advect;
+    double Heat_PhaseChange; // heat of phase change of snowpack
+} Struct_snow_flux;
 
 typedef struct
 {   
@@ -124,16 +136,155 @@ int main(int argc, char * argv[]) {
     );
 
     Struct_Meteo TS_Meteo[MAXrow];
-    int nrow = 0; 
+    int nrow = 0; // number of rows in the data file
     nrow = import_Meteo(p_gp, TS_Meteo);
     printf("number of rows: %d\n", nrow);
 
+    /* check (print) the meteo data */
     int i;
-    for (i = 0; i < nrow; i++) 
+    printf("PREC(mm)\tAir temperature\n");
+    for (i = 0; i < 20; i++) 
     {
-        
+        printf("%6.2f\t%6.2f\n", (TS_Meteo+i)->PREC, (TS_Meteo+i)->TEM_AIR_AVG);
+    }
+    printf("---------\n");
+    Struct_Snow df_snow = { // initialize 
+            0.0,// SNOWDEPTH;
+            0.0,// W; // snow water equivalent
+            0.0,// Wice;
+            0.0,// Wliq;
+            0.0,// SNOW_ALBEDO;
+            0.0,// SNOW_RUNOFF;
+            0.0,// SNOW_TEM;
+            0.0, // SNOW_DENSITY;
+            0.0  // aerodynamic resistance
+    };
+    Struct_snow_flux df_flux = {
+        0.0, 0.0, 0.0, 0.0, 0.0
+    };
+
+    for (i = 0; i < nrow; i++){
+        // separate the rainfall and snowfall from precipitation
+        Partition_RainSnow(
+            &(TS_Meteo+i)->PREC,
+            &(TS_Meteo+i)->TEM_AIR_AVG,
+            &(TS_Meteo+i)->RAINFALL,
+            &(TS_Meteo+i)->SNOWFALL
+        );
+        if (i == 0) {
+            // initialize the SNOWFALL_Interval
+            TS_Meteo->SNOWFALL_Interval = 1;
+        } else {
+            if ((TS_Meteo + i)->SNOWFALL <= 0.0){
+                // no snowfall 
+                (TS_Meteo + i)->SNOWFALL_Interval = (TS_Meteo + i-1)->SNOWFALL_Interval + p_gp->STEP/24;
+            } else {
+                (TS_Meteo + i)->SNOWFALL_Interval = 1;
+            }
+            
+        }
+        // printf("%6.2f\t%6.2f\n", (TS_Meteo+i)->RAINFALL, (TS_Meteo+i)->SNOWFALL);
     }
 
+    for (i = 0; i < nrow; i++)
+    {
+        if (df_snow.W == 0.0 && (TS_Meteo+i)->SNOWFALL > 0.0) {
+            /**
+             * no snow on the surface, while there is a snowfall
+            */
+           df_snow.W = (TS_Meteo+i)->SNOWFALL / 1000;  // unit: mm -> m
+           df_snow.Wice = (TS_Meteo+i)->SNOWFALL / 1000;
+           df_snow.SNOW_TEM = (TS_Meteo+i)->TEM_AIR_AVG;
+           df_snow.SNOW_DENSITY = 120.0;  // density of new snow, kg/m3
+           df_snow.SNOW_ALBEDO = 0.9; // the albedo of freshly fallen snow
+           df_snow.SNOW_DEPTH = Density_ice / df_snow.SNOW_DENSITY * df_snow.W;
+           df_snow.Wliq = 0.0;
+           df_snow.SNOW_RUNOFF = 0.0;
+           df_snow.SNOW_Ras = 0.0; 
+        } 
+        else if (df_snow.W > 0.0 && (TS_Meteo+i)->SNOWFALL >= 0.0)
+        {
+            /* snowpack: energy flux */
+            df_flux.net_radiation = FLUX_net_radiation(
+                (TS_Meteo+i)->R_LONG * 1000/24, (TS_Meteo+i)->R_SHORT * 1000/24, df_snow.SNOW_TEM, df_snow.SNOW_ALBEDO
+            );
+            df_snow.SNOW_Ras = Resistance_AirSnow(
+                (TS_Meteo+i)->WINSD, 10.0, df_snow.SNOW_DEPTH
+            );
+            // if ((TS_Meteo+i)->TEM_AIR_AVG > df_snow.SNOW_TEM) {  //df_snow.Wliq > 0.0
+            //     // melting season, update the Ras, considering the atmospheric stability
+            //     df_snow.SNOW_Ras = AerodynamicResistance(
+            //         RichardsonNumber(
+            //             (TS_Meteo+i)->TEM_AIR_AVG,
+            //             df_snow.SNOW_TEM,
+            //             (TS_Meteo+i)->WINSD, 10.0
+            //         ),
+            //         df_snow.SNOW_Ras
+            //     );
+            // }
+            df_flux.sensible = FLUX_sensible(
+                (TS_Meteo+i)->TEM_AIR_AVG,
+                df_snow.SNOW_TEM,
+                df_snow.SNOW_Ras
+            );
+            df_flux.latent = FLUX_latent(
+                (TS_Meteo+i)->TEM_AIR_AVG,
+                df_snow.SNOW_TEM,
+                (TS_Meteo+i)->AIRPRE,
+                (TS_Meteo+i)->RHU,
+                df_snow.SNOW_Ras,
+                (df_snow.Wliq > 0.0)? 1:0  // whether liquid water exists in the snowpack, yes: 1
+            );
+            df_flux.advect = FLUX_advect(
+                (TS_Meteo+i)->TEM_AIR_AVG,
+                (TS_Meteo+i)->RAINFALL / 1000, // unit: mm -> m
+                (TS_Meteo+i)->SNOWFALL / 1000,
+                p_gp->STEP
+            );
+
+            /* snowpack: mass balance */
+            SnowMassBalance(
+                df_flux.net_radiation,
+                df_flux.sensible,
+                df_flux.latent,
+                df_flux.advect,
+                &df_snow.SNOW_TEM,
+                &df_snow.Wliq,
+                &df_snow.Wice,
+                &df_snow.W,
+                (TS_Meteo+i)->RAINFALL / 1000, // unit: mm -> m
+                (TS_Meteo+i)->SNOWFALL / 1000,
+                p_gp->STEP,
+                &df_snow.SNOW_RUNOFF
+            );
+            /* update the snow property: density, albedo, depth */
+            SnowDensity(
+                &df_snow.SNOW_DENSITY,
+                df_snow.SNOW_TEM,
+                (df_snow.Wliq > 0.0)?1:0, // Density_BulkWater, whether there is liquid water in snowpack
+                (TS_Meteo+i)->SNOWFALL / 1000, // unit: m 
+                df_snow.W,
+                p_gp->STEP
+            );
+            df_snow.SNOW_DEPTH = Density_ice / df_snow.SNOW_DENSITY * df_snow.W;
+            SnowAlbedo(
+                &df_snow.SNOW_ALBEDO,
+                (TS_Meteo+i)->SNOWFALL_Interval,
+                ((df_snow.Wliq > 0.0)?0:1) // 1: snow accumulation season; 0: snow melting season
+            );
+            printf("%6.1f\t%6.2f\t%6.3f\n",(TS_Meteo+i)->WINSD, df_snow.SNOW_DEPTH, df_snow.SNOW_Ras);
+            printf(
+                "%6.2f\t%6.2f\t%6.2f\t%6.2f\n",
+                df_flux.net_radiation, df_flux.sensible, df_flux.latent, df_flux.advect
+            );
+        } else {
+            // df_snow = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+        }
+        /*
+        df_snow.W == 0.0 && (TS_Meteo+i)->SNOWFALL == 0.0, nothing happens to snow process
+        */
+    }
+    
     printf("---- Computation done! -------");
     return 0;
 };
