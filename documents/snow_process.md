@@ -52,9 +52,10 @@ $$
 
 where:
 - $k$ is von Karman's constant, which is dimensionless and assumed as 0.4
-- $z_0$ is the snow surface roughness, assumed as 0.0003 m
+- $z_0$ is the snow surface roughness, assumed as 0.003 m
 - $d_s$ is the snow depth
-- $U_z$ is the wind speed at the near-surface reference height $z$
+- $U_z$ is the wind speed at the near-surface reference height $z$. $U_z$ can be derived by assuming logarithmic wind speed profile. $u_{z2}=u_{z1} \frac{\ln(z2/z_0)}{\ln(z1/z_0)}$
+- $z=2+d_s+z_0$, $d_s$ and $z_0$ are displacement (here, snow depth) and roughness height respectively (Stock, 2000).
 
 the flux of latent heat to the snow surface is given by:
 
