@@ -35,19 +35,22 @@ double FLUX_sensible(
 }
 
 double Resistance_AirSnow(
-    double Windspeed_z, // wind speed at the height of z, [m/s]
-    double z,  // the height of record, [m]
+    double Windspeed_m, // wind speed at the height of z_m, [m/s]
+    double z_m,  // the height of wind speed measurement, usually 10 [m]
     double Depth_snow  // the depth of snowpack, [m]
 ){
-    double z0 = 0.0003; // snow surface roughness, [m]
+    double z0 = 0.003; // snow surface roughness, [m]
     double k = 0.4; // von Karman’s constant
-
-    double R_AirSnow; 
+    double z;  // near-surface reference height, [m]
+    double Uz; // wind speed at the near-surface reference height
+    double R_AirSnow; // unit: h/m
     // R_AirSnow is aerodynamic resistance 
     // between the snow surface and the near-surface reference height, [h/m]
+    z = 2 + Depth_snow + z0;
 
-    Windspeed_z = Windspeed_z * 3600; // update the unit as [m/h]
-    R_AirSnow = pow(log( (z - Depth_snow) / z0 ), 2) / (k*k * Windspeed_z);
+    Windspeed_m = Windspeed_m * 3600; // update the unit as [m/h]
+    Uz = Windspeed_m * log(z / z0) / log(z_m / z0);
+    R_AirSnow = pow(log( (2 + z0) / z0 ), 2) / (k * k * Uz);
     return R_AirSnow;
 }
 
