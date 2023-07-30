@@ -34,6 +34,7 @@ $$
 where:
 - $L_i$ and $S_i$ are incoming long and shortwave radiation
 - $\alpha$ is the snow surface albedo
+- $\sigma$ is the Stefan-Boltzmann constant $4.903 \times 10^{-9}MJ/(K^4m^2d)$
 
 The flux of sensible heat to the snowpack is given by:
 
@@ -53,10 +54,15 @@ $$
 
 where:
 - $k$ is von Karman's constant, which is dimensionless and assumed as 0.4
-- $z_0$ is the snow surface roughness, assumed as 0.003 m
+- $z_0$ is the snow surface roughness, assumed as 0.0003 m
 - $d_s$ is the snow depth [m]
-- $U_z$ is the wind speed (unit: m/h) at the near-surface reference height $z$. $U_z$ can be derived by assuming logarithmic wind speed profile. $u_{z2}=u_{z1} \frac{\ln(z2/z_0)}{\ln(z1/z_0)}$
-- $z=2+d_s+z_0$, $d_s$ and $z_0$ are displacement (here, snow depth) and roughness height respectively (Stock, 2000).
+- $U_z$ is the wind speed (unit: m/h) at the near-surface reference height $z$. 
+- $z=2+z_d+z_0$, $z_d$ and $z_0$ are displacement (here, snow depth $d_s$) and roughness height respectively (Stock, 2000).
+
+$U_z$ can be derived by assuming logarithmic wind speed profile, where $U_{z_1}$ and $U_{z_2}$ are wind speeds at the height of $z_1$ and $z_2$ respectively: 
+
+$$U_{z_2}=U_{z_1} \frac{\ln((z_2-z_d)/z_0)}{\ln((z_1-z_d)/z_0)}$$
+
 
 the flux of latent heat to the snow surface is given by:
 
@@ -257,26 +263,41 @@ ratio relating the buoyant and mechanical forces (i.e.,
 turbulent eddies) acting on a parcel of air [Anderson, 1976]:
 
 $$
-Ri_b = \frac{2gz(T_a-T_s)}{(T_a+ T_s) U_z^2}
+Ri_b = \frac{2gz_m(T_a(z_m)-T_s)}{(T_a(z_m)+ T_s) U_{z_m}^2}
 $$
 
-with the correction for stable conditions given as:
+where: 
+- $g$: gravity acceleration [$9.8m/s^2$]
+- $z_m$ is the measurement height [m]
+- $T_a(z_m)$ is the air temperature [Kelvin degree, K] at the height of $z_m$
+- $T_s$ is snow temperature [K]
+- $U_{z_m}$ is wind speed at height of $z_m$, [m/s]
+
+
+Unstable conditions ($Ri_b<0$):
 
 $$
-r_{a,s} = \frac{r_{a,s}}{(1 - Ri_b / Ri_{cr})^2},0<=Ri_b<=Ri_{cr}
+r_{a,s} = \frac{r_{a,s}}{(1 - 16Ri_b )^{0.5}},
 $$
 
-and in unstable conditions as:
+Stable conditions ($Ri_b>0$)
+
+first compute
 
 $$
-r_{a,s} = \frac{r_{a,s}}{(1 - 16Ri_b )^{0.5}},Ri_b<0
+Ri_u = \frac{1}{\ln(z_m/z_0) + 5}
+$$
+
+when $Ri_b > Ri_u$, then $Ri_b = Ri_u$ and:
+
+$$
+r_{a,s} = \frac{r_{a,s}}{(1 - Ri_b / Ri_{cr})^2}
 $$
 
 where:
-- $g$ is the the acceleration of gravity ($9.8m/s^2$)
-- $U_z$ is the wind speed ($cm/s$) at the height of $z$
 - $Ri_{cr}$ is the critical value of the Richardson’s number
 (commonly taken as 0.2). 
+- $Ri_u$ is the upper limit for Richardson's Number
 
 While the bulk Richardson’s number correction has the advantage of being straightforward to calculate on the basis of observations at only one level above the snow surface, previous investigators have
 noted that its use results in no turbulent exchange under common melt conditions and leads to an underestimation of the latent and sensible heat fluxes to the snowpack [e.g., Jordan, 1991; Tarboton et al., 1995].
