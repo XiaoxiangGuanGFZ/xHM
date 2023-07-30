@@ -11,11 +11,12 @@ where:
 - $\rho_w$ is the density of water, 1000 $kg/m^3$
 - $W$ is the water equivalent, If the flux terms are expressed in watts per square meter then $W$ is given in meters.
 - $T_s$ is the temperature of the surface layer
-- $Q_r$ is the net radiation flux
+- $Q_r$ is the net radiation flux 
 - $Q_s$ is the sensible heat flux
 - $Q_e$ is the latent heat flux
 - $Q_p$ is the energy flux adverted to the snowpack by rain or snow
 - $Q_m$ is the energy flux given to the pack because of liquid water refreezing or removed from the pack during melt.
+- the unit for the energy flux is $kJ/(m^2h)$.
 
 This equation can be solved via a forward finite difference scheme over the model time step (${\Delta}t$):
 
@@ -44,7 +45,7 @@ where:
 - $\rho$ is the air density, assumed as 1.2922 $kg/m^3$
 - $c_p$ is the specific heat of air, 1.005 kJ/(kg°C)
 - $T_a$ is the air temperature [°C]
-- $r_{a,s}$ is the aerodynamic resistance between the snow surface and the near-surface reference height, given by:
+- $r_{a,s}$ is the aerodynamic resistance (unit: h/m) between the snow surface and the near-surface reference height, given by:
 
 $$
 r_{a,s}=\frac{[\ln{(\frac{z-d_s}{z_0})}]^2}{k^2 U_z}
@@ -53,8 +54,8 @@ $$
 where:
 - $k$ is von Karman's constant, which is dimensionless and assumed as 0.4
 - $z_0$ is the snow surface roughness, assumed as 0.003 m
-- $d_s$ is the snow depth
-- $U_z$ is the wind speed at the near-surface reference height $z$. $U_z$ can be derived by assuming logarithmic wind speed profile. $u_{z2}=u_{z1} \frac{\ln(z2/z_0)}{\ln(z1/z_0)}$
+- $d_s$ is the snow depth [m]
+- $U_z$ is the wind speed (unit: m/h) at the near-surface reference height $z$. $U_z$ can be derived by assuming logarithmic wind speed profile. $u_{z2}=u_{z1} \frac{\ln(z2/z_0)}{\ln(z1/z_0)}$
 - $z=2+d_s+z_0$, $d_s$ and $z_0$ are displacement (here, snow depth) and roughness height respectively (Stock, 2000).
 
 the flux of latent heat to the snow surface is given by:
@@ -65,8 +66,8 @@ $$
 
 where:
 - ${\lambda}_i$ is the latent heat of vaporization when liquid water is present in the surface layer and the latent heat of sublimation in the absence of it. The latent heat of vaporization is set as 2,500 kJ/kg (although it changes with water temperature). The latent heat of sublimation is taken as 2,838 kJ/kg for ice at 0°C.
-- $P_a$ is the atmospheric pressure
-- $e$ and $e_s$ are the vapor and saturation vapor pressure, respectively
+- $P_a$ is the atmospheric pressure, [kPa]
+- $e$ and $e_s$ are the vapor and saturation vapor pressure [kPa], respectively
 
 Advected energy to the snowpack via precipitation (rain or snow) is given by:
 
@@ -76,8 +77,8 @@ $$
 
 where:
 - $c_w$ is the specific heat of water, assumed as 4.22 kJ/(kg°C)
-- $P_L$ is depth of water in the liquid phrase
-- $P_I$ is the (liquid) water equivalent of the solid phase
+- $P_L$ is depth of water in the liquid phrase, [m]
+- $P_I$ is the (liquid) water equivalent of the solid phase, [m]
 
 ## Rainfall-snowfall partition
 
@@ -122,6 +123,7 @@ where:
 - $W_{liq}$ is the volume per unit area (depth) of liquid water
 - $W_{ice}$ is the water equivalent of ice
 - and $W = W_{liq} + W_{ice}$
+- unit: m
 
 The mass balance of the surface layer is given by:
 
