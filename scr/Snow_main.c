@@ -123,7 +123,7 @@ int main(int argc, char * argv[]) {
     */
     import_global(*(++argv), p_gp, &df_surface);
     
-    printf("---- import global parameters ------- \n");
+    printf("----- import global parameters ------- \n");
     printf("START_YEAR: %d\nSTART_MONTH: %d\nSTART_DAY: %d\nSTEP: %d\n",
         p_gp->START_YEAR, p_gp->START_MONTH, p_gp->START_DAY, p_gp->STEP
         );
@@ -185,24 +185,41 @@ int main(int argc, char * argv[]) {
         }
         // printf("%6.2f\t%6.2f\n", (TS_Meteo+i)->RAINFALL, (TS_Meteo+i)->SNOWFALL);
     }
-
+    FILE *f_output;
+    if ((f_output=fopen(p_gp->FILE_OUT, "w")) == NULL) {
+        printf("Program terminated: cannot create or open output file\n");
+        exit(0);
+    }
+    fprintf(
+        f_output,
+        "y,m,d,SNOW_DEPTH,W,Wice,Wliq,SNOW_RUNOFF,SNOW_ALBEDO,SNOW_DENSITY,SNOW_Ras,SNOW_TEM\n"
+    );
     for (i = 0; i < nrow; i++)
     {
         if (df_snow.W == 0.0 && (TS_Meteo+i)->SNOWFALL > 0.0) {
             /**
-             * no snow on the surface, while there is a snowfall
+             * no snow on the surface, while there is a snowfall coming
             */
-           df_snow.W = (TS_Meteo+i)->SNOWFALL / 1000;  // unit: mm -> m
-           df_snow.Wice = (TS_Meteo+i)->SNOWFALL / 1000;
+           df_snow.Wice = (TS_Meteo+i)->SNOWFALL / 1000; // unit: mm -> m
+           if ((TS_Meteo+i)->RAINFALL / 1000 <= df_snow.Wice / 0.94 * 0.06) {
+            /***
+             * Wliq <= 0.06W; liquid water holding capacity of snowpack
+             * Wice >= 0.94W
+             * */ 
+                df_snow.Wliq = (TS_Meteo+i)->RAINFALL / 1000;
+                df_snow.SNOW_RUNOFF = 0.0;
+           } else {
+                df_snow.Wliq = df_snow.Wice / 0.94 * 0.06;
+                df_snow.SNOW_RUNOFF = (TS_Meteo+i)->RAINFALL / 1000 - df_snow.Wice / 0.94 * 0.06;
+           }
+           df_snow.W = df_snow.Wice + df_snow.Wliq;  
            df_snow.SNOW_TEM = (TS_Meteo+i)->TEM_AIR_AVG;
-           df_snow.SNOW_DENSITY = 120.0;  // density of new snow, kg/m3
+           df_snow.SNOW_DENSITY = 120.0;  // here, density of new snow, kg/m3
            df_snow.SNOW_ALBEDO = 0.9; // the albedo of freshly fallen snow
-           df_snow.SNOW_DEPTH = Density_ice / df_snow.SNOW_DENSITY * df_snow.W;
-           df_snow.Wliq = 0.0;
-           df_snow.SNOW_RUNOFF = 0.0;
-           df_snow.SNOW_Ras = 0.0; 
+           df_snow.SNOW_DEPTH = Density_water / df_snow.SNOW_DENSITY * df_snow.W;
+           df_snow.SNOW_Ras = 0.01; 
         } 
-        else if (df_snow.W > 0.0 && (TS_Meteo+i)->SNOWFALL >= 0.0)
+        else if (df_snow.W > 0.0)
         {
             /* snowpack: energy flux */
             df_flux.net_radiation = FLUX_net_radiation(
@@ -259,32 +276,44 @@ int main(int argc, char * argv[]) {
             );
             /* update the snow property: density, albedo, depth */
             SnowDensity(
-                &df_snow.SNOW_DENSITY,
+                &(df_snow.SNOW_DENSITY),
                 df_snow.SNOW_TEM,
                 (df_snow.Wliq > 0.0)?1:0, // Density_BulkWater, whether there is liquid water in snowpack
                 (TS_Meteo+i)->SNOWFALL / 1000, // unit: m 
                 df_snow.W,
                 p_gp->STEP
             );
-            df_snow.SNOW_DEPTH = Density_ice / df_snow.SNOW_DENSITY * df_snow.W;
+            df_snow.SNOW_DEPTH = Density_water / df_snow.SNOW_DENSITY * df_snow.W;
             SnowAlbedo(
                 &df_snow.SNOW_ALBEDO,
                 (TS_Meteo+i)->SNOWFALL_Interval,
                 ((df_snow.Wliq > 0.0)?0:1) // 1: snow accumulation season; 0: snow melting season
             );
-            printf("%6.1f\t%6.2f\t%6.3f\n",(TS_Meteo+i)->WINSD, df_snow.SNOW_DEPTH, df_snow.SNOW_Ras);
-            printf(
-                "%6.2f\t%6.2f\t%6.2f\t%6.2f\n",
-                df_flux.net_radiation, df_flux.sensible, df_flux.latent, df_flux.advect
-            );
+            // printf("%6.1f\t%6.2f\t%6.3f\n",(TS_Meteo+i)->WINSD, df_snow.SNOW_DEPTH, df_snow.SNOW_Ras);
+            // printf(
+            //     "%6.2f\t%6.2f\t%6.2f\t%6.2f\n",
+            //     df_flux.net_radiation, df_flux.sensible, df_flux.latent, df_flux.advect
+            // );
         } else {
-            // df_snow = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+            /* else: 
+            df_snow.W == 0.0 && (TS_Meteo+i)->SNOWFALL == 0.0, nothing happens to snow process
+            */
+           df_snow.SNOW_RUNOFF = (TS_Meteo+i)->RAINFALL;
         }
-        /*
-        df_snow.W == 0.0 && (TS_Meteo+i)->SNOWFALL == 0.0, nothing happens to snow process
-        */
+            
+
+        /* output the snow results */
+        fprintf(
+            f_output,
+            "%d,%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f", 
+            (TS_Meteo+i)->date.y, (TS_Meteo+i)->date.m, (TS_Meteo+i)->date.d, 
+            df_snow.SNOW_DEPTH, df_snow.W, df_snow.Wice, df_snow.Wliq, df_snow.SNOW_RUNOFF, 
+            df_snow.SNOW_ALBEDO, df_snow.SNOW_DENSITY, df_snow.SNOW_Ras, df_snow.SNOW_TEM
+        ); 
+        fprintf(f_output, "\n"); // print "\n" after one row
+        
     }
-    
+    fclose(f_output);
     printf("---- Computation done! -------");
     return 0;
 };
