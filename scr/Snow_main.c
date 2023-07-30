@@ -291,6 +291,7 @@ int main(int argc, char * argv[]) {
                 p_gp->STEP,
                 &df_snow.SNOW_RUNOFF
             );
+            
             /* update the snow property: density, albedo, depth */
             SnowDensity(
                 &(df_snow.SNOW_DENSITY),

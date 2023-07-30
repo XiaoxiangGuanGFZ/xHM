@@ -39,7 +39,7 @@ double Resistance_AirSnow(
     double z_m,  // the height of wind speed measurement, usually 10 [m]
     double Depth_snow  // the depth of snowpack, [m]
 ){
-    double z0 = 0.003; // snow surface roughness, [m]
+    double z0 = 0.0003; // snow surface roughness, [m]
     double k = 0.4; // von Karman’s constant
     double z;  // near-surface reference height, [m]
     double Uz; // wind speed at the near-surface reference height
