@@ -24,6 +24,7 @@ typedef struct
     int STEP;
     char FILE_PATH[200];
     char FILE_OUT[200];
+    char FILE_OUT_flux[200];
     int N_COL;
     double NA;
     char VAR[11][20];
@@ -89,7 +90,9 @@ int import_Meteo(
     Struct_Para_global *p_gp,
     Struct_Meteo *P_meteo
 );
-
+void FLUX_zero(
+    Struct_snow_flux *p_df_flux
+);
 
 int main(int argc, char * argv[]) {
     /*
@@ -103,6 +106,7 @@ int main(int argc, char * argv[]) {
         1990,1,1,24,
         "example.txt",
         "example_output.txt",
+        "example_output_flux.txt",
         -99.9,
         7,
         {"SKIP", "SKIP", "SKIP", "WINSD1", "TEM_AIR_AVG1", "RHU1", "SUNDUR1"}
@@ -159,7 +163,7 @@ int main(int argc, char * argv[]) {
             0.0, // SNOW_DENSITY;
             0.0  // aerodynamic resistance
     };
-    Struct_snow_flux df_flux = {
+    Struct_snow_flux df_flux = { // initialize fluxes of snowpack
         0.0, 0.0, 0.0, 0.0, 0.0
     };
 
@@ -190,9 +194,19 @@ int main(int argc, char * argv[]) {
         printf("Program terminated: cannot create or open output file\n");
         exit(0);
     }
+    FILE *f_output_flux;
+    if ((f_output_flux=fopen(p_gp->FILE_OUT_flux, "w")) == NULL) {
+        printf("Program terminated: cannot create or open output file\n");
+        exit(0);
+    }
+
     fprintf(
         f_output,
         "y,m,d,SNOW_DEPTH,W,Wice,Wliq,SNOW_RUNOFF,SNOW_ALBEDO,SNOW_DENSITY,SNOW_Ras,SNOW_TEM\n"
+    );
+    fprintf(
+        f_output_flux,
+        "y,m,d,net_radiation,sensible,latent,advect\n"
     );
     for (i = 0; i < nrow; i++)
     {
@@ -218,27 +232,30 @@ int main(int argc, char * argv[]) {
            df_snow.SNOW_ALBEDO = 0.9; // the albedo of freshly fallen snow
            df_snow.SNOW_DEPTH = Density_water / df_snow.SNOW_DENSITY * df_snow.W;
            df_snow.SNOW_Ras = 0.01; 
+           /* energy flux of snowpack */
+           FLUX_zero(&df_flux);
         } 
         else if (df_snow.W > 0.0)
         {
             /* snowpack: energy flux */
+            df_snow.SNOW_Ras = Resistance_AirSnow(
+                // aerodynamic resistance between snow surface and near-surface reference height, [h/m]
+                (TS_Meteo+i)->WINSD, 10.0, df_snow.SNOW_DEPTH
+            );  
+            if ((TS_Meteo+i)->TEM_AIR_AVG > 0.0) {  //df_snow.Wliq > 0.0// df_snow.SNOW_TEM
+                // melting season, update the Ras, considering the atmospheric stability
+                df_snow.SNOW_Ras = AerodynamicResistance(
+                    df_snow.SNOW_Ras,
+                    RichardsonNumber(
+                        (TS_Meteo+i)->TEM_AIR_AVG,
+                        df_snow.SNOW_TEM,
+                        (TS_Meteo+i)->WINSD, 10.0
+                    )
+                );
+            }
             df_flux.net_radiation = FLUX_net_radiation(
                 (TS_Meteo+i)->R_LONG * 1000/24, (TS_Meteo+i)->R_SHORT * 1000/24, df_snow.SNOW_TEM, df_snow.SNOW_ALBEDO
             );
-            df_snow.SNOW_Ras = Resistance_AirSnow(
-                (TS_Meteo+i)->WINSD, 10.0, df_snow.SNOW_DEPTH
-            );
-            // if ((TS_Meteo+i)->TEM_AIR_AVG > df_snow.SNOW_TEM) {  //df_snow.Wliq > 0.0
-            //     // melting season, update the Ras, considering the atmospheric stability
-            //     df_snow.SNOW_Ras = AerodynamicResistance(
-            //         RichardsonNumber(
-            //             (TS_Meteo+i)->TEM_AIR_AVG,
-            //             df_snow.SNOW_TEM,
-            //             (TS_Meteo+i)->WINSD, 10.0
-            //         ),
-            //         df_snow.SNOW_Ras
-            //     );
-            // }
             df_flux.sensible = FLUX_sensible(
                 (TS_Meteo+i)->TEM_AIR_AVG,
                 df_snow.SNOW_TEM,
@@ -290,28 +307,34 @@ int main(int argc, char * argv[]) {
                 ((df_snow.Wliq > 0.0)?0:1) // 1: snow accumulation season; 0: snow melting season
             );
             // printf("%6.1f\t%6.2f\t%6.3f\n",(TS_Meteo+i)->WINSD, df_snow.SNOW_DEPTH, df_snow.SNOW_Ras);
-            // printf(
-            //     "%6.2f\t%6.2f\t%6.2f\t%6.2f\n",
-            //     df_flux.net_radiation, df_flux.sensible, df_flux.latent, df_flux.advect
-            // );
+            
         } else {
             /* else: 
             df_snow.W == 0.0 && (TS_Meteo+i)->SNOWFALL == 0.0, nothing happens to snow process
             */
            df_snow.SNOW_RUNOFF = (TS_Meteo+i)->RAINFALL;
+           df_snow.W = 0.0; df_snow.Wice = 0.0; df_snow.Wliq = 0.0;
+           df_snow.SNOW_DENSITY = 0.0; df_snow.SNOW_DEPTH = 0.0; df_snow.SNOW_TEM = p_gp->NA;
+           df_snow.SNOW_Ras = p_gp->NA; df_snow.SNOW_ALBEDO = p_gp->NA;
+           
+           FLUX_zero(&df_flux); // zero energy flux on snowpack
         }
             
-
         /* output the snow results */
         fprintf(
             f_output,
-            "%d,%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f", 
+            "%d,%d,%d,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f\n", 
             (TS_Meteo+i)->date.y, (TS_Meteo+i)->date.m, (TS_Meteo+i)->date.d, 
             df_snow.SNOW_DEPTH, df_snow.W, df_snow.Wice, df_snow.Wliq, df_snow.SNOW_RUNOFF, 
             df_snow.SNOW_ALBEDO, df_snow.SNOW_DENSITY, df_snow.SNOW_Ras, df_snow.SNOW_TEM
         ); 
-        fprintf(f_output, "\n"); // print "\n" after one row
         
+        fprintf(
+            f_output_flux,
+            "%d,%d,%d,%6.2f,%6.2f,%6.2f,%6.2f\n",
+            (TS_Meteo+i)->date.y, (TS_Meteo+i)->date.m, (TS_Meteo+i)->date.d, 
+            df_flux.net_radiation, df_flux.sensible, df_flux.latent, df_flux.advect
+            );
     }
     fclose(f_output);
     printf("---- Computation done! -------");
@@ -383,6 +406,8 @@ void import_global(
                     strcpy(p_gp->FILE_PATH, token2);
                 } else if (strcmp(token, "FILE_OUT") == 0) {
                     strcpy(p_gp->FILE_OUT, token2);
+                } else if (strcmp(token, "FILE_OUT_flux") == 0) {
+                    strcpy(p_gp->FILE_OUT_flux, token2);
                 } else if (strcmp(token, "NA") == 0) {
                     p_gp->NA = atof(token2);
                 } else if (strcmp(token, "N_COL") == 0) {
@@ -437,3 +462,12 @@ int import_Meteo(
     return nrow;
 }
 
+void FLUX_zero(
+    Struct_snow_flux *p_df_flux
+){
+    p_df_flux->advect = 0.0;
+    p_df_flux->Heat_PhaseChange = 0.0;
+    p_df_flux->latent = 0.0;
+    p_df_flux->net_radiation = 0.0;
+    p_df_flux->sensible = 0.0;
+}
