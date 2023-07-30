@@ -57,7 +57,7 @@ double Resistance_AirSnow(
 double FLUX_latent(
     double Tem_air,  // air temperature, [Celsius degree]
     double Tem_snow, // temperature of snowpack, [Celsius degree]
-    double Pressure_air, // atmospheric pressure, 
+    double Pressure_air, // atmospheric pressure, [kPa]
     double Rhu,  // relative humidity, [unit: %]
     double Resistance_AirSnow, // aerodynamic resistance between the snow surface and the near-surface reference height, [h/m]
     int L // whether liquid water exists in the snowpack, yes: 1
