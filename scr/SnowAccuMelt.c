@@ -39,17 +39,15 @@ void SnowAlbedo(
 
 void SnowDensity(
     double *Density_snow,  // snow density, kg/m3
-    // double *Depth_snow,  // the depth of snowpack, [m]
     double Tem_snow,   // temperature of snow surface, [celsius degree]
     double Density_BulkWater, //the bulk density of the liquid water in the snowpack.
-    double Wns,   //  amounts of newly fallen snow (in water equivalent units, m)
+    double Wns,   // amounts of newly fallen snow (in water equivalent units, m)
     double Ws,    // amounts of snow on the ground (in water equivalent units, m)
     double time_interval // time interval / time step / simulation temporal step, hours
 ){
     /**
      * snow densification
-     * update the snow density and snow depth of the ground 
-     * snowpack for each time step
+     * update the snow density for each time step
     */
     double c3;
     double c4;
@@ -82,15 +80,12 @@ void SnowDensity(
         } else {
             c4 = 1;
         }
-        CRm = 2.778 * 0.000001 * c3 * c4 * exp(-0.04 * (273.15 - Tem_snow));
-        *Density_snow = (time_interval * (CRm + CR0) + 1) * *Density_snow ;
+        CRm = 2.788 * 0.000001 * c3 * c4 * exp(-0.04 * (273.15 - Tem_snow));
+        *Density_snow = (time_interval * (CRm + CR0) + 1) * *Density_snow;
         if (*Density_snow <= 0.0)
         {
             *Density_snow = 0.0;
-            // *Depth_snow = 0.0;
-        } else {
-            // *Depth_snow = Ws * DensityWater / *Density_snow;
-        }
+        } 
     }
 }
 
@@ -111,9 +106,10 @@ void SnowMassBalance(
     
     
     double Heat_net; // net energy exchange at the snow surface; 
+    double Heat_sum; // Heat_sum = (Qe + Qp + Qs + Qr + Qm) * timestep
     double Heat_liq;
     double Heat_ice;
-    double Heat_m; // energy for ice melting
+    double Heat_m; // energy for ice melting or refreezing
     double Qm;     // heat flux for ice melting; unit: kJ/(m2 * h)
     // double lambda_v = 2500; // latent heat of vaporization, [kJ/kg]
     // double lambda_s = 2838; // latent heat of sublimation, [kJ/kg]
@@ -134,9 +130,10 @@ void SnowMassBalance(
         } else {
             Heat_m = -Heat_net;
         }
-        
+        Heat_sum = Heat_net + Heat_m;
     } else {
         Heat_m = -(Heat_net + Heat_ice);
+        Heat_sum = Heat_net - Heat_m;
     }
     Qm = Heat_m / Time_step; 
 
@@ -161,11 +158,21 @@ void SnowMassBalance(
         d_Wsol = Prec_sol;
     }
     
-    *Wliq = *Wliq + d_Wliq;
-    *Wsol = *Wsol + d_Wsol;
+    *Wliq = *Wliq + d_Wliq; // update the liquid phase volume in snowpack
+    *Wsol = *Wsol + d_Wsol; // solid phase 
+    // update snowpack temperature
+    if ((*Wsol + *Wliq) > 0.0) {
+        // there is still snow on the surface
+        *Tem_snow = (Heat_sum / Density_water / SpecificHeat_ice + *W * *Tem_snow) / (*Wsol + *Wliq);
+    } else {
+        // snow is gone!
+        *Tem_snow = 0.0;
+    }
+
     if (*Wliq > 0.06 * *W)
     {
-        *Snow_runoff = *Wliq - C * *W;  // C * *W is the liquid water holding capacity of snowpack, [m]
+        // C * *W is the liquid water holding capacity of snowpack, [m]
+        *Snow_runoff = *Wliq - C * *W;  // snow melting runoff
         *Wliq = *Wliq - *Snow_runoff;
     } else {
         *Snow_runoff = 0.0;
@@ -181,11 +188,9 @@ void SnowMassBalance(
         *Wsol = 0.0;
         *Wliq = 0.0;
     }
+    
+       
     *W = *Wsol + *Wliq;
-    /* update the snowpack properties */
-    // snowpack density
-    // snowpack temperature
-    // snowpack albedo
     
 }
 
