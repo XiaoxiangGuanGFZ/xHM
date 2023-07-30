@@ -43,7 +43,7 @@ void SnowDensity(
     double Density_BulkWater, //the bulk density of the liquid water in the snowpack.
     double Wns,   // amounts of newly fallen snow (in water equivalent units, m)
     double Ws,    // amounts of snow on the ground (in water equivalent units, m)
-    double time_interval // time interval / time step / simulation temporal step, hours
+    double Time_step // time interval / time step / simulation temporal step, hours
 ){
     /**
      * snow densification
@@ -58,9 +58,8 @@ void SnowDensity(
     double f_com = 0.6; //  internal compaction rate coefficient
     double CR0;
     double CRm;
-    if (*Density_snow <= 0.0) {
-        /* new snow, */
-        *Density_snow = 120.0; // kg/m3, the density of new snow
+    if (Ws <= 0.0){
+        *Density_snow = 0.0;
     } else {
         /* update the density of an old snowpack */
         Pload = 0.5 * g * Density_water * (Wns + f_com * Ws);
@@ -75,13 +74,13 @@ void SnowDensity(
         
         if (Density_BulkWater > 0)
         {
-            // there is liquid water in snowpack,
+            // there is liquid water in snowpack, Density_BulkWater == 1
             c4 = 2;
         } else {
             c4 = 1;
         }
         CRm = 2.788 * 0.000001 * c3 * c4 * exp(-0.04 * (273.15 - Tem_snow));
-        *Density_snow = (time_interval * (CRm + CR0) + 1) * *Density_snow;
+        *Density_snow = (Time_step * (CRm + CR0) + 1) * *Density_snow;
         if (*Density_snow <= 0.0)
         {
             *Density_snow = 0.0;
