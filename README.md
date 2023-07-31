@@ -1,5 +1,14 @@
 # xHM
 cross-scale hydrological model
+## Sub-routines
+### Receiving radiation (snow surface)
+Based on meteorological variable to derive receiving shortwave and longwave radiation on 
+the surface of snowpack.
+
+
+### Snow model
+physically-based snow accumulation and melting model
+
 
 ## Main processes
 - canopy interception
@@ -13,4 +22,9 @@ cross-scale hydrological model
 - flood routing
 
 ## To-Do-List
-- compose the algorithm respectively
+- test snow model for other stations (areas), more test studies
+- test the parameter sensitivity
+- test hourly scale snow modeling 
+
+## Contact
+[Xiaoxiang Guan](https://www.gfz-potsdam.de/staff/guan.xiaoxiang/sec44)
