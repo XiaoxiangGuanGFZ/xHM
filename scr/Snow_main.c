@@ -228,7 +228,8 @@ int main(int argc, char * argv[]) {
            }
            df_snow.W = df_snow.Wice + df_snow.Wliq;  
            df_snow.SNOW_TEM = (TS_Meteo+i)->TEM_AIR_AVG;
-           df_snow.SNOW_DENSITY = 120.0;  // here, density of new snow, kg/m3
+           // here, density of newly fallen (fresh) snow, kg/m3
+           df_snow.SNOW_DENSITY = 67.92 + 51.25 * exp((TS_Meteo+i)->TEM_AIR_AVG / 2.59);  
            df_snow.SNOW_ALBEDO = 0.9; // the albedo of freshly fallen snow
            df_snow.SNOW_DEPTH = Density_water / df_snow.SNOW_DENSITY * df_snow.W;
            df_snow.SNOW_Ras = 0.01; 

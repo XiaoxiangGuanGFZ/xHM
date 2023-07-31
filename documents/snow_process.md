@@ -177,6 +177,17 @@ Dettinger, 2005].
 During melting, $Q_m$ is negative, removing mass from the ice phase and increasing the liquid phase. Water is removed from snowpack when the liquid phase exceeds the current liquid water storage of the snowpack, taken as $0.06W$ (Wigmosta et al., 1994) 
 
 ## Snowpack densification
+
+As fresh snow density is not normally available in the meteorological record, an empirical relationship is used to relate snow densitys to air temperature. The relationship is:
+
+$$
+\rho_s = 67.92 + 51.25 e^{T_a/2.59}
+$$
+
+where:
+- $T_a$ is ambient air temperature [C] (Hedstrom and Pomeroy, 1998)
+
+
 Following a similar approach to Anderson [1976] and Jordan [1991],
 compaction (due to snow densification) is calculated as the
 sum of two fractional compaction rates representing compaction
@@ -451,6 +462,8 @@ where:
 Anderson, E. A. (1976), A point energy and mass balance model of a snow cover, Tech. Rep. 19, NOAA, Silver Spring, Md.
 
 Andreadis, K. M., D. Liang, L. Tsang, D. P. Lettenmaier, and E. G. Josberger (2008), Characterization of errors in a coupled snow hydrology microwave emission model, J. Hydrometeorol., 9, 149-164.
+
+Hedstrom, N., and J. W. Pomeroy, 1998: Intercepted snow in the boreal forest: Measurement and modeling. Hydrol. Processes, 12, 1611-1625.
 
 Jordan, R. (1991), A one-dimensional temperature model for a snow cover: Technical documentation for SNTHERM89, Tech. Rep. 91-16, Cold Reg. Res. and Eng. Lab., U.S. Army Corps of Eng., Hanover, N. H.
 
