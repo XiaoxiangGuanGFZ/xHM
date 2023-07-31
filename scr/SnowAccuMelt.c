@@ -80,7 +80,7 @@ void SnowDensity(
             c4 = 1;
         }
         CRm = 2.788 * 0.000001 * c3 * c4 * exp(-0.04 * (273.15 - Tem_snow));
-        *Density_snow = (Time_step * (CRm + CR0) + 1) * *Density_snow;
+        *Density_snow = (Time_step * 3600 * (CRm + CR0) + 1) * *Density_snow;
         if (*Density_snow <= 0.0)
         {
             *Density_snow = 0.0;

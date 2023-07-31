@@ -177,7 +177,7 @@ Dettinger, 2005].
 During melting, $Q_m$ is negative, removing mass from the ice phase and increasing the liquid phase. Water is removed from snowpack when the liquid phase exceeds the current liquid water storage of the snowpack, taken as $0.06W$ (Wigmosta et al., 1994) 
 
 ## Snowpack densification
-Following a similar approach to Anderson [1976],
+Following a similar approach to Anderson [1976] and Jordan [1991],
 compaction (due to snow densification) is calculated as the
 sum of two fractional compaction rates representing compaction
 due to metamorphism and overburden, respectively:
@@ -188,8 +188,8 @@ $$
 
 where:
 - $\rho_s$ is the snow density, in unit $kg/m^3$
-- $CR_m$ and $CR_o$ are the compaction rates due to metamorphism and overburden, respectively
-- $\Delta t$ is time interval in hours
+- $CR_m$ and $CR_o$ are the compaction rates (with unit of $1/s$ from dimensional analysis) due to metamorphism and overburden, respectively
+- $\Delta t$ is time interval, converted to second [s], for instance 86400 s for 24 hours (daily step)
 
 Snowpack depth $d_s$ (unit: m) can be updated by:
 
@@ -200,7 +200,7 @@ $$
 Destructive metamorphism is important for newer snow, and the following empirical function is used:
 
 $$
-CR_m = 2.788 \times 10^{-6} c_3 c_4 e^{-0.04(273.15-T_s)}
+CR_m = 2.778 \times 10^{-6} c_3 c_4 e^{-0.04(273.15-T_s)}
 $$
 
 where, if $\rho_s$ <= 150 $kg/m^3$, then $c_3$ = 1, otherwise $c_3=e^{-0.046(\rho_s-150)}$. $c_4$ = 1 when $\rho_l$ = 0, otherwise ($\rho_l$ > 0) $c_4$ = 2. And:
