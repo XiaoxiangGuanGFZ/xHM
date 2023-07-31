@@ -71,7 +71,9 @@ Q_e = \lambda_i \rho \frac{0.622}{P_a} \frac{e(T_a) - e_s(T_s)}{r_{a,s}}
 $$
 
 where:
-- ${\lambda}_i$ is the latent heat of vaporization when liquid water is present in the surface layer and the latent heat of sublimation in the absence of it. The latent heat of vaporization is set as 2,500 kJ/kg (although it changes with water temperature). The latent heat of sublimation is taken as 2,838 kJ/kg for ice at 0°C.
+- ${\lambda}_i$ is the latent heat of vaporization when liquid water is present in the surface layer and the latent heat of sublimation in the absence of it. 
+- The latent heat of vaporization is set as 2,500 kJ/kg (although it changes with water temperature), as we assume that snow melting is isothermal, meaning that the snow temperature is unchanged at 0 °C during melting. 
+- The latent heat of sublimation is taken as 2,838 kJ/kg for ice at 0°C.
 - $P_a$ is the atmospheric pressure, [kPa]
 - $e$ and $e_s$ are the vapor and saturation vapor pressure [kPa], respectively
 
