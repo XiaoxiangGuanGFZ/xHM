@@ -330,13 +330,13 @@ overstory up to the maximum interception storage capacity
 according to:
 
 $$
-I=fP_s
+I=f_eP_s
 $$
 
 where:
 - $I$ is the water equivalent of snow intercepted during a time step
 - $P_s$ is the snowfall over the time step
-- $f$ is the efficiency of snow interception (taken as 0.6)[Storck et al., 2002].
+- $f_e$ is the efficiency of snow interception (taken as 0.6)[Storck et al., 2002].
 
 The maximum interception capacity is given by:
 
@@ -346,9 +346,9 @@ $$
 
 where:
 - $LAI$ is the single-sided leaf area index of the canopy
-- $m$ (same units as $B$, in meters) is determined on the basis of observations of maximum snow interception capacity (40mm in setup experiment region). 
+- $m$ (same units as $B$, in meters) is determined on the basis of observations of maximum snow interception capacity (40mm or 0.04m in setup experiment region). 
 
-The leaf area ratio $L_r$ is a step function of temperature:
+The leaf area ratio $L_R$ is a step function of temperature:
 
 $$
 L_R=4.0, T_a > -1
@@ -381,8 +381,8 @@ $$
 
 where $h$ is the water holding capacity of snow (taken
 approximately as 3.5%) and $LAI_2$ is the all sided leaf area
-index of the canopy. Excess rain becomes throughfall.
-- $T_{co}$ is the throughfall excess rain.
+index of the canopy. Excess rain becomes throughfall ($T_{co}$) (Wigmosta et al., 1994 attachment).
+- $T_{co}$ is the throughfall excess rain. When $W_{liq} > W_c$, then $T_{co} = W_{liq} - W_c$, otherwise $T_{co = 0}$
 
 The intercepted snowpack can contain both ice and
 liquid water. The mass balance for each phase is:
@@ -392,33 +392,31 @@ $$
 $$
 
 $$
-\Delta W_{liq} = P_r - P_{tf} + (\frac{Q_e}{\rho_w \lambda_v} - \frac{Q_m}{\rho_w \lambda_f}) \Delta t
+\Delta W_{liq} = P_r + (\frac{Q_e}{\rho_w \lambda_v} - \frac{Q_m}{\rho_w \lambda_f}) \Delta t
 $$
 
 where:
-- $M$ is the snow mass release from the canopy
-- $P_{tf}$ is canopy throughfall
+- $M$ is the snow mass release from the canopy, in m.
 - $\lambda_s$, $\lambda_v$ and $\lambda_f$ are the latent heat of sublimation, vaporization, and fusion, respectively
 
 Snowmelt is calculated directly from a modified energy balance,
 similar to that applied for the ground snowpack, with
 canopy temperature being computed by iteratively solving
-the intercepted snow energy balance (equation (1)). However,  testing of a fully iterative (on $T_s$) intercepted snow energy balance revealed that the intercepted snow temperature closely followed that predicted by $T_s = min(T_a, 0)$
+the intercepted snow energy balance. However,  testing of a fully iterative (on $T_s$) intercepted snow energy balance revealed that the intercepted snow temperature closely followed that predicted by $T_s = \min(T_a, 0)$
 
 Given the intercepted snow temperature and air temperature,
-snowmelt is calculated directly from equations (8) and (9).
+snowmelt is calculated directly from above equations.
 The individual terms of the energy balance are as described
 for the ground snowpack model. 
 
-However, the aerodynamic resistance is calculated with respect to the sum of the displacement and roughness lengths of the canopy. Incoming shortwave and longwave radiation are taken as the
-values at the canopy reference height. The same formulation
-is used for the albedo of the ground snowpack and the snow
-on the canopy (equations (15)–(16)), the difference being in
+However, the aerodynamic resistance ($r_{r,s}$) is calculated with respect to the sum of the displacement ($z_d$) and roughness ($z_0$) lengths of the canopy. Incoming shortwave and longwave radiation are taken as the values at the canopy reference height. 
+The same formulation is used for the albedo of the ground snowpack and the snow 
+on the canopy, the difference being in
 the transmitted radiative fluxes.
 
 Snowmelt in excess of the liquid water holding
-capacity of the snow results in meltwater drip ($D$). Mass
-release of snow from the canopy occurs if sufficient snow is
+capacity of the snow results in meltwater drip ($D_r$). Mass
+release of snow ($M$) from the canopy occurs if sufficient snow is
 available and is related linearly to the production of meltwater
 drip:
 
@@ -427,18 +425,16 @@ M=0,W_{ice}<=n
 $$
 
 $$
-M=0.4D, W_{ice}>n
+M=0.4D_r, W_{ice}>n
 $$
 
 where $n$ is the residual intercepted snow that can only be
-melted (or sublimated) off the canopy (taken as 5 mm on the
+melted (or sublimated) off the canopy (taken as 5mm or 0.005m on the
 basis of observations of residual intercepted load). The ratio
 of 0.4 in equation (33) is derived from observations of the
 ratio of mass release to meltwater drip [Storck et al., 2002].
 
-Rainfall and snowfall not intercepted by the canopy combine with
-mass release and drip to contribute energy and mass to the ground
-snowpack. The depth of liquid delivered to the ground snowpack ($P_L$) is equal to: 
+Rainfall and snowfall not intercepted by the canopy combine with mass release and drip to contribute energy and mass to the ground snowpack. The depth of liquid delivered to the ground snowpack ($P_L$) is equal to: 
 
 $$
 P_L = P_r(1-F) + T_{co} + D_r
@@ -447,12 +443,12 @@ $$
 The (liquid) water equivalent depth of solid phase ($P_I$) is given by:
 
 $$
-P_I = P_s(1-f)F + P_s(1-F) + M
+P_I = P_s(1-f_r)F + P_s(1-F) + M
 $$
 
 where:
 - $F$ is the fractional ground cover of the overstory
-- $f = [0.08T_a - 0.0016T_a^2]^{-1}$, $f$ is the environmental dependency factor (air tempeature) which influences canopy resistance
+- $f_r = [0.08T_a - 0.0016T_a^2]^{-1}$, $f$ is the environmental dependency factor (air tempeature) which influences canopy resistance
 
 ## Data required and parameters
 
