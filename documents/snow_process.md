@@ -108,7 +108,7 @@ $$
 P_r = P- P_s
 $$
 
-The snowpack receives water in both liquid ($P_L$) and solid ($P_I$) phases. In cells without an overstory canopy, this is simply the depths of rainfall ($P_r$) and snowfall ($P_s$), respectively; i.e., $P_L = P_r$, and $P_I = P_s$. Tipically, the air temperature thresholds are taken as -1.1 and 3.3 $\degree C$ .
+The snowpack receives water in both liquid ($P_L$) and solid ($P_I$) phases. In cells without an overstory canopy, this is simply the depths of rainfall ($P_r$) and snowfall ($P_s$), respectively; i.e., $P_L = P_r$, and $P_I = P_s$. Tipically, the air temperature thresholds ( $T_{\min}$ and $T_{\max}$ ) are taken as -1.1 and 3.3 $\degree$ C.
 
 ## Mass balance for snowpack
 The total energy available for refreezing liquid water or melting the snowpack over a given time step depends on the net energy exchange at the snow surface:
@@ -280,7 +280,7 @@ Ri_b = \frac{2gz_m(T_a(z_m)-T_s)}{(T_a(z_m)+ T_s) U_{z_m}^2}
 $$
 
 where: 
-- $g$: gravity acceleration [$9.8m/s^2$]
+- $g$: gravity acceleration, $9.8 m/s^2 $
 - $z_m$ is the measurement height [m]
 - $T_a(z_m)$ is the air temperature [Kelvin degree, K] at the height of $z_m$
 - $T_s$ is snow temperature [K]
@@ -448,10 +448,7 @@ $$
 P_I = P_s(1-f_e)F + P_s(1-F) + M
 $$
 
-where:
-- $F$ is the fractional ground cover of the overstory
-
-The components for ground snow are listed as:
+where, the inputs for ground snow are listed and described as:
 | component  | description |
 | ---------- | ------------|
 | $P_r(1-F)$ | the rainfall from open area|
@@ -463,8 +460,25 @@ The components for ground snow are listed as:
 
 
 ## Data required and parameters
+### Required forcing fields
+
+| notation |   meaning     | unit  |
+| -------- | ------------- | ----- |
+| $L_i$  | incoming longwave radiation | kJ/(m^2h) |
+| $S_i$  | incoming shortwave radiation | kJ/(m^2h) |
+| $T_a$  | air temperature | degree Celsius °C |
+| $U_m$  | wind speed at the measurement height $m$ | m/s |
+| $P_a$  | atmospheric pressure | kPa |
+| $P$    | precipitation (rainfall + snowfall) | mm |
 
 
+### Local property (parameters)
+
+| notation |   meaning     | unit  |
+| -------- | ------------- | ----- |
+| $F$ | the fractional ground cover of the overstory | ~ |
+| $LAI$ | the single-sided leaf area index of the canopy | ~ |
+| $LAI_2$ | the all-sided leaf area index of the canopy | ~ |
 
 
 ## Reference
