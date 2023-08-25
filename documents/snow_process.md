@@ -72,8 +72,8 @@ $$
 
 where:
 - ${\lambda}_i$ is the latent heat of vaporization when liquid water is present in the surface layer and the latent heat of sublimation in the absence of it. 
-- The latent heat of vaporization is set as 2,500 kJ/kg (although it changes with water temperature), as we assume that snow melting is isothermal, meaning that the snow temperature is unchanged at 0 °C during melting. 
-- The latent heat of sublimation is taken as 2,838 kJ/kg for ice at 0°C.
+- The latent heat of vaporization is set as 2500 kJ/kg (although it changes with water temperature), as we assume that snow melting is isothermal, meaning that the snow temperature is unchanged at 0 °C during melting. 
+- The latent heat of sublimation is taken as 2838 kJ/kg for ice at 0°C.
 - $P_a$ is the atmospheric pressure, [kPa]
 - $e$ and $e_s$ are the vapor and saturation vapor pressure [kPa], respectively
 
@@ -93,15 +93,15 @@ where:
 Precipitation $P$ is partitioned into snowfall and rainfall on the basis of a temperature threshold:
 
 $$
-P_s = P, T_a <= T_{min};
+P_s = P, T_a \le T_{\min};
 $$
 
 $$
-P_s = \frac{T_{max} - T_a}{T_{max} - T_{min}} P, T_{min} <= T_a <= T_{max};
+P_s = \frac{T_{\max} - T_a}{T_{\max} - T_{\min}} P, T_{\min} \le T_a \le T_{\max};
 $$
 
 $$
-P_s = 0, T_a >= T_{max};
+P_s = 0, T_a \ge T_{\max};
 $$ 
 
 $$
@@ -120,11 +120,11 @@ $$
 If $Q_{net}$ is negative, then energy is being lost by the pack, and liquid water (if present) is refrozen. If $Q_{net}$ is sufficiently negative to refreeze all liquid water, then the pack may cool. If $Q_{net}$ is positive, then the excess energy available after the cold content has been satisfied, produces snowmelt
 
 $$
-Q_m \Delta t = min(-Q_{net}, \rho_w \lambda_f W_{liq}), Q_{net} < 0
+Q_m \Delta t = \min(-Q_{net}, \rho_w \lambda_f W_{liq}), Q_{net} < 0
 $$ 
 
 $$
-Q_m \Delta t = - (Q_{net} + c_s W_{ice} T_s^t), Q_{net} >= 0
+Q_m \Delta t = - (Q_{net} + c_s W_{ice} T_s^t), Q_{net} \ge 0
 $$
 
 where:
@@ -330,13 +330,14 @@ overstory up to the maximum interception storage capacity
 according to:
 
 $$
-I=f_eP_s
+I=f_e P_sF
 $$
 
 where:
 - $I$ is the water equivalent of snow intercepted during a time step
 - $P_s$ is the snowfall over the time step
 - $f_e$ is the efficiency of snow interception (taken as 0.6)[Storck et al., 2002].
+- $F$ is the fractional ground cover of the overstory
 
 The maximum interception capacity is given by:
 
@@ -355,11 +356,11 @@ L_R=4.0, T_a > -1
 $$
 
 $$
-L_R=1.5T_a + 5.5, -3 < T_a <= -1
+L_R=1.5T_a + 5.5, -3 < T_a \le -1
 $$
 
 $$
-L_R=1.0, T_a <= -3
+L_R=1.0, T_a \le -3
 $$
 
 which is based on observations from previous studies of
@@ -382,7 +383,7 @@ $$
 where $h$ is the water holding capacity of snow (taken
 approximately as 3.5%) and $LAI_2$ is the all sided leaf area
 index of the canopy. Excess rain becomes throughfall ($T_{co}$) (Wigmosta et al., 1994 attachment).
-- $T_{co}$ is the throughfall excess rain. When $W_{liq} > W_c$, then $T_{co} = W_{liq} - W_c$, otherwise $T_{co = 0}$
+- $T_{co}$ is the throughfall excess rain. When $P_rF > W_c$, then $T_{co} = P_rF - W_c$, otherwise $T_{co} = 0$
 
 The intercepted snowpack can contain both ice and
 liquid water. The mass balance for each phase is:
@@ -392,11 +393,12 @@ $$
 $$
 
 $$
-\Delta W_{liq} = P_r + (\frac{Q_e}{\rho_w \lambda_v} - \frac{Q_m}{\rho_w \lambda_f}) \Delta t
+\Delta W_{liq} = P_rF - T_{co} + (\frac{Q_e}{\rho_w \lambda_v} - \frac{Q_m}{\rho_w \lambda_f}) \Delta t
 $$
 
 where:
 - $M$ is the snow mass release from the canopy, in m.
+- $P_RF$ is the rainfall on the overstory canopy.
 - $\lambda_s$, $\lambda_v$ and $\lambda_f$ are the latent heat of sublimation, vaporization, and fusion, respectively
 
 Snowmelt is calculated directly from a modified energy balance,
@@ -421,11 +423,11 @@ available and is related linearly to the production of meltwater
 drip:
 
 $$
-M=0,W_{ice}<=n
+M=0,W_{ice} \le n
 $$
 
 $$
-M=0.4D_r, W_{ice}>n
+M=0.4D_r, W_{ice} > n
 $$
 
 where $n$ is the residual intercepted snow that can only be
@@ -443,12 +445,22 @@ $$
 The (liquid) water equivalent depth of solid phase ($P_I$) is given by:
 
 $$
-P_I = P_s(1-f_r)F + P_s(1-F) + M
+P_I = P_s(1-f_e)F + P_s(1-F) + M
 $$
 
 where:
 - $F$ is the fractional ground cover of the overstory
-- $f_r = [0.08T_a - 0.0016T_a^2]^{-1}$, $f$ is the environmental dependency factor (air tempeature) which influences canopy resistance
+
+The components for ground snow are listed as:
+| component  | description |
+| ---------- | ------------|
+| $P_r(1-F)$ | the rainfall from open area|
+| $T_{co}$   | the throughfall of rain from overstory (canopy)   |
+| $D_r$      | meltwater drip from canopy snow |
+| $P_s(1-f_e)F$ | snow throughfall from overstory canopy |
+| $P_s(1-F)$    | snowfall from open area  |
+| $M$           | mass release from canopy snow |
+
 
 ## Data required and parameters
 
