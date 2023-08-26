@@ -458,6 +458,17 @@ where, the inputs for ground snow are listed and described as:
 | $P_s(1-F)$    | snowfall from open area  |
 | $M$           | mass release from canopy snow |
 
+## Specific consideration
+
+When both interception snow and ground snow exist, the incoming short and longwave radiation should be considered separately, as the canopy plays a role in insolation received by ground snow. 
+The effect of forest canopy on insolation is formulated as (see `snow_radiation_calc.md` for detail):  
+
+$$
+\tau_F = (1-a_F) \exp(-LAI)
+$$
+
+where, $a_F$ is the albedo of the vegetation. Then the incoming shortwave radiation for ground snow is $S_i(1-F) + S_iF\tau_F$, which is definitely less than $S_i$ and for canopy snow is still $S_i$. In terms of longwave radiation, we assume that the temperature of canopy is close to the ambient air temperature, the effect of canopy on longwave radiation could be negligible, namely canopy snow and ground snow receive the same radiation intensity ($L_i$). 
+
 
 ## Data required and parameters
 ### Required forcing fields
