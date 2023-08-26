@@ -54,6 +54,19 @@ double Resistance_AirSnow(
     return R_AirSnow;
 }
 
+double Resistance_aero_canopy(
+    double Windspeed_m,  // wind speed at the height of z_m, [m/s]
+    double z_m,  // the height of wind speed measurement, usually 10 [m]
+    double zd,   // zero-plane displacement height, [m]
+    double z0    // roughness height of canopy, [m]
+){
+    double k = 0.4; // von Karman’s constant
+    double R;       // unit: h/m
+    Windspeed_m = Windspeed_m * 3600;  // convert unit from m/s to m/h
+    R = pow(log((z_m - zd) / z0), 2) / (k * k * Windspeed_m);
+    return R;
+}
+
 double FLUX_latent(
     double Tem_air,  // air temperature, [Celsius degree]
     double Tem_snow, // temperature of snowpack, [Celsius degree]
