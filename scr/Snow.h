@@ -108,6 +108,12 @@ double Resistance_AirSnow(
     double Depth_snow  // the depth of snowpack, [m]
 );
 
+double Resistance_aero_canopy(
+    double Windspeed_m,  // wind speed at the height of z_m, [m/s]
+    double z_m,  // the height of wind speed measurement, usually 10 [m]
+    double zd,   // zero-plane displacement height, [m]
+    double z0    // roughness height of canopy, [m]
+);
 
 double FLUX_latent(
     double Tem_air,  // air temperature, [Celsius degree]
