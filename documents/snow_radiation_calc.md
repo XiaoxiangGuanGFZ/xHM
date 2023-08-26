@@ -148,6 +148,28 @@ where $F$ is the fractional forest cover.
 
 When the forest cover is absent, $\varepsilon_{at} = \varepsilon_{sky}$ are smaller than 1; however, $\varepsilon_{at} = 1$ for complete forest cover ( $F = 1$ ). 
 
+
+## Required data and parameters
+
+### meteorological forcing fields
+
+| notation |   meaning    |  unit  |
+| -------- | ------------ | ------ |
+|  $T_a$   | near-surface air temperature | degree Celsius |
+|  $n$     | sunshine duration | hours |
+|  $RHU$   | relative humidity | %  |
+
+### regional parameters
+
+| notation |   meaning    |  unit  |
+| -------- | ------------ | ------ |
+|  $LAI$   | leaf-area-index | ~ |
+|  $F$     | canopy cover fraction | 0~1 |
+|  $LAT$   | latitude  | decimal degree | 
+|  $a_{F}$ | albedo of vegetation | 
+|  $a_s$, $b_s$ | two empirical coefficients (assumed as 0.25 and 0.5) in clear-sky shortwave radiation formula, which can be regionalized | ~ |
+
+
 ## Reference
 
 Abramowitz G., L. Pouyanné, and H. Ajami (2012). On the information content of surface meteorology for downward atmospheric long-wave radiation synthesis. Geographical Research Letters 39(5), doi: https://doi.org/10.1029/2011GL050726
