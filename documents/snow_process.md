@@ -57,7 +57,7 @@ where:
 - $z_0$ is the snow surface roughness, assumed as 0.0003 m
 - $d_s$ is the snow depth [m]
 - $U_z$ is the wind speed (unit: m/h) at the near-surface reference height $z$. 
-- $z=2+z_d+z_0$, $z_d$ and $z_0$ are displacement (here, snow depth $d_s$) and roughness height respectively (Stock, 2000).
+- $z=2+z_d+z_0$, $z_d$ and $z_0$ are zero-plane displacement (here, snow depth $d_s$) and roughness height respectively (Stock, 2000).
 
 $U_z$ can be derived by assuming logarithmic wind speed profile, where $U_{z_1}$ and $U_{z_2}$ are wind speeds at the height of $z_1$ and $z_2$ respectively: 
 
@@ -487,9 +487,10 @@ where, $a_F$ is the albedo of the vegetation. Then the incoming shortwave radiat
 
 | notation |   meaning     | unit  |
 | -------- | ------------- | ----- |
-| $F$ | the fractional ground cover of the overstory | ~ |
-| $LAI$ | the single-sided leaf area index of the canopy | ~ |
-| $LAI_2$ | the all-sided leaf area index of the canopy | ~ |
+| $F$      | the fractional ground cover of the overstory | ~ |
+| $LAI$    | the single-sided leaf area index of the canopy | ~ |
+| $LAI_2$  | the all-sided leaf area index of the canopy | ~ |
+| $a_F$    | canopy albedo  | ~ |
 
 
 ## Reference
