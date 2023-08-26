@@ -108,7 +108,7 @@ $$
 P_r = P- P_s
 $$
 
-The snowpack receives water in both liquid ($P_L$) and solid ($P_I$) phases. In cells without an overstory canopy, this is simply the depths of rainfall ($P_r$) and snowfall ($P_s$), respectively; i.e., $P_L = P_r$, and $P_I = P_s$. Tipically, the air temperature thresholds ( $T_{\min}$ and $T_{\max}$ ) are taken as -1.1 and 3.3 $\degree$ C.
+The snowpack receives water in both liquid ($P_L$) and solid ($P_I$) phases. In cells without an overstory canopy, this is simply the depths of rainfall ($P_r$) and snowfall ($P_s$), respectively; i.e., $P_L = P_r$, and $P_I = P_s$. Typically, the air temperature thresholds ( $T_{\min}$ and $T_{\max}$ ) are taken as -1.1 and 3.3 $\degree$ C.
 
 ## Mass balance for snowpack
 The total energy available for refreezing liquid water or melting the snowpack over a given time step depends on the net energy exchange at the snow surface:
