@@ -51,14 +51,16 @@ typedef struct
 {
     // struct Date date;  
     double SNOW_DEPTH;
-    double W; // snow water equivalent
+    double W; // snow water equivalent (m)
     double Wice;
     double Wliq;
     double SNOW_ALBEDO;
-    double SNOW_RUNOFF;
+    double SNOW_RUNOFF;  // excess melting/rainfall water (liquid phase) from snowpack
     double SNOW_TEM;
     double SNOW_DENSITY;
-    double SNOW_Ras; //aerodynamic resistance
+    double SNOW_Ras;     // aerodynamic resistance
+    double MASS_Release;     // Mass release (liquid phase) from snowpack
+    double THROUGHFALL_rain; // excess throughfall rain
 } Struct_Snow;
 
 typedef struct
@@ -75,9 +77,13 @@ typedef struct
 {   
     int GRIDid;
     double LAT;
-    double LAI;
+    double LAI;  // single-side Leaf-Area-Index
+    double LAI2; // all-side LAI
+    double zd;   // zero-plane displacement height (m) of canopy
+    double z0;   // roughness height (m)
     double ALBEDO_CANOPY;
-    double FOREST_FRAC;
+    double FOREST_FRAC;   // canopy fraction
+    double Canopy_snow_c; // maximum interception capacity of canopy snow, [m]
 } Struct_surface;
 
 /* functions declaration */
@@ -115,10 +121,7 @@ int main(int argc, char * argv[]) {
     Struct_Para_global *p_gp;  // pointer to struct GlobalPara
     p_gp = &GlobalPara;     
     
-    Struct_surface df_surface = {
-        2596,
-        40.27, 0.0, 0, 0.0
-    };
+    Struct_surface df_surface = {2596, 40.27, 2.5, 1.50, 1.5, 0.9, 0.086, 0.5, 0.0};
 
     /******* import the global parameters ***********
     parameter from main() function, pointer array
@@ -153,15 +156,16 @@ int main(int argc, char * argv[]) {
     }
     printf("---------\n");
     Struct_Snow df_snow = { // initialize 
-            0.0,// SNOWDEPTH;
-            0.0,// W; // snow water equivalent
-            0.0,// Wice;
-            0.0,// Wliq;
-            0.0,// SNOW_ALBEDO;
-            0.0,// SNOW_RUNOFF;
-            0.0,// SNOW_TEM;
+            0.0, // SNOWDEPTH;
+            0.0, // W, snow water equivalent
+            0.0, // Wice;
+            0.0, // Wliq;
+            0.0, // SNOW_ALBEDO;
+            0.0, // SNOW_RUNOFF;
+            0.0, // SNOW_TEM;
             0.0, // SNOW_DENSITY;
-            0.0  // aerodynamic resistance
+            0.0, // aerodynamic resistance
+            0.0  // mass release from snowpack
     };
     Struct_snow_flux df_flux = { // initialize fluxes of snowpack
         0.0, 0.0, 0.0, 0.0, 0.0
