@@ -66,6 +66,10 @@ void SnowDensity(
     double time_interval // time interval / time step, hours
 );
 
+double CanopySnowCapacity(
+    double Tem_air,  // ambient air temperature, degree Celsius
+    double LAI       // single-sided leaf-area-index of canopy
+);
 
 void SnowMassBalance(
     double Qr,  // net radiation flux, kJ/(m2 * h)
