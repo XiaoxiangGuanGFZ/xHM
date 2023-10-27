@@ -19,6 +19,7 @@ NA,-99.9
 
 # number of columns in the data file
 N_COL,11
+WIND_HEIGHT,10.0
 
 # the weather variables, list in the same order as in the data input file
 # WINSD: wind speed, m/s
@@ -38,7 +39,13 @@ VAR,RHU #%
 VAR,R_LONG #MJ/m2/d
 VAR,R_SHORT #MJ/m2/d
 
-
+#****
+#* unit conversion: MJ/m2/d = 1000/24 (kJ/m2/h)
+#* if modelling daily processes, STEP = 24; 
+#*      then the unit should be MJ/m2/d in the weather input data file;
+#* if STEP = 1 or 2 hours,
+#*      then the unit should be carefully converted during input preparation
+#**/ 
 
 
 
