@@ -257,11 +257,11 @@ void SnowMassBalance(
     *Wsol = *Wsol + d_Wsol; // solid phase 
     
     /* update snowpack temperature */ 
-    if (*Wliq > 0.0) {
+    if (*Wliq > 0.001) {
         // when snow is melting, the snowpack is isothermal at 0 celsius degree
         *Tem_snow = 0.0;
     }
-    else if (*Wsol <= 0.0)
+    else if (*Wsol <= 0.001)
     {
         // *Wsol <= 0.0: snow is gone!
         *Tem_snow = 0.0;
@@ -322,12 +322,12 @@ void SnowMassBalance(
     }
     
     // mass conservation check
-    if (*Wliq < 0.0)
+    if (*Wliq < 0.001)
     {
         *Wliq = 0.0;
     }
 
-    if (*Wsol < 0.0)
+    if (*Wsol < 0.001)
     {
         *Wsol = 0.0;
         *Wliq = 0.0;
