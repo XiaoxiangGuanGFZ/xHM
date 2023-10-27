@@ -314,18 +314,3 @@ void SnowMassBalance(
     *W = *Wsol + *Wliq;
 }
 
-/**
- * - design the radiation functions
- * - snow interception process
- * - iteration (time step by time step)
- * - how to output the intermediate variables, at the same time balancing the memory comsumption
- * - startup of snow process, initialize the snow variables
- * 
-*/
-
-
-// preprocessor
-// header files
-// C functions with variable arguments
-// GNU make
-// 
