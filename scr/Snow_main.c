@@ -17,33 +17,47 @@ struct Date {
 
 typedef struct 
 {
-    /* data */
-    int START_YEAR;
-    int START_MONTH;
-    int START_DAY;
-    int STEP;
-    char FILE_PATH[200];
-    char FILE_OUT[200];
-    char FILE_OUT_flux[200];
-    int N_COL;
-    double NA;
-    char VAR[11][20];
+    /***
+     * data structure including following elements:
+     * global parameter controlling the behavior of the program
+     */
+
+    int START_YEAR;     // year of the starting date
+    int START_MONTH;    // month of the starting date
+    int START_DAY;      // day of the starting date
+    int STEP;           // time step, unit:hour; by default STEP = 24 (daily)
+
+    char FILE_PATH[200];        // file path of input weather data
+    char FILE_OUT[200];         // file path of the output snow simulations
+    char FILE_OUT_flux[200];    // file path of the output energy flux estimations
+    
+    double WIND_HEIGHT;         // the height of wind speed measurement, usually 10 [m]
+    int N_COL;          // number of columns in weather input file  
+    double NA;          // not available (NA) notation, be default -99.9
+    char VAR[11][20];   // the variable list provided in the weather input file
 } Struct_Para_global;
 
 typedef struct 
 {
     struct Date date;
-    double PREC;
-    double RAINFALL;
-    double SNOWFALL;
+    double PREC;        //precipitation, mm
+    double RAINFALL;        // rainfall, mm (liquid phase)
+    double SNOWFALL;        // snowfall, mm (solid phase)
     int SNOWFALL_Interval;  //the time since the last snowfall (in days)
-    double WINSD;
-    double TEM_AIR_AVG;
-    double RHU;
-    double SUNDUR;
-    double AIRPRE;
-    double R_SHORT; // unit: MJ/m2 in one day, or MJ/m2/d = 1000/24 (kJ/m2/h)
-    double R_LONG;
+    double WINSD;           // wind speed, m/s
+    double TEM_AIR_AVG;     // air temperature, celsius degree
+    double RHU;             // relative humidity, %
+    double SUNDUR;          // sunshine duration, hour 
+    double AIRPRE;          // atmospheric pressure, kPa
+    double R_SHORT;         // short-wave radiation, unit: MJ/m2 in one STEP, 
+    double R_LONG;          // long-wave radiation
+    /****
+     * unit conversion: MJ/m2/d = 1000/24 (kJ/m2/h)
+     * if modelling daily processes, STEP = 24; 
+     *      then the unit should be MJ/m2/d in the weather input data file;
+     * if STEP = 1 or 2 hours,
+     *      then the unit should be carefully modified during input preparation
+     * */ 
 } Struct_Meteo;
 
 
@@ -52,14 +66,14 @@ typedef struct
     // struct Date date; 
     double INPUT_rain;
     double INPUT_snow; 
-    double SNOW_DEPTH;
-    double W; // snow water equivalent (m)
-    double Wice;
-    double Wliq;
-    double SNOW_ALBEDO;
+    double SNOW_DEPTH;      // depth, unit: m
+    double W;   // snow water equivalent (m)
+    double Wice;        // solid phase in snow pack, unit: m
+    double Wliq;        // liquid phase in snow pack, unit: m
+    double SNOW_ALBEDO;     // albedo of snow surface
     double SNOW_RUNOFF;  // excess melting/rainfall water (liquid phase) from snowpack
-    double SNOW_TEM;
-    double SNOW_DENSITY;
+    double SNOW_TEM;        // the temperature of snowpack
+    double SNOW_DENSITY;    // the density of snowpack
     double SNOW_Ras;     // aerodynamic resistance
     double MASS_Release;     // Mass release (liquid phase) from snowpack
     double THROUGHFALL_rain; // excess throughfall rain
@@ -78,14 +92,14 @@ typedef struct
 typedef struct
 {   
     int GRIDid;
-    double LAT;
-    double LAI;  // single-side Leaf-Area-Index
-    double LAI2; // all-side LAI
-    double zd;   // zero-plane displacement height (m) of canopy
-    double z0;   // roughness height (m)
-    double ALBEDO_CANOPY;
-    double FOREST_FRAC;   // canopy fraction
-    double Canopy_snow_c; // maximum interception capacity of canopy snow, [m]
+    double LAT;     // latitude 
+    double LAI;     // single-side Leaf-Area-Index
+    double LAI2;    // all-side LAI
+    double zd;      // zero-plane displacement height (m) of canopy
+    double z0;      // roughness height (m)
+    double ALBEDO_CANOPY;   // canopy albedo
+    double FOREST_FRAC;     // canopy fraction
+    double Canopy_snow_c;   // maximum interception capacity of canopy snow, [m]
 } Struct_surface;
 
 /* functions declaration */
@@ -136,7 +150,7 @@ int main(int argc, char * argv[]) {
     import_global(*(++argv), p_gp, &df_surface);
     
     printf("----- import global parameters ------- \n");
-    printf("START_YEAR: %d\nSTART_MONTH: %d\nSTART_DAY: %d\nSTEP: %d\n",
+    printf("START_YEAR: %d\nSTART_MONTH: %02d\nSTART_DAY: %02d\nSTEP: %d\n",
         p_gp->START_YEAR, p_gp->START_MONTH, p_gp->START_DAY, p_gp->STEP
         );
     printf("LAT: %.2f\nLAI: %.2f\nALBEDO_CANOPY: %.2f\nFOREST_FRAC: %.2f\n",
@@ -286,7 +300,7 @@ int main(int argc, char * argv[]) {
         {
             /* snowpack: energy flux */
             df_snowcanopy.SNOW_Ras = Resistance_aero_canopy(
-                (TS_Meteo + i)->WINSD, 10.0, df_surface.zd, df_surface.z0);
+                (TS_Meteo + i)->WINSD, p_gp->WIND_HEIGHT, df_surface.zd, df_surface.z0);
             if ((TS_Meteo + i)->TEM_AIR_AVG > 0.0)
             {
                 // melting season, update the Ras, considering the atmospheric stability
@@ -295,13 +309,13 @@ int main(int argc, char * argv[]) {
                     RichardsonNumber(
                         (TS_Meteo + i)->TEM_AIR_AVG,
                         df_snowcanopy.SNOW_TEM,
-                        (TS_Meteo + i)->WINSD, 10.0));
+                        (TS_Meteo + i)->WINSD, p_gp->WIND_HEIGHT));
             }
             df_fluxcanopy.net_radiation = FLUX_net_radiation(
-                (TS_Meteo + i)->R_LONG * 1000 / 24,
-                (TS_Meteo + i)->R_SHORT * 1000 / 24,
+                (TS_Meteo + i)->R_LONG * 1000 / p_gp->STEP,     // convert unit to kJ/(m2 * h)
+                (TS_Meteo + i)->R_SHORT * 1000 / p_gp->STEP,
                 df_snowcanopy.SNOW_TEM,
-                df_snowcanopy.SNOW_ALBEDO);  // unit: kJ/(m2 * h)
+                df_snowcanopy.SNOW_ALBEDO);  // unit of net radiation: kJ/(m2 * h)
             df_fluxcanopy.sensible = FLUX_sensible(
                 (TS_Meteo + i)->TEM_AIR_AVG,
                 df_snowcanopy.SNOW_TEM,
@@ -400,7 +414,7 @@ int main(int argc, char * argv[]) {
             /* snowpack: energy flux */
             df_snow.SNOW_Ras = Resistance_AirSnow(
                 // aerodynamic resistance between snow surface and near-surface reference height, [h/m]
-                (TS_Meteo+i)->WINSD, 10.0, df_snow.SNOW_DEPTH
+                (TS_Meteo+i)->WINSD, p_gp->WIND_HEIGHT, df_snow.SNOW_DEPTH
             );  
             if ((TS_Meteo+i)->TEM_AIR_AVG > 0.0) {  //df_snow.Wliq > 0.0// df_snow.SNOW_TEM
                 // melting season, update the Ras, considering the atmospheric stability
@@ -409,14 +423,15 @@ int main(int argc, char * argv[]) {
                     RichardsonNumber(
                         (TS_Meteo+i)->TEM_AIR_AVG,
                         df_snow.SNOW_TEM,
-                        (TS_Meteo+i)->WINSD, 10.0
+                        (TS_Meteo+i)->WINSD, 
+                        p_gp->WIND_HEIGHT
                     )
                 );
             }
             
             df_flux.net_radiation = FLUX_net_radiation(
-                (TS_Meteo + i)->R_LONG * 1000 / 24, 
-                (TS_Meteo + i)->R_SHORT * 1000 / 24 * (1-df_surface.ALBEDO_CANOPY)*exp(-df_surface.LAI) * df_surface.FOREST_FRAC + (1-df_surface.FOREST_FRAC), 
+                (TS_Meteo + i)->R_LONG * 1000 / p_gp->STEP, 
+                (TS_Meteo + i)->R_SHORT * 1000/p_gp->STEP * (1-df_surface.ALBEDO_CANOPY)*exp(-df_surface.LAI) * df_surface.FOREST_FRAC + (1-df_surface.FOREST_FRAC), 
                 df_snow.SNOW_TEM, 
                 df_snow.SNOW_ALBEDO);
             df_flux.sensible = FLUX_sensible(
@@ -580,6 +595,8 @@ void import_global(
                     strcpy(p_gp->FILE_OUT_flux, token2);
                 } else if (strcmp(token, "NA") == 0) {
                     p_gp->NA = atof(token2);
+                } else if (strcmp(token, "WIND_HEIGHT") == 0) {
+                    p_gp->WIND_HEIGHT = atof(token2);
                 } else if (strcmp(token, "N_COL") == 0) {
                     p_gp->N_COL = atoi(token2);   
                 } else if (strcmp(token, "VAR") == 0) {
