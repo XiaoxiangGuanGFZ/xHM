@@ -88,6 +88,27 @@ void SnowDensity(
     }
 }
 
+double SNOW_depth(
+    double SNOW_DENSITY,    // snowpack density, kg/m3
+    double W        // snowpack water equivalent, m
+){
+    /***
+     * a function used to derive the snowpack depth 
+     *      from snowpack density(kg/m3) and snowpack water equivalent (m)
+    */
+    double depth;
+    if (SNOW_DENSITY <= 0.001 || W <= 0.001)
+    {
+        // either SNOW_DENSITY is too small, somehow unrepresentable in C 
+        // or W water equivalent is less tham 1 mm, 
+        // to avoid negative infinity for depth; 
+        depth = 0.0;
+    } else {
+        depth = Density_water / SNOW_DENSITY * W;
+    }
+    return depth;
+}
+
 double CanopySnowCapacity(
     double Tem_air,  // ambient air temperature, degree Celsius
     double LAI       // single-sided leaf-area-index of canopy

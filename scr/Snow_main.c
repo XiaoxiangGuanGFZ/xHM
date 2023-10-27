@@ -132,8 +132,9 @@ int main(int argc, char * argv[]) {
         "example.txt",
         "example_output.txt",
         "example_output_flux.txt",
-        -99.9,
+        10.0,
         7,
+        -99.9,
         {"SKIP", "SKIP", "SKIP", "WINSD1", "TEM_AIR_AVG1", "RHU1", "SUNDUR1"}
     };
     
@@ -150,11 +151,11 @@ int main(int argc, char * argv[]) {
     import_global(*(++argv), p_gp, &df_surface);
     
     printf("----- import global parameters ------- \n");
-    printf("START_YEAR: %d\nSTART_MONTH: %02d\nSTART_DAY: %02d\nSTEP: %d\n",
+    printf("START_YEAR: %d\nSTART_MONTH: %2d\nSTART_DAY: %2d\nSTEP: %d\n",
         p_gp->START_YEAR, p_gp->START_MONTH, p_gp->START_DAY, p_gp->STEP
         );
-    printf("LAT: %.2f\nLAI: %.2f\nALBEDO_CANOPY: %.2f\nFOREST_FRAC: %.2f\n",
-        df_surface.LAT, df_surface.LAI, df_surface.ALBEDO_CANOPY, df_surface.FOREST_FRAC
+    printf("LAT: %.2f\nLAI: %.2f\nALBEDO_CANOPY: %.2f\nFOREST_FRAC: %.2f\nWIND_HEIGHT: %.2f\n",
+        df_surface.LAT, df_surface.LAI, df_surface.ALBEDO_CANOPY, df_surface.FOREST_FRAC, p_gp->WIND_HEIGHT
         );
     printf(
         "FILE_PATH: %s\nFILE_OUT_RADIA: %s\n",
@@ -176,26 +177,11 @@ int main(int argc, char * argv[]) {
     printf("---------\n");
     Struct_Snow df_snow; 
     Struct_Snow df_snowcanopy; 
-    /* = { // initialize 
-            0.0, // SNOWDEPTH;
-            0.0, // W, snow water equivalent
-            0.0, // Wice;
-            0.0, // Wliq;
-            0.0, // SNOW_ALBEDO;
-            0.0, // SNOW_RUNOFF;
-            0.0, // SNOW_TEM;
-            0.0, // SNOW_DENSITY;
-            0.0, // aerodynamic resistance
-            0.0  // mass release from snowpack
-    }; */
     Initialize_snow(&df_snow);
     Initialize_snow(&df_snowcanopy);
     
     Struct_snow_flux df_flux; 
     Struct_snow_flux df_fluxcanopy; 
-    // = { // initialize fluxes of snowpack
-    //     0.0, 0.0, 0.0, 0.0, 0.0
-    // };
     FLUX_zero(&df_flux);  // initialize fluxes of snowpack
     FLUX_zero(&df_fluxcanopy);
 
@@ -291,7 +277,7 @@ int main(int argc, char * argv[]) {
             // here, density of newly fallen (fresh) snow, kg/m3
             df_snowcanopy.SNOW_DENSITY = 67.92 + 51.25 * exp((TS_Meteo + i)->TEM_AIR_AVG / 2.59);
             df_snowcanopy.SNOW_ALBEDO = 0.9; // the albedo of freshly fallen snow
-            df_snowcanopy.SNOW_DEPTH = Density_water / df_snowcanopy.SNOW_DENSITY * df_snowcanopy.W;
+            df_snowcanopy.SNOW_DEPTH = SNOW_depth(df_snowcanopy.SNOW_DENSITY, df_snowcanopy.W);
             df_snowcanopy.SNOW_Ras = 0.01;
             /* energy flux of snowpack */
             FLUX_zero(&df_fluxcanopy);
@@ -362,7 +348,7 @@ int main(int argc, char * argv[]) {
                 df_snowcanopy.INPUT_snow,    // unit: m
                 df_snowcanopy.W,
                 p_gp->STEP);
-            df_snowcanopy.SNOW_DEPTH = Density_water / df_snowcanopy.SNOW_DENSITY * df_snowcanopy.W;
+            df_snowcanopy.SNOW_DEPTH = SNOW_depth(df_snowcanopy.SNOW_DENSITY, df_snowcanopy.W);
             SnowAlbedo(
                 &df_snowcanopy.SNOW_ALBEDO,
                 (TS_Meteo + i)->SNOWFALL_Interval,
@@ -404,7 +390,7 @@ int main(int argc, char * argv[]) {
            // here, density of newly fallen (fresh) snow, kg/m3
            df_snow.SNOW_DENSITY = 67.92 + 51.25 * exp((TS_Meteo+i)->TEM_AIR_AVG / 2.59);  
            df_snow.SNOW_ALBEDO = 0.9; // the albedo of freshly fallen snow
-           df_snow.SNOW_DEPTH = Density_water / df_snow.SNOW_DENSITY * df_snow.W;
+           df_snow.SNOW_DEPTH = SNOW_depth(df_snow.SNOW_DENSITY, df_snow.W);
            df_snow.SNOW_Ras = 0.01; 
            /* energy flux of snowpack */
            FLUX_zero(&df_flux);
@@ -483,7 +469,7 @@ int main(int argc, char * argv[]) {
                 df_snow.W,
                 p_gp->STEP
             );
-            df_snow.SNOW_DEPTH = Density_water / df_snow.SNOW_DENSITY * df_snow.W;
+            df_snow.SNOW_DEPTH = SNOW_depth(df_snow.SNOW_DENSITY, df_snow.W);
             SnowAlbedo(
                 &df_snow.SNOW_ALBEDO,
                 (TS_Meteo+i)->SNOWFALL_Interval,
@@ -498,9 +484,6 @@ int main(int argc, char * argv[]) {
             */
            Initialize_snow(&df_snow);
            df_snow.SNOW_RUNOFF = df_snow.INPUT_rain;
-           /* df_snow.W = 0.0; df_snow.Wice = 0.0; df_snow.Wliq = 0.0;
-           df_snow.SNOW_DENSITY = 0.0; df_snow.SNOW_DEPTH = 0.0; df_snow.SNOW_TEM = p_gp->NA;
-           df_snow.SNOW_Ras = p_gp->NA; df_snow.SNOW_ALBEDO = p_gp->NA; */
            
            FLUX_zero(&df_flux); // zero energy flux on snowpack
         }

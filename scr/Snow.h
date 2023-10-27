@@ -66,6 +66,11 @@ void SnowDensity(
     double time_interval // time interval / time step, hours
 );
 
+double SNOW_depth(
+    double SNOW_DENSITY,    // snowpack density, kg/m3
+    double W        // snowpack water equivalent, m
+);
+
 double CanopySnowCapacity(
     double Tem_air,  // ambient air temperature, degree Celsius
     double LAI       // single-sided leaf-area-index of canopy
