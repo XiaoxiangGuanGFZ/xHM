@@ -158,8 +158,8 @@ int main(int argc, char * argv[]) {
         df_surface.LAT, df_surface.LAI, df_surface.ALBEDO_CANOPY, df_surface.FOREST_FRAC, p_gp->WIND_HEIGHT
         );
     printf(
-        "FILE_PATH: %s\nFILE_OUT_RADIA: %s\n",
-        p_gp->FILE_PATH, p_gp->FILE_OUT
+        "FILE_PATH: %s\nFILE_OUT: %s\nFILE_OUT_RADIA: %s\n",
+        p_gp->FILE_PATH, p_gp->FILE_OUT, p_gp->FILE_OUT
     );
 
     Struct_Meteo TS_Meteo[MAXrow];
@@ -169,12 +169,18 @@ int main(int argc, char * argv[]) {
 
     /* check (print) the meteo data */
     int i;
-    printf("PREC(mm)\tAir temperature\n");
+    printf("PREC(mm)\tAirTEM\tRHU\tWINSD\tSUNDUR\tR_long\tR_short\n");
+    printf("----------------------------------------------------------\n");
     for (i = 0; i < 20; i++) 
     {
-        printf("%6.2f\t%6.2f\n", (TS_Meteo+i)->PREC, (TS_Meteo+i)->TEM_AIR_AVG);
+        printf("%.1f\t%.1f\t%.0f\t%.1f\t%.1f\t%.2f\t%.2f\n", 
+        (TS_Meteo+i)->PREC, (TS_Meteo+i)->TEM_AIR_AVG, 
+        (TS_Meteo+i)->RHU,
+        (TS_Meteo+i)->WINSD, (TS_Meteo+i)->SUNDUR,
+        (TS_Meteo+i)->R_LONG, (TS_Meteo+i)->R_SHORT
+        );
     }
-    printf("---------\n");
+    
     Struct_Snow df_snow; 
     Struct_Snow df_snowcanopy; 
     Initialize_snow(&df_snow);
