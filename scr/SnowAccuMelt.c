@@ -1,4 +1,8 @@
 
+#include <math.h>
+#include "SnowAccuMelt.h"
+#include "Snow_GVAR.h"
+
 void Partition_RainSnow(
     double *Prec,    // precipitation, [depth unit],
     double *Tem_air, // air temperature, [celsius degree]
@@ -269,8 +273,8 @@ void SnowMassBalance(
     else
     {
         // snow cold process
-        *Tem_snow = (*W * *Tem_snow) / *Wsol;
-        // *Tem_snow = (Heat_sum / Density_water / SpecificHeat_ice  +  *W * *Tem_snow) / *Wsol;
+        // *Tem_snow = (*W * *Tem_snow) / *Wsol;
+        *Tem_snow = (Heat_sum / Density_water / SpecificHeat_ice  +  *W * *Tem_snow) / *Wsol;
     }
 
     if (G_or_C == 1) {

@@ -3,8 +3,12 @@
 #include <math.h>
 #include <string.h>
 
+#include "Snow_GVAR.h"
 #include "Radiation_Calc.h"
-#include "Snow.h"
+#include "SnowEnergy.h"
+#include "SnowAccuMelt.h"
+#include "SnowAtmosphericStability.h"
+
 
 #define MAXCHAR 3000
 #define MAXrow 15000  // almost 100 years long ts

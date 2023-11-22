@@ -1,3 +1,7 @@
+#include <math.h>
+#include "Snow_GVAR.h"
+#include "SnowEnergy.h"
+
 
 double FLUX_net_radiation(
     double Radia_Long, // incoming long radiation, [kJ/(m2 * h)]

@@ -1,4 +1,10 @@
-/*
+#include <math.h>
+#include "Snow_GVAR.h"
+
+#include "SnowAtmosphericStability.h"
+
+
+/****************
     In the presence of a snow cover, aerodynamic resistance is typically 
     corrected for atmospheric stability according to the 
     bulk Richardson’s number (Rib). The latter is a dimensionless 
