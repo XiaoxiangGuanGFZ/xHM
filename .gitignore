@@ -54,5 +54,9 @@ dkms.conf
 references/
 output/
 
+#--- cmake 
+/scr/CMakeFiles/
+/scr/CMakeCache.txt
+/scr/cmake_install.cmake
 
 
