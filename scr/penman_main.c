@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "xHM_def.h"
+#include "penman.h"
 
 
 int main() {
