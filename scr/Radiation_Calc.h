@@ -1,6 +1,9 @@
+#ifndef PI
 #define PI 3.1415925
+#endif
 
-
+#ifndef RADIATION
+#define RADIATION
 /* declare functions from "Radiation_Calc.c" */
 int NOD(
     int year,
@@ -49,5 +52,4 @@ double Radiation_downward_long(
 );
 
 
-#include "Radiation_Calc.c"
-
+#endif

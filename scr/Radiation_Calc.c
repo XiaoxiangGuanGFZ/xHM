@@ -28,6 +28,8 @@
  * - snow albedo (assumed as 0.5)
  * 
 */
+#include <math.h>
+#include "Radiation_Calc.h"
 
 int NOD(
     int year,
