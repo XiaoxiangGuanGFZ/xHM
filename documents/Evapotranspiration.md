@@ -157,7 +157,6 @@ approach, soil water evaporation ($E_s$) is calculated as
 
 $$
     E_s = \min (E_{ps}, F_e)
-
 $$
 
 $$
