@@ -49,15 +49,15 @@ E_{po} = \frac{
 $$
 
 where:
-- $E_{po}$: $kg/(m^2 \cdot h) = 10^3m/h$
-- $\Delta$: the slope of the saturated vapor pressure-temperature curve, kPa/°C
-- $R_{no}$: the net radiation flux density, kJ/h/m2
-- $\rho$: the density of moist air, assumed as 1.2922 kg/m3
-- $c_p$: the specific heat of air at constant pressure, 1.005 kJ/(kg°C)
-- $e_s$ and $e$: the saturation vapor pressure at the air temperature and the (actual) vapor pressure, kPa 
-- $r_{ao}$: the aerodynamic resistance to vapor transport between the overstory and the reference height, with the unit of h/m
+- $E_{po}$: [$kg/(m^2 \cdot h) = 10^3m/h$]
+- $\Delta$: the slope of the saturated vapor pressure-temperature curve, [kPa/°C]
+- $R_{no}$: the net radiation flux density, [kJ/h/m2]
+- $\rho$: the density of moist air, assumed as 1.2922 [kg/m3]
+- $c_p$: the specific heat of air at constant pressure, 1.005 [kJ/(kg°C)]
+- $e_s$ and $e$: the saturation vapor pressure at the air temperature and the (actual) vapor pressure, [kPa] 
+- $r_{ao}$: the aerodynamic resistance to vapor transport between the overstory and the reference height, [h/m]
 - $\lambda_{\nu}$: the latent heat of vaporization of water, set as 2500 kJ/kg (although it changes with water temperature)
-- $\gamma$: the [psychrometric constant](https://en.wikipedia.org/wiki/Psychrometric_constant), kPa/°C
+- $\gamma$: the [psychrometric constant](https://en.wikipedia.org/wiki/Psychrometric_constant), [kPa/°C]
 
 ### 2.2 Transpiration from dry vegetative surfaces
 
@@ -74,10 +74,10 @@ E_{tj} = E_{pj} \frac{
 $$
 
 where:
-- $E_{tj}$: the transpiration rate
-- $E_{pj}$: the appropriate rate of potential evaporation
-- $r_{cj}$: the canopy resistance to vapor transport
-- $r_{aj}$: the aerodynamic resistance to vapor transport
+- $E_{tj}$: the transpiration rate, [m/h]
+- $E_{pj}$: the appropriate rate of potential evaporation, [m/h]
+- $r_{cj}$: the canopy resistance to vapor transport, [h/m]
+- $r_{aj}$: the aerodynamic resistance to vapor transport, [h/m]
 - subscript $j$ denotes separate value for the overstory ($j=o$) and the understory($j=u$).
 
 ### 2.3 Wet-dry partition
@@ -96,9 +96,9 @@ A_{wj} = ({
 $$
 
 where:
-- $S_{Ij}^{t}$: the depth of interc.epted water stored on the canopy at the start of the time step
-- $P_j$: the depth of rainfall during the time step
-- $I_{cj}$: the maximum interception storage capacity (in meters), determined from projected Leaf Area Index (LAI):
+- $S_{Ij}^{t}$: the depth of intercepted water stored on the canopy at the start of the time step, [m]
+- $P_j$: the depth of rainfall during the time step, [m/h]
+- $I_{cj}$: the maximum interception storage capacity (in meters), determined from projected Leaf Area Index (LAI) [dimensionless]:
 
 $$
     I_{cj} = r_j \cdot LAI_j \cdot F_j
