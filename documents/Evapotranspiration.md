@@ -49,14 +49,15 @@ E_{po} = \frac{
 $$
 
 where:
-- $\Delta$: the slope of the saturated vapor pressure - temperature curve,
-- $R_{no}$: the net radiation flux density
-- $\rho$: the density of moist air
-- $c_p$: the specific heat of air at constant pressure
-- $e_s$ and $e$: the saturation vapor pressure at the air temperature and the (actual) vapor pressure 
-- $r_{ao}$: the aerodynamic resistance to vapor transport between the overstory and the reference height
-- $\lambda_{\nu}$: the latent heat of vaporization of water
-- $\gamma$: the psychrometric constant
+- $E_{po}$: $kg/(m^2 \cdot h) = 10^3m/h$
+- $\Delta$: the slope of the saturated vapor pressure-temperature curve, kPa/°C
+- $R_{no}$: the net radiation flux density, kJ/h/m2
+- $\rho$: the density of moist air, assumed as 1.2922 kg/m3
+- $c_p$: the specific heat of air at constant pressure, 1.005 kJ/(kg°C)
+- $e_s$ and $e$: the saturation vapor pressure at the air temperature and the (actual) vapor pressure, kPa 
+- $r_{ao}$: the aerodynamic resistance to vapor transport between the overstory and the reference height, with the unit of h/m
+- $\lambda_{\nu}$: the latent heat of vaporization of water, set as 2500 kJ/kg (although it changes with water temperature)
+- $\gamma$: the [psychrometric constant](https://en.wikipedia.org/wiki/Psychrometric_constant), kPa/°C
 
 ### 2.2 Transpiration from dry vegetative surfaces
 
