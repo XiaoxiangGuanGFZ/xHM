@@ -219,7 +219,6 @@ $$
     }{
         U(z_a) \cdot k^2
     }
-    
 $$
 
 where $z_a = 2 + d_u + z_{0u}$ with $d_u$ and $z_{0u}$ equal to the displacement and roughness height, respectively, for the understory, soil surface, or snow surface.
