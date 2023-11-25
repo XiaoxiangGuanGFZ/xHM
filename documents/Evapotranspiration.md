@@ -192,13 +192,13 @@ $$
     }{
         U_rk^2
     } \cdot 
-    \{
+    [
         \frac{h_o}{n_a(z_w - d_o)} [\exp(n_a \cdot (1 - \frac{d_o - z_{0o}}{h_o})) - 1] + 
         \frac{z_w - h_o}{z_w - d_o} +
         \ln(
             \frac{z_r - d_o}{z_w - d_o}
         )
-        \}
+        ]
 $$
 
 where:
