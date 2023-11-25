@@ -134,7 +134,101 @@ double WET_part(
 }
 
 
-/*************/
+/***** evapotranspiration (ET) ********/
+void ET_story(
+    double Air_tem_avg, /*scalar: average air tempeature (℃)*/
+    double Air_tem_min, /*scalar: minimum air temperature (℃)*/
+    double Air_tem_max, /*scalar: maximum air temperature (℃)*/
+    double Air_pres,    // air pressure, kPa
+
+    double Prec_input,  /* precipitation input to the story*/
+    double *Prec_throughfall, /* free water leaving the story*/
+    double Ep,                /* potential evaporation, m/h */
+    double *EI,               /* actual evaporation, m */
+    double *ET,               /* actual transpiration, m */
+    double *Interception,     /* intercepted water in the story */
+    double Resist_canopy,     /* canopy resistance, h/m */
+    double Resist_aero,       /* aerodynamic resistance, h/m */
+    double LAI,
+    double Frac_canopy,       /* canopy fraction */
+    int step_time // hours
+
+){
+    /***********************
+     * evapotranspiration calculation for each story (overstory or understory)
+     * 
+     * for overstory:
+     * - Ep: estimated from formula
+     * - Prec_input: precipitation
+     * - Frac_canopy: canopy fraction, (0, 1]
+     * - *Prec_throughfall: throughfall from overstory to understory
+     * 
+     * for understory:
+     * - Ep: modified Ep after overstory
+     * - Prec_input: throughfall
+     * - Frac_canopy: 1
+     * - *Prec_throughfall: excess precipitation into soil process (either infiltration or runoff)
+    */
+    double Ic;
+    double Ep;
+    double Et;
+    double Aw;
+    double tw;
+
+    Ic = 0.0001 * LAI * Frac_canopy;
+    if (Ep > 0.0)
+    {
+        Et = Transpiration(
+            Ep, Air_tem_avg, Air_tem_min, Air_tem_max,
+            Air_pres, Resist_canopy, Resist_aero);
+
+        Aw = WET_part(
+            Prec_input, *Interception, LAI, Frac_canopy);
+
+        tw = (*Interception + Prec_input) / (Ep * Aw);
+
+        if (tw <= (double)step_time)
+        {
+            /***
+             * the overstory intercepted and precipitation
+             *  are evaporated within the time step
+             */
+            *EI = (Ep * Aw) * tw;                     // evaporation from wet part, [m]
+            *ET = Et * (1 - Aw) * tw +                // transpiration from wet part, [m]
+                  Et * Aw * ((double)step_time - tw); //  from dry part
+            
+        }
+        else
+        {
+            /****
+             * the intercepted water and precipitation are enough for
+             * evaporation within the time step
+             */
+            *EI = Ep * step_time;
+            *ET = 0.0; // no transpiration
+        }
+    }
+    else
+    {
+        /* Ep <= 0.0 */
+        *EI = 0.0;
+        *ET = 0.0;
+    }
+
+    /*** update the story state ***/
+    double Prec_excess;
+    Prec_excess = (*Interception + Prec_input) - *EI;
+    if (Prec_excess <= Ic)
+    {
+        *Interception = Prec_excess; // update the overstory interception water
+        *Prec_throughfall = 0.0;
+    }
+    else
+    {
+        *Interception = Ic;
+        *Prec_throughfall = Prec_excess - Ic;
+    }
+}
 
 void ET_iteration(
     double Air_tem_avg, /*scalar: average air tempeature (℃)*/
@@ -144,89 +238,110 @@ void ET_iteration(
     double Air_rhu,     // relative humidity, %
     double Radia_net,   // the net radiation flux density, kJ/h/m2
     
-    double Prec,
-    double *Interception_o,
-    double *Interception_u,
+    double Prec,                /* precipitation (total) within the time step, m */
+    double *Prec_throughfall,   /* precipitation throughfall from overstory*/
+    double *Prec_net,           /* net precipitation from understory into soil process */
+    double *EI_o,               /* actual evaporation, m */
+    double *ET_o,               /* actual transpiration, m */
+    double *EI_u,               /* actual evaporation, m */
+    double *ET_u,               /* actual transpiration, m */
+    double *ET_s,               /* soil evaporation, m */
+    double *Interception_o,     /* overstory interception water, m */
+    double *Interception_u,     /* understory interception water, m */
     double Resist_canopy_o,
+    double Resist_canopy_u,
     double Resist_aero_o,
+    double Resist_aero_u,
     /***
      * Resist_aero_o: the aerodynamic resistance to vapor transport
      * between the overstory and the reference height, with the unit of h/m
      */
 
-    double LAI,
-    double Frac_canopy,
-    double Soil_Fe, //  soil desorptivity
+    double LAI_o,
+    double LAI_u,
+    double Frac_canopy,   //  canopy fraction, [0, 1]
+    double Soil_Fe,       //  soil desorptivity
+    int Toggle_Overstory,
+    // whether there is overstory, yes: 1
     int Toggle_Understory_BareSoil,
-    int step_time // hours
-)
-{
-    double Aw_o, Aw_u;
-    double tw; // required to evaporate the intercepted water at the potential rate.
+    // whether the understory is bare soil, yes: 1
+    int step_time         // iteration time step: in hours
+ ){
+    /***** description 
+     * simulate the evapotranspiration process in a stepwise manner
+     * 
+     * when the overstory is absent, 
+     * Resist_canopy_o and Resist_aero_o can be ignored
+     * 
+     * when the understory is not bare soil,
+     * *ET_s is ignored, or equals 0.0
+     * 
+     * Toggle_Overstory != 1 and Toggle_Understory_BareSoil == 1, to 
+     * simulate the bare soil (the only story) ET .
+     * 
+    */
+    /************ overstory *************/
     double Ep_o, Ep_u;
-    double Et_o, Et_u;
-    double EI_o, EI_u;
-    double ET_o, ET_u;
-    double ET_s;
-    Ep_o = PotentialEvaporation(
-        Air_tem_avg, Air_tem_min, Air_tem_max,
-        Air_pres, Air_rhu, Radia_net, Resist_aero_o);
-    Et_o = Transpiration(
-        Ep_o, Air_tem_avg, Air_tem_min, Air_tem_max,
-        Air_pres, Resist_canopy_o, Resist_aero_o);
+    if (Toggle_Overstory == 1)
+    {
+        Ep_o = PotentialEvaporation(
+            Air_tem_avg, Air_tem_min, Air_tem_max,
+            Air_pres, Air_rhu, Radia_net, Resist_aero_o);
 
-    Aw_o = WET_part(
-        Prec, *Interception_o, LAI, Frac_canopy);
-
-    tw = (*Interception_o + Prec) / (Ep_o * Aw_o);
-    if (tw <= (double) step_time) {
-        /***
-         * the overstory intercepted and precipitation 
-         *  are evaporated within the time step
-        */
-        EI_o = (Ep_o * Aw_o) * tw; // overstory evaporation from wet part
-        ET_o = Et_o * (1-Aw_o) * tw + // overstory transpiration from wet part
-              Et_o * Aw_o * ( (double) step_time - tw); // from dry part
-        if ((EI_o + ET_o) >= Ep_o) {
-            EI_u = 0.0;
-            ET_u = 0.0;
-        } else {
-            // modified potential evaporation 
-            Ep_u = Ep_o - (EI_o + ET_o);
-            if (Toggle_Understory_BareSoil == 1)
-            {   // the understory (ground) is bare soil
-                ET_s = ET_soil(
-                    Ep_u, Soil_Fe
-                );
-            } else {
-                /**
-                 * the understory is not bare soil, 
-                 *      and the soil evaporation is ignored
-                */
-
-            }
-        }
-
-
-    } else {
-        /****
-         * the overstory intercepted water and precipitation are enough for 
-         * evaporation within the time step
-        */
-
-        EI_o = Ep_o;
-        ET_o = 0.0;
-        EI_u = 0.0;
-        EI_u = 0.0;
-        ET_s = 0.0;
+        ET_story(Air_tem_avg, Air_tem_min, Air_tem_max, Air_pres,
+                 Prec, Prec_throughfall,
+                 Ep_o,
+                 EI_o, ET_o,
+                 Interception_o, Resist_canopy_o, Resist_aero_o, LAI_o,
+                 Frac_canopy, step_time // hours
+        );
     }
+    else
+    {
+        // there is no overstory, only understory
+        Ep_o = PotentialEvaporation(
+            Air_tem_avg, Air_tem_min, Air_tem_max,
+            Air_pres, Air_rhu, Radia_net, Resist_aero_u);
+        *ET_o = 0.0;
+        *EI_o = 0.0;
+        *Prec_throughfall = Prec;
+        *Interception_o = 0.0;
+    }
+    
 
+    /************ understory *************/
+    Ep_u = Ep_o - (*ET_o + *EI_o) / step_time;
+    if (Toggle_Understory_BareSoil != 1)
+    {
+        /* understory is not bare soil */
+        
+        ET_story(Air_tem_avg, Air_tem_min, Air_tem_max, Air_pres,
+                 *Prec_throughfall, Prec_net,
+                 Ep_u,
+                 EI_u, ET_u,
+                 Interception_u, Resist_canopy_u, Resist_aero_u, LAI_u,
+                 1.0,      // Frac_canopy = 1.0
+                 step_time // hours
+        );
+        *ET_s = 0.0;
+    }
+    else
+    {
+        /* understory is bare soil */
+        *ET_s = ET_soil(
+            Ep_u, Soil_Fe);
+        *EI_u = 0.0;
+        *ET_u = 0.0;
+        *Interception_u = 0.0;
+        *Prec_net = *Prec_throughfall - *ET_s;
+        if (*Prec_net < 0.0) {*Prec_net = 0.0;}
 
+    }
 }
 
 double ET_soil(
-    double ET_soil_pot,
-    double Soil_Fe //  soil desorptivity
+    double ET_soil_pot, // potential evaporation rate, m/h
+    double Soil_Fe //  soil desorptivity, should be m/h
 ){
     // remains to be figured out
     /****
