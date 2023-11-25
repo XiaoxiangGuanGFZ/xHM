@@ -188,12 +188,12 @@ with the three overstory wind profile layers is given by (Storck, 2000):
 
 $$
     R_{ao} = \frac{
-        \ln( \frac{z_r - d}{z_{0o}} )
+        \ln( \frac{z_r - d_o}{z_{0o}} )
     }{
         U_rk^2
     } \cdot 
     \{
-        \frac{h_o}{n(z_w - d_o)} [\exp(n_a \cdot (1 - \frac{d_o - z_{0o}}{h_o})) - 1] + 
+        \frac{h_o}{n_a(z_w - d_o)} [\exp(n_a \cdot (1 - \frac{d_o - z_{0o}}{h_o})) - 1] + 
         \frac{z_w - h_o}{z_w - d_o} +
         \ln(
             \frac{z_r - d_o}{z_w - d_o}
@@ -203,18 +203,23 @@ $$
 
 where:
 - $U_r$: velocity at the reference height $z_r$
-- $h_o$: height
-- $d_o$: displacement height
+- $h_o$: height of the overstory
+- $d_o$: displacement height of the overstory
 - $z_{0o}$: the roughness of the overstory
-- $z_w$: the height of the boundary· between the upper logarithmic profile and roughness sublayer
-- $n_a$: a dimensionless extinction coefficient
-- $k$: Von Karmen's constant
+- $z_w$: the height of the boundary between the upper logarithmic profile and roughness sublayer, Van de Griend and van Boxel (1989) suggested that $z_w = 1.5h_o-0.5d_o$
+- $n_a$: a dimensionless extinction coefficient, with a typical value of 2-3
+- $k$: Von Karmen's constant, assumed as 0.4
 
 The aerodynamic resistance for the **soil surface**, **snow**, or **understory** 
 associated with the lower logarithmic profile is given by (Storck, 2000):
 
 $$
-    r_{au} = \ln(\frac{z_a - d_u}{z_{0u}}) ^2 / U(z_a) \cdot k^2
+    r_{au} = \frac{
+        \ln(\frac{z_a - d_u}{z_{0u}}) ^2 
+    }{
+        U(z_a) \cdot k^2
+    }
+    
 $$
 
 where $z_a = 2 + d_u + z_{0u}$ with $d_u$ and $z_{0u}$ equal to the displacement and roughness height, respectively, for the understory, soil surface, or snow surface.
