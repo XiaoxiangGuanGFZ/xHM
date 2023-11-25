@@ -1,5 +1,7 @@
 #include <math.h>
 #include "Snow_GVAR.h"
+#include "Evapotranspiration.h"
+
 
 double PotentialEvaporation(
     double Air_tem_avg, /*scalar: average air tempeature (℃)*/
