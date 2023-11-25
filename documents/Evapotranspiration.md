@@ -139,7 +139,7 @@ E_{Tj} = E_{tj} \cdot (1 - A_{wj}) \cdot \Delta t_w +
     E_{tj} \cdot A_{wj} \cdot ( \Delta t - \Delta t_w)
 $$
 
-In paractice,
+In practice,
 - for overstory, $E_{pj} = E_{po}$
 - for understory, $E_{pj} = E_{po} - (E_{Io} + E_{To})$, where $E_{Io}$ and $E_{To}$ are evaporation and transpiration from overstory respectively
 
