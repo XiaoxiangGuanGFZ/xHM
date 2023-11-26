@@ -49,7 +49,7 @@ E_{po} = \frac{
 $$
 
 where:
-- $E_{po}$: [$kg/(m^2 \cdot h) = 10^3m/h$]
+- $E_{po}$: $kg/(m^2 \cdot h) = 10^3m/h$ 
 - $\Delta$: the slope of the saturated vapor pressure-temperature curve, [kPa/°C]
 - $R_{no}$: the net radiation flux density, [kJ/h/m2]
 - $\rho$: the density of moist air, assumed as 1.2922 [kg/m3]
