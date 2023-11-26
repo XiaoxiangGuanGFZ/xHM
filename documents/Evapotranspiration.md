@@ -62,8 +62,7 @@ where:
 ### 2.2 Transpiration from dry vegetative surfaces
 
 Transpiration from dry vegetative surfaces
-is calculated using a Penman-Monteith approach (Wigmosta et al.,
-1994)
+is calculated using a Penman-Monteith approach (Wigmosta et al., 1994)
 
 $$
 E_{tj} = E_{pj} \frac{
