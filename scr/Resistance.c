@@ -183,6 +183,21 @@ double Factor_3(
 )
 {
     double f3;
+    /****
+     * rs_min and rs_max:
+     * from Table 1 in Wigmosta, 1994
+     * 
+     * Rp:
+     * average PAR on a leaf surface,
+     * empirically assumed as about one-tenth (0.0) the intensity 
+     * of the incident solar radiation [Dickinson, 1991]
+     * 
+     * Rpc:
+     * 30 W/m2 for four different vegetation: 
+     * Grass, Aspen, Fir, and Pine
+     * [Dickinson, 1991; Wigmosta, 1994]
+     * 
+    */
     f3 = ( 1 + Rp/Rpc) / (rs_min / rs_max + Rp/Rpc);
     return f3;
 }
