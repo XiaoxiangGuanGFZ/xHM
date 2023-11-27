@@ -3,7 +3,7 @@
 #include <math.h>
 #include <string.h>
 
-#include "Snow_GVAR.h"
+#include "Constants.h"
 #include "Radiation_Calc.h"
 #include "SnowEnergy.h"
 #include "SnowAccuMelt.h"

@@ -2,8 +2,8 @@
 #define PI 3.1415925
 #endif
 
-#ifndef SNOW_GVAR
-#define SNOW_GVAR
+#ifndef CONSTANTS
+#define CONSTANTS
 
 #define g 9.80  // acceleration of gravity, 9.8 m/s2
 #define Density_water 1000   // density of (liquid) water, 1000 kg/m3
@@ -18,8 +18,4 @@
 
 #endif
 
-/*********
- * some global variables defined here 
- * which are some physical constants
- *  
- ***/
+

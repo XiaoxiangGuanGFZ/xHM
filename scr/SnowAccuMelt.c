@@ -1,7 +1,7 @@
 
 #include <math.h>
 #include "SnowAccuMelt.h"
-#include "Snow_GVAR.h"
+#include "Constants.h"
 
 void Partition_RainSnow(
     double *Prec,    // precipitation, [depth unit],
