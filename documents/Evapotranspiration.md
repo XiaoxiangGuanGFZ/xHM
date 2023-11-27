@@ -307,10 +307,87 @@ where:
 - $\theta^*$: the moisture content above which soil conditions do not
 restrict transpiration
 
+## 4. Net radiation
+### 4.1 overstory
 
-## 4. Parameters
+Separate shortwave and longwave radiation budgets are developed for
+the overstory and the understory or soil surface. The overstory receives
+direct solar (shortwave) radiation, and exchanges longwave radiation
+with both the sky and with the understory, snowpack, or soil.
 
-### 4.1 Vegetation parameter
+The net radiation absorbed by the overstory $R_{no}$ is given by
+
+$$
+    R_{no} = R_s [(1-\alpha_o) - \tau_o(1 - \alpha_u)] \cdot F +
+    (L_d + L_u - 2L_o) \cdot F
+$$
+
+
+where:
+- $R_s$: the incident shortwave radiation
+- $\alpha_o$: the overstory reflection coefficient
+- $\alpha_u$: the understory reflection coefficient
+- $\tau_o$: the fraction of shortwave radiation transmitted by the overs tory canopy
+- $F$: the fractional ground cover of the overstory
+- L_d, L_u, L_o$: downward sky, upward understory, and overstory longwave radiation fluxes
+
+The fraction of transmitted
+shortwave radiation is calculated following a Beer's Law relationship of
+the form (Monteith and Unsworth, 1990):
+
+$$
+    \tau_o = \exp(-k_b \cdot LAI_o)
+$$
+
+where:
+- $k_b$: a canopy attenuation coefficient
+- $LAI_o$: the one-sided leaf area index of the overstory canopy
+
+### 4.2 understory
+
+The understory receives attenuated shortwave radiation below the
+overstory and direct shortwave radiation in the open. Below the
+overs tory, the understory exchanges longwave radiation with the
+overstory, while in the open it exchanges radiation with the sky and
+ground. The net radiation absorbed by the understory $R_{nu}$:
+
+$$
+    R_{nu} = R_s \cdot (1-\alpha_u) \cdot [(1-F) + \tau_o \cdot F] + 
+        (1-F) \cdot L_d + F \cdot L_o - L_u
+$$
+
+### 4.3 Emissivity of unity
+
+$$
+    L_o = \sigma (T_o + 273.15)^4
+$$
+
+
+$$
+    L_u = \sigma (T_u + 273.15)^4
+$$
+
+where:
+- $\sigma$: the Stefan-Boltzmann constant
+- $T_o, T_u$: the temperatures [°C] of the overstory and understory, respectively. These two temperatures are set equal to the air temperature except when snow is present.
+
+### 4.4 (Longwave) Radiation from Soil 
+
+With bare soil (no understory) and no snowpack
+
+$$
+    L_u = \sigma (T_g + 273.15)^4
+$$
+
+where:
+$T_g$ equals to the soil surface temperatUre. The soil surface temperature is either set equal to the air temperature or when more 
+accurate surface temperatures are required, calculated through an 
+iterative solution to the nonlinear equation for surface temperature.
+
+
+## 5. Parameters
+
+### 5.1 Vegetation parameter
 
 |Parameter | Grass | Aspen | Subalpine Fir | Pine |
 |----------| ------| ------ | ------------ |-------|
@@ -334,6 +411,9 @@ Model, NCAR Technical Note, NCARITN-387+STR, Boulder, Colorado, 1993.
 
 Feddes, R. A., P. J. Kowalik, and H. Zaradny, Simulation of field water use and crop
 yield, John Wiley and Sons, New York, 188 pp., 1978.
+
+Monteith, J. L. and M. H. Unsworth, Principles of environmental physics, Routledge,
+Chapman and Hall, New York, NY, 291 pp., 1990.
 
 Storck, P., Trees, snow and flooding: an investigation of forest canopy effects on snow
 accumulation and melt at the plot and watershed scales in the Pacific Northwest,
