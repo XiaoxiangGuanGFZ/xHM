@@ -312,14 +312,14 @@ restrict transpiration
 
 ### 4.1 Vegetation parameter
 
-|parameter | grass | aspen | subalpine fir | pine |
+|Parameter | Grass | Aspen | Subalpine Fir | Pine |
 |----------| ------| ------ | ------------ |-------|
 |Summer LAI| 1.3 | 4.0| 4.0| 3.0  |
 |Winter LAI| 1.3 | 0.5| 4.0| 3.0  |
 | $\alpha$ | 0.18 | 0.18| 0.18 | 0.18|
-| r_{s\min}, s/cm |  1.2 |  5.0 | 25.0 |  8.0|
-| r_{s\max}, s/cm | 50.0 | 50.0 | 50.0 | 50.0|
-| R_{pc}, W/m2 | 30.0 | 30.0 | 30.0 | 30.0|
+| $r_{s\min}$, s/cm |  1.2 |  5.0 | 25.0 |  8.0|
+| $r_{s\max}$, s/cm | 50.0 | 50.0 | 50.0 | 50.0|
+| $R_{pc}$, W/m2 | 30.0 | 30.0 | 30.0 | 30.0|
 
 
 
