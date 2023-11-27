@@ -1,3 +1,18 @@
+/*
+ * SUMMARY:      Resistance.c
+ * USAGE:        Calculate aerodynamic and canopy resistance
+ *                  used in evapotranspiration simulation
+ * AUTHOR:       Xiaoxiang Guan
+ * ORG:          Section Hydrology, GFZ
+ * E-MAIL:       guan@gfz-potsdam.de
+ * ORIG-DATE:    Nov-2023
+ * DESCRIPTION:  Calculate aerodynamic and canopy resistance
+ * DESCRIP-END.
+ * FUNCTIONS:    
+ *               Resist_aero_o(); Resist_aero_u()
+ * COMMENTS:
+ * 
+*/
 
 #include <math.h>
 #include "SnowAccuMelt.h"
@@ -15,6 +30,14 @@ double Resist_aero_o(
     double d,        /* displacement height, m */
     double z0        /* the roughness, m */
 ){
+    /*********
+     * calculate the aerodynamic resistance above overstory
+     * 
+     * The vertical wind profile through the overstory canopy is 
+     *      modeled assuming neutral atmospheric conditions 
+     *      using three layers (Storck, 2000).
+     * 
+    */
     double Rao;  // aerodynamic resistance, h/m
     double k = 0.4;   // Von Karmen's constant, a dimensionless constant
     double Air_ws_zr; // wind speed at reference height
@@ -44,9 +67,10 @@ double Resist_aero_u(
     double z0           /* roughness length, m */
 )
 {
-    /**** function: 
-     * aerodynamic resistance for 
+    /**** 
+     * calculate aerodynamic resistance for 
      * the soil surface, snow, or understory
+     * refer to Storck, 2000
      * */ 
 
     double za;
@@ -90,8 +114,11 @@ double Resist_Canopy(
 )
 {
     /*****
+     * the canopy resistance is represented as 
+     *  a summation of the stomatal resistance 
+     *  of individual leaves
      * 
-     * 
+     * Wigmosta et al. 1994; Dickinson et al., 1991
     */
     int i;
     double rc;  // canopy resistance, h/m
@@ -148,6 +175,11 @@ double Factor_1(
     double Air_tem_avg  /* air temperature (in degrees Celsius) */
 )
 {
+    /****
+     * the effect of air temeprature on
+     *  stomatal resistance
+     * Dickinson et al. (1993)
+    */
     double f1;
     f1 = 1 / (
         0.08 * Air_tem_avg - 0.0016 * pow(Air_tem_avg, 2)
@@ -161,6 +193,11 @@ double Factor_2(
     double Air_rhu   // relative humidity, %
 )
 {
+    /****
+     * the effect of vapor pressure on
+     *  stomatal resistance
+     * Dickinson et al. (1993)
+    */
     double es, ea;
     double ec = 4; // the vapor pressure deficit causing stomatal closure (about 4 kPa)
     double f2;
@@ -182,6 +219,12 @@ double Factor_3(
     double rs_max  /* maximum (cuticular) resistance */
 )
 {
+    /****
+     * calculate the effect of photosynthetically active radiation flux (PAR)
+     *  on stomatal resistance
+     * 
+     * Dickinson et al. (1993)
+    */
     double f3;
     /****
      * rs_min and rs_max:
@@ -210,6 +253,12 @@ double Factor_4(
                         restrict transpiration. */
 )
 {
+    /****
+     * calculate the effect of soil moisture
+     *  on stomatal resistance
+     * 
+     *  Feddes et al. (1978)
+    */
     double f4;
     if (SM <= SM_wp)
     {
@@ -224,3 +273,24 @@ double Factor_4(
 }
 
 
+/****** References
+ * 
+ * Storck, P., Trees, snow and flooding: 
+ *      an investigation of forest canopy effects on snow accumulation 
+ *      and melt at the plot and watershed scales in the Pacific Northwest, 
+ *      Water Resource Series, Technical Report 161, 
+ *      Dept. of Civil Engineering, University of Washington, 2000.
+ * 
+ * Dickinson, R. E., A. Henderson-Sellers, C. Rosenzweig, and P. J. Sellers, 
+ *      Evapotranspiration models with canopy resistance for 
+ *      use in climate models, a review, Agric. For. Meteorol., 54, 373-388, 1991.
+ * 
+ * Dickinson, R. E., A. Henderson-Sellers, and P. J. Kennedy, 
+ *      Biosphere-atmosphere transfer scheme (BATS) Version leas 
+ *      coupled to the NCAR Community Climate Model, NCAR Technical Note, 
+ *      NCARITN-387+STR, Boulder, Colorado, 1993.
+ * 
+ * Feddes, R. A., P. J. Kowalik, and H. Zaradny, 
+ *      Simulation of field water use and crop yield, 
+ *      John Wiley and Sons, New York, 188 pp., 1978.
+*/
