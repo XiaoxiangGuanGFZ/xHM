@@ -185,7 +185,7 @@ $$
     F_{i,j,k} = \frac{
         \gamma_{i,j,k}
     }{
-        \sum_{k=0}^7 \gamma_{i,j,k}
+        \sum_{k=0}^{7} {\gamma_{i,j,k}}
     }
 $$
 
