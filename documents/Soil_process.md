@@ -203,7 +203,7 @@ $$
     \Delta z_{i,j} = \frac{1}{\phi_{i,j}} \cdot
     [
         \frac{
-            Q_{out_{i,j}} - Q_{oin_{i,j}} 
+            Q_{out_{i,j}} - Q_{in_{i,j}} 
         }{
             A_{i,j}
         } - R_{i,j}
