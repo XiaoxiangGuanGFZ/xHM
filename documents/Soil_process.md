@@ -97,4 +97,139 @@ where:
 
 ## 3. Saturation subsurface flow
 
+Wigmostae t al. [1994] describe an explicit grid cell by grid
+cell approach to route saturated subsurface flow. The theory
+and computational scheme are developed for point elevation
+data on an orthogonal grid. Grid cells are centered
+at each elevation point (e.g., solid square surrounding the
+elevation point $i, j$ in Figure 1). Each grid cell can exchange
+water with its eight adjacent neighbors. Directions between a
+node and its neighbors are assigned the index $k$ and numbered
+from 0 to 7 in a clockwise direction beginning with the upper
+left-hand node. For example, $k - 2$ corresponds to the direction
+between elevation point $i, j$ and point $i + 1, j - 1$. Local
+hydraulic gradients are approximated by local water table
+slopes. On steep slopes with thin, permeable soils, hydraulic
+gradients may be approximated by local ground surface slopes.
+
+The rate of saturated subsurface flow at time $t$ from cell $i, j$
+to its down-gradient neighbors may be calculated under Dupuit-
+Forchheimer assumptions [Freeze and Cherry, 1979] as
+
+$$
+    q_{i,j,k} = - T_{i,j,k} \cdot \tan \beta_{i,j,k} \cdot w_{i,j,k}, 
+    \beta_{i,j,k} < 0
+$$
+
+$$
+    q_{i,j,k} = 0, \beta_{i,j,k} \geqslant 0
+$$
+
+where:
+- $q_{i,j,k}$: the flow rate from cell $i,j$ in the $k$ flow direction 
+- $T_{i,j,k}$: the transmissivity at cell $i,j$ corresponding to the $k$ direction
+- $\beta_{i,j,k}$: the water table slope in the $k$ direction
+- $w_{i,j,k}$: the width of flow
+
+The power law transmissivity function may be specified as:
+
+$$
+    T_{i,j,k} = \frac{
+        K_{oi,j,k} \cdot D_{i,j}
+    }{
+        n_{i,j}
+    } \cdot
+    (
+        1 - \frac{z_{i,j}}{D_{i,j}}
+    )^{n_{i,j}}
+$$
+
+where:
+- $K_{oi,j,k}$: the saturated hydraulic conductivity at the soil surface in cell $i,j$ in the $k$ idrection
+- $D_{i,j}$: the soil thickness at cell $i,j$
+- $n_{i,j}$: the local power law exponent
+
+By substituting, yields:
+
+$$
+    q_{i,j,k} = \gamma_{i,j,k} \cdot h_{i,j}
+$$
+
+where (for $\beta_{i,j,k} < 0$):
+
+$$
+    \gamma_{i,j,k} = - \frac{
+        w_{i,j,k}K_{oi,j,k}D_{i,j}
+    }{
+        n_{i,j}
+    } \cdot \tan \beta_{i,j,k}
+$$
+
+The total saturated subsurface outflow from cell $i,j$ ($Q_{out_{i,j}}$) is calculated as:
+
+$$
+    Q_{out_{i,j}} = h_{i,j} \cdot \sum_{k=0}^7 \gamma_{i,j,k}
+$$
+
+For model application, it is more efficient to reformulate $q_{i,j,k}(t)$ as:
+
+$$
+    q_{i,j,k}(t) = F_{i,j,k}Q_{out_{i,j,k}}
+$$
+
+where:
+
+$$
+    F_{i,j,k} = \frac{
+        \gamma_{i,j,k}
+    }{
+        \sum_{k=0}^7 \gamma_{i,j,k}
+    }
+$$
+
+The total inflow to cell $i,j$ from up-gradient cells ($Q_{in_{i,j}}$) is given by:
+
+$$
+    Q_{in_{i,j}} = \sum_{k=0}^7 F_{i,j,k} \cdot Q_{out_{i,j,k}}
+$$
+
+where in this case $k$ represents the source grid cell location. 
+
+The change in $z_{i,j}$ over the time step is given by
+
+$$
+    \Delta z_{i,j} = \frac{1}{\phi_{i,j}} \cdot
+    [
+        \frac{
+            Q_{out_{i,j}} - Q_{oin_{i,j}} 
+        }{
+            A_{i,j}
+        } - R_{i,j}
+    ] \cdot \Delta t
+$$
+
+where:
+- $\phi_{i,j}$: the local effective porosity
+- $A_{i,j}$: the grid cell area (horizontal projection)
+- $R_{i,j}$: percolation from unsaturated soil zone
+
+Negative values of $z_{i,j}$ represent "exfiltration" of subsurface water to the surface, available for overland flow routing.
+
+## References:
+
+Brooks, R. H., and A. T. Corey, Hydraulic properties of porous
+media, Hydrol. Pap., 3, Colo. State Univ., Fort Collins, 1964.
+
+Freeze, R. A., and J. A. Cherry, Groundwater, Prentice-Hall, Englewood
+Cliffs, N.J., 1979.
+
+Entekhabi, D., and P.S. Eagleson, Land surface hydrology parameterization
+for atmospheric general circulation models: Inclusion
+of subgrid scale spatial variability and screening with a simple
+climate model, Rep. 325, Ralph M. Parsons Lab., 195 pp., Mass.
+Inst. of Technol., Cambridge, 1989.
+
+Wigmosta, M. S., L. W. Vail, and D. P. Lettenmaier, A distributed
+hydrology-vegetatiomn odel for complext errain, Water Resour. Res.,
+30(6), 1665-1679, 1994.
 
