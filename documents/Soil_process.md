@@ -81,7 +81,7 @@ The sorptivity (the rate at which the soil loses moisture) is calculated using t
 
 $$
     S_e = [\frac{
-        8\phi K(\theta_s) * \psi_b
+        8\phi \cdot K(\theta_s) \cdot \psi_b
     }{
         3(1+3m)(1+4m)
     }]^{1/2} \cdot
@@ -185,7 +185,7 @@ $$
     F_{i,j,k} = \frac{
         \gamma_{i,j,k}
     }{
-        \sum_{k=0}^{7} {\gamma_{i,j,k}}
+        \sum_{k=0}^{7} \gamma_{i,j,k} 
     }
 $$
 
@@ -225,11 +225,7 @@ media, Hydrol. Pap., 3, Colo. State Univ., Fort Collins, 1964.
 Freeze, R. A., and J. A. Cherry, Groundwater, Prentice-Hall, Englewood
 Cliffs, N.J., 1979.
 
-Entekhabi, D., and P.S. Eagleson, Land surface hydrology parameterization
-for atmospheric general circulation models: Inclusion
-of subgrid scale spatial variability and screening with a simple
-climate model, Rep. 325, Ralph M. Parsons Lab., 195 pp., Mass.
-Inst. of Technol., Cambridge, 1989.
+Entekhabi, D., and P.S. Eagleson, Land surface hydrology parameterization for atmospheric general circulation models: Inclusion of subgrid scale spatial variability and screening with a simple climate model, Rep. 325, Ralph M. Parsons Lab., 195 pp., Mass. Inst. of Technol., Cambridge, 1989.
 
 Wigmosta, M. S., L. W. Vail, and D. P. Lettenmaier, A distributed
 hydrology-vegetatiomn odel for complext errain, Water Resour. Res.,
