@@ -114,6 +114,8 @@ hydraulic gradients are approximated by local water table
 slopes. On steep slopes with thin, permeable soils, hydraulic
 gradients may be approximated by local ground surface slopes.
 
+![Schematic saturated subsurface flow](./Schematic_Saturated_Water_Movement.png)
+
 The rate of saturated subsurface flow at time $t$ from cell $i, j$
 to its down-gradient neighbors may be calculated under Dupuit-
 Forchheimer assumptions [Freeze and Cherry, 1979] as
@@ -165,6 +167,10 @@ $$
     }{
         n_{i,j}
     } \cdot \tan \beta_{i,j,k}
+$$
+
+$$
+    h_{i,j} = (1 - \frac{z_{i,j}}{D_{i,j}})^{n_{i,j}}
 $$
 
 The total saturated subsurface outflow from cell $i,j$ ($Q_{out_{i,j}}$) is calculated as:
