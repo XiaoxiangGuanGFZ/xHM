@@ -182,7 +182,7 @@ $$
 For model application, it is more efficient to reformulate $q_{i,j,k}(t)$ as:
 
 $$
-    q_{i,j,k}(t) = F_{i,j,k}Q_{out_{i,j,k}}
+    q_{i,j,k}(t) = F_{i,j,k}Q_{out_{i,j}}
 $$
 
 where:
@@ -198,7 +198,7 @@ $$
 The total inflow to cell $i,j$ from up-gradient cells ($Q_{in_{i,j}}$) is given by:
 
 $$
-    Q_{in_{i,j}} = \sum_{k=0}^7 F_{i,j,k} \cdot Q_{out_{i,j,k}}
+    Q_{in_{i,j}} = \sum_{k=0}^7 F_{k} \cdot Q_{out_{k}}
 $$
 
 where in this case $k$ represents the source grid cell location. 
@@ -220,6 +220,8 @@ where:
 - $\phi_{i,j}$: the local effective porosity
 - $A_{i,j}$: the grid cell area (horizontal projection)
 - $R_{i,j}$: percolation from unsaturated soil zone
+
+*Note: Effective porosity is that portion of the total void space of a porous material that is capable of transmitting a fluid. Total porosity is the ratio of the total void volume to the total bulk volume.*
 
 Negative values of $z_{i,j}$ represent "exfiltration" of subsurface water to the surface, available for overland flow routing.
 
