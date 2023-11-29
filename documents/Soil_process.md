@@ -38,14 +38,14 @@ where:
 - $P_1$ and $P_2$: downward volumes of water discharged from the upper and lower soil zones over the time step, respectively, [m]
 
 ### 2.1 Percolation
-The discharge volumes $P_1$ and $P_2$ are based on average soil moisture conditions during the time step, $\Delta_t$. Discharge is calculated via Darcy's law assuming a unit hydraulic gradient:
+The discharge volumes $P_1$ and $P_2$ are based on average soil moisture conditions during the time step, $\Delta t$. Discharge is calculated via Darcy's law assuming a unit hydraulic gradient:
 
 $$
     p_j = K_\upsilon(\theta_j)
 $$
 
 where:
-$K_\upsilon(\theta_j)$ is the soil vertical unsaturated hydraulic conductivity and $J$ equals 1 for the upper layer and 2 for the lower layer.
+$K_\upsilon(\theta_j)$ is the soil vertical unsaturated hydraulic conductivity and $j$ equals 1 for the upper layer and 2 for the lower layer.
 
 The Brooks-Corey [Brooks and Corey, 1964]
 equation is used to calculate hydraulic conductivity:
