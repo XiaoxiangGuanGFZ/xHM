@@ -99,7 +99,7 @@ where:
 
 ## 3. Saturation subsurface flow
 
-Wigmostae t al. [1994] describe an explicit grid cell by grid
+Wigmosta et al. [1994] describe an explicit grid cell by grid
 cell approach to route saturated subsurface flow. The theory
 and computational scheme are developed for point elevation
 data on an orthogonal grid. Grid cells are centered
