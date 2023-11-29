@@ -188,11 +188,7 @@ $$
 where:
 
 $$
-    F_{i,j,k} = \frac{
-        \gamma_{i,j,k}
-    }{
-        \sum_{k=0}^{7} \gamma_{i,j,k} 
-    }
+    F_{i,j,k} = \gamma_{i,j,k} / \sum_{k=0}^{7} \gamma_{i,j,k} 
 $$
 
 The total inflow to cell $i,j$ from up-gradient cells ($Q_{in_{i,j}}$) is given by:
