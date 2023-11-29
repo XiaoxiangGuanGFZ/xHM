@@ -9,7 +9,7 @@
  * DESCRIPTION:  Calculate unsaturated soil zone percolation
  * DESCRIP-END.
  * FUNCTIONS:    
- * 
+ *               Percolation(); Soil_Hydro_Conductivity()
  * COMMENTS:
  * two-layer soil conceptualization: upper layer and lower layer.
  * 
@@ -17,7 +17,7 @@
  */
 
 
-/********************************
+/******************************************************************************
  * VARIABLEs:
  * double Soil_Moisture          - moisture (water content) in the soil layer
  * double Percolation_in         - water content percolated into this soil layer
@@ -37,7 +37,7 @@
  *      Pap., 3, Colo. State Univ., Fort Collins, 1964.
  * 
  * 
-*/
+******************************************************************************/
 
 #include <math.h>
 #include "Soil_Percolation.h"
@@ -65,7 +65,7 @@ double Percolation(
         Soil_Porosity, Soil_Residual, 
         Soil_Conduct_Sat, Soil_PoreSize_index
     );
-    Percolation_out = 0.5* (Soil_Conduct_end + Soil_Conduct) * (double) step_time;
+    Percolation_out = 0.5 * (Soil_Conduct_end + Soil_Conduct) * (double) step_time;
 
     return Percolation_out;
 }
