@@ -4,6 +4,7 @@
 ## 1. Infiltration
 ### 1.1 Water-input rate less than saturated hydraulic conductivity
 If the water inut rate is less than the saturated hydraulic conductivity ($w < K_\upsilon$), the infiltration rate equals the water input rate within the time step:
+
 $$
     f(t) = w
 $$
