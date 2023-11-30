@@ -46,7 +46,7 @@ $$
         \ln[1 + \frac{
             w \cdot T_p
         }{
-            |Psi_f| \cdot (\psi - \theta)
+            |\Psi_f| \cdot (\psi - \theta)
         }]
 $$
 
@@ -66,7 +66,8 @@ $$
     t_e \equiv t - T_p + T_c, 0 \leq t
 $$
 
-The complete explicit solution is an infinite series giving the infiltration rate ($f(t_e)$) as a function of the effective time, $t_e$, and the characteristic time $T^*$. However, retaining the first four terms gives sufficient accuracy for most purposes:
+The complete explicit solution is an infinite series giving the infiltration rate $f(t_e)$ as a function of the effective time, $t_e$, and the characteristic time $T^*$. However, retaining the first four terms gives sufficient accuracy for most purposes:
+
 
 $$
     f(t_e) = K_\upsilon \cdot [
@@ -76,7 +77,9 @@ $$
     ]
 $$
 
+
 the cumulative infiltration $F(t_e)$ is then found by integrating:
+
 
 $$
     F(t_e) = K_\upsilon \cdot \{ 
