@@ -35,7 +35,10 @@ $$
 where:
 - $\phi$: soil porosity
 - $\theta$: soil water content (moisture)
-- $\Psi_f$: effective tension at the wetting front, estimated by $|\Psi_f| = \frac{2 \cdot b + 3}{2 \cdot b + 6} |\Psi_{ae}|$, [Rawls et al., 1992]
+- $\Psi_f$: effective tension at the wetting front, estimated by using the Brooks-Corey [1964] formula and soil prameters: $|\Psi_f| = \frac{2 \cdot b + 3}{2 \cdot b + 6} |\Psi_{ae}|$
+- $b$: parameter that depends on the pore size distribution
+- $|\Psi_{ae}|$: air-entry pressure head, [m]
+
 
 2). a compression time $T_c$:
 
@@ -311,17 +314,47 @@ where:
 
 Negative values of $z_{i,j}$ represent "exfiltration" of subsurface water to the surface, available for overland flow routing.
 
+## 4. Some soil parameters
+
+Brooks-Corey parameters for various soil texture based on analysis of 1845 soils [Clapp and Hornberger, 1978]
+
+| Soil texture | $\phi$ | $K_\upsilon$ (cm/s) | $\|\Psi_{ae} \|$ (cm) | $b$ |
+| :----------- | :----: | :------------: | :-------------: | :---: |
+|Sand|0.395 (0.056)|1.76×10–2|12.1 (14.3)|4.05 (1.78) |
+|Loamy sand|0.410 (0.068)|1.56×10–2|9.0 (12.4)|4.38 (1.47) |
+|Sandy loam|0.435 (0.086)|3.47×10–3|21.8 (31.0)|4.90 (1.75) |
+|Silt loam|0.485 (0.059)|7.20×10–4|78.6 (51.2)|5.30 (1.96) |
+|Loam|0.451 (0.078)|6.95×10–4|47.8 (51.2)|5.39 (1.87) |
+|Sandy clay loam|0.420 (0.059)|6.30×10–4|29.9 (37.8)|7.12 (2.43)|
+|Silty clay loam|0.477 (0.057)|1.70×10–4|35.6 (37.8)|7.75 (2.77)|
+|Clay loam|0.476 (0.053)|2.45×10–4|63.0 (51.0)|8.52 (3.44)|
+|Sandy clay|0.426 (0.057)|2.17×10–4|15.3 (17.3)|10.4 (1.64)|
+|Silty clay|0.492 (0.064)|1.03×10–4|49.0 (62.1)|10.4 (4.45)|
+|Clay|0.482 (0.050)|1.28×10–4|40.5 (39.7)|11.4 (3.70)|
+
+values in parentheses are standard deviations. 
+
+
+
 ## References:
 
 Brooks, R. H., and A. T. Corey, Hydraulic properties of porous
-media, Hydrol. Pap., 3, Colo. State Univ., Fort Collins, 1964.
+media, Hydrol. Pap., 3, Colorado State University, Fort Collins, 1964.
+
+Clapp, R. B., and G. M. Hornberger (1978).
+Empirical equations for some soil
+hydraulic properties. Water Resources
+Research 14:601–604.
+
+Entekhabi, D., and P.S. Eagleson, Land surface hydrology parameterization for atmospheric general circulation models: Inclusion of subgrid scale spatial variability and screening with a simple climate model, Rep. 325, Ralph M. Parsons Lab., 195 pp., Mass. Inst. of Technol., Cambridge, 1989.
 
 Freeze, R. A., and J. A. Cherry, Groundwater, Prentice-Hall, Englewood
 Cliffs, N.J., 1979.
 
-Entekhabi, D., and P.S. Eagleson, Land surface hydrology parameterization for atmospheric general circulation models: Inclusion of subgrid scale spatial variability and screening with a simple climate model, Rep. 325, Ralph M. Parsons Lab., 195 pp., Mass. Inst. of Technol., Cambridge, 1989.
+Salvucci, G.D. and Entekhabi, D.  1994.  Explicit expressions for Green-Ampt (delta function diffusivity) infiltration rate and cumulative storage. Water Resources Research, 30(9), 2661-2663. doi: https://doi.org/10.1029/94WR01494.
 
 Wigmosta, M. S., L. W. Vail, and D. P. Lettenmaier, A distributed
 hydrology-vegetatiomn odel for complext errain, Water Resour. Res.,
 30(6), 1665-1679, 1994.
+
 
