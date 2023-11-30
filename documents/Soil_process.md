@@ -2,6 +2,92 @@
 # Soil processes
 
 ## 1. Infiltration
+### 1.1 Water-input rate less than saturated hydraulic conductivity
+If the water inut rate is less than the saturated hydraulic conductivity ($w < K_\upsilon$), the infiltration rate equals the water input rate within the time step:
+$$
+    f(t) = w
+$$
+
+$$
+    F(t) = w \cdot t
+$$
+
+where: 
+- $w$: the water input (rainfall, throughfall, and snowmelt) rate at the surface of soil, [m/h]
+- $K_\upsilon$: saturated hydraulic conductivity, [m/h]
+- $f(t)$: infiltration rate, [m/h]. Under this condition, $f(t)$ is invariant to time $t$ ([0, time step]).
+- $F(t)$: cumulative infiltration, [m]
+
+### 1.2 Water-input rate greater than saturated hydraulic conductivity
+An explicit Green-Ampt method proposed by Salvucci and Entekhabi [1994] is applied to estimate the infiltration when the water input rate is larger than saturated hydraulic conductivity ($w > K_\upsilon$). This approach requires computation of three time parameters. 
+
+1). a characteristic time $T^*$, which depends on soil type and the initial water content:
+
+$$
+    T^* \equiv \frac{
+        |\Psi_f| \cdot (\phi - \theta)
+    }{
+        K_\upsilon
+    }
+$$
+
+where:
+- $\phi$: soil porosity
+- $\theta$: soil water content (moisture)
+- $\Psi_f$: effective tension at the wetting front, estimated by $|\Psi_f| = \frac{2 \cdot b + 3}{2 \cdot b + 6} |\Psi_{ae}|$, [Rawls et al., 1992]
+
+2). a compression time $T_c$:
+
+$$
+    T_c \equiv \frac{w \cdot T_p}{K_\upsilon} - 
+        \frac{
+            |\Psi_f| \cdot (\phi-\theta)
+        }{K_\upsilon} \cdot
+        \ln[1 + \frac{
+            w \cdot T_p
+        }{
+            |Psi_f| \cdot (\psi - \theta)
+        }]
+$$
+
+where $T_p$ is the time of ponding, estimated by 
+
+$$
+    T_p = \frac{
+        K_\upsilon \cdot |\Psi_f| \cdot (\psi - \theta)
+    }{
+        w \cdot (w - K_h)
+    }
+$$
+
+3). An effective time, $t_e$, defined as:
+
+$$
+    t_e \equiv t - T_p + T_c, 0 \leq t
+$$
+
+The complete explicit solution is an infinite series giving the infiltration rate ($f(t_e)$) as a function of the effective time, $t_e$, and the characteristic time $T^*$. However, retaining the first four terms gives sufficient accuracy for most purposes:
+
+$$
+    f(t_e) = K_\upsilon \cdot [
+        0.707 \cdot (\frac{t_e + T^*}{t_e})^{1/2} + 0.667 - 
+        0.236 \cdot (\frac{t_e}{t_e + T^*})^{1/2} - 
+        0.138 \cdot (\frac{t_e}{t_e + T^*})
+    ]
+$$
+
+the cumulative infiltration $F(t_e)$ is then found by integrating:
+
+$$
+    F(t_e) = K_\upsilon \cdot \{ 
+        0.529 \cdot t_e + 0.471 \cdot (T^* \cdot t_e + t_e^2) ^{1/2} + 
+        0.138 \cdot T^* \cdot [\ln(t_e + T^*) - \ln(T^*)] + 
+        0.471 \cdot T^* \cdot \{ 
+            \ln[t_e + T^* / 2 + (T^* \cdot t_e + t_e^2)^{1/2}] - 
+            \ln(T^* / 2)
+            \} 
+        \}
+$$
 
 
 
@@ -10,7 +96,7 @@ The dynamics of unsaturated moisture movement are simulated
 using a two-layer model. The thickness of the upper
 zone ($d_1$) is equal to the average rooting depth of the
 understory vegetation. The lower zone extends
-from $d_1$ to the averageo verstory rooting depth. The understory
+from $d_1$ to the average overstory rooting depth. The understory
 can only extract water from the upper zone, while the
 overstory can remove water from both zones. Overstory
 transpiration from each soil zone is calculated using(7), then
@@ -18,7 +104,7 @@ multiplied by the overstory root fraction in that zone. Soil
 evaporation is restricted to the upper zone.
 
 
-The massb alancefo r theu ppera ndl owerz onesis given by
+The mass balance for the upper and lower zones is given by
 
 $$
     d_1(\theta_1^{t + \Delta t} - \theta_1^t) = P_0 - P_1(\theta_1) - E_{to} - E_{tu} - E_s + V_{sat} - V_r
