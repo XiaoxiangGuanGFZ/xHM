@@ -138,7 +138,7 @@ is given by:
 
 
 $$
-    u(t)=0,t<T_s
+    u(t) = 0, t < T_s
 $$
 
 
@@ -150,7 +150,7 @@ The corresponding unit pulse response function $h(t)$ for an input of duration $
 
 
 $$
-    h(t)=0, t<T_s
+    h(t) = 0, t < T_s
 $$
 
 
