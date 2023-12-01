@@ -136,9 +136,11 @@ $$
 It is assumed here that the value of $\beta$ is the same for all cells in the watershed. The impulse response function for a lagged linear reservoir
 is given by:
 
+
 $$
     u(t)=0, t<T_s
 $$
+
 
 $$
     u(t)=\frac{1}{T_r} \exp(1-\frac{t-T_s}{T_r}), t \geqslant T_s
@@ -146,9 +148,11 @@ $$
 
 The corresponding unit pulse response function $h(t)$ for an input of duration $\Delta t$ is given by:
 
+
 $$
-    (t)=0, t<T_s
+    h(t)=0, t<T_s
 $$
+
 
 $$
     h(t) = \frac{1}{\Delta t} [1 - \exp(
@@ -156,12 +160,14 @@ $$
     )], T_s \leqslant t \leqslant T_s + \Delta t
 $$
 
+
 $$
     h(t) = \frac{1}{\Delta t}
     \exp(
         - \frac{t-T_s}{T_r}
     ) [\exp(\frac{\Delta t}{T_r})-1], t > T_s + \Delta t
 $$
+
 
 where:
 - $\beta$: value range 0.5-0.6
