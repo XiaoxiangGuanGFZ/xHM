@@ -138,7 +138,7 @@ is given by:
 
 
 $$
-    u(t)=0, t<T_s
+    u(t)=0,t<T_s
 $$
 
 
