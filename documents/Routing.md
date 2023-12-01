@@ -138,7 +138,12 @@ is given by:
 
 
 $$
-    u(t)=0,t<T_s
+\begin{aligned}
+    u(t)=0,t<T_s  \\
+    
+    u(t)=\frac{1}{T_r} \exp(1-\frac{t-T_s}{T_r}), t \geqslant T_s
+
+\end{aligned}
 $$
 
 
