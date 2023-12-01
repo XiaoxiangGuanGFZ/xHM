@@ -114,7 +114,7 @@ where:
 - $\overline{V}$：average of the velocity in all cells in the watershed, a function of average slope and land cover characteristics. This can be determined by calibration or assumed 8-9m/min.
 - $\overline{s^b  A^c}$：the corresponding watershed
 average value of the slope-area term.
-- $b$, abd $c$ are coefficients determined by calibration (basically $b=c=0.5$)
+- $b$, and $c$ are coefficients determined by calibration (basically, $b=c=0.5$)
 
 It turns out to be useful to limit the velocity values to an
 acceptable range [$V_{min}$, $V_{max}$] to ensure that least a minimal velocity from areas of flat slope having little drainage area and to ensure that flow in large streams does not move with unrealistically high velocities. The upper and lower bounds of 220m/min and 1.65m/min can be used. 
@@ -167,7 +167,7 @@ where:
 - $\beta$: value range 0.5-0.6
 
 
-### 1.2 2D shallow flow
+### 1.2 2D open channel flow
 
 
 
@@ -183,7 +183,6 @@ where:
 
 
 ## 3. References
-
 
 Maidment, D.R., Olivera, F., Calver, A., Eatherall, A. and Fraczek, W.  1996.  Unit hydrograph derived from a spatially distributed velocity field. Hydrological Processes, 10(6), 831-844. doi: https://doi.org/10.1002/(SICI)1099-1085(199606)10:6<831::AID-HYP374>3.0.CO;2-N.
 
