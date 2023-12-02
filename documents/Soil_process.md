@@ -190,7 +190,7 @@ $$
 where:
 - $\psi_b$: the soil bubbling pressure
 
-## 3. Saturation subsurface flow
+## 3. Saturated subsurface flow
 
 Wigmosta et al. [1994] describe an explicit grid cell by grid
 cell approach to route saturated subsurface flow. The theory
@@ -208,6 +208,8 @@ slopes. On steep slopes with thin, permeable soils, hydraulic
 gradients may be approximated by local ground surface slopes.
 
 ![Schematic saturated subsurface flow](./Schematic_Saturated_Water_Movement.png)
+
+### 3.1 Saturated flow routing
 
 The rate of saturated subsurface flow at time $t$ from cell $i, j$
 to its down-gradient neighbors may be calculated under Dupuit-
@@ -313,6 +315,36 @@ where:
 *Note: Effective porosity is that portion of the total void space of a porous material that is capable of transmitting a fluid. Total porosity is the ratio of the total void volume to the total bulk volume.*
 
 Negative values of $z_{i,j}$ represent "exfiltration" of subsurface water to the surface, available for overland flow routing.
+
+### 3.2 Flow Interception by Stream Channels
+
+A grid cell will contribute water to a stream reach when
+the grid cell water table rises above the streambed. Subsurface flow will be intercepted by the channel at a
+rate given by:
+
+$$
+    Q_{C_{i,j}} = 2L_{C_{i,j}} \beta_{C_{i,j}} T_{i,j}(z,z_C)
+$$
+
+where:
+- $z_C$: the depth to the channel bed, [m] 
+- $L_{C_{i,j}}$: the length of the channel crossing the grid cell
+- $T_{i,j}(z,z_C)$: the transmissivity of the saturated zone above the streambed. The hydraulic gradient is approximated by:
+
+$$
+    \beta_{C_{i,j}} = \frac{
+        z_{C_{i,j}} - z_{i,j}
+    }{
+        0.5w_{C_{i,j}}
+    }
+$$
+
+where:
+- $w_{C_{i,j}}$: the width of the stream reach, [m]
+
+if surface water is available within the cell, it is contributed to the stream reach in the same time interval.
+
+
 
 ## 4. Some soil parameters
 
