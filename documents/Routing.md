@@ -179,8 +179,47 @@ where:
 
 ## 2. Channel routing
 
-### 2.1 Muskingum-Cunge
+### 2.1 Linear Storage Routing
 
+The linear storage algorithm has provided satisfactory results when applied to a large range of basin sizes and topographic characteristics.
+
+Each channel reach is treated as a reservoir of constant
+width with outflow linearly related to storage
+$V_c$:
+
+$$
+    Q = k V_c = k A \Delta L
+$$
+
+where:
+- $k$: the reach storage parameter (equal to the inverse of the average residence time), [1/h]
+- $\Delta L$: length of the channel segment, [m]
+- $A$: channel cross-sectional area, [m2]
+
+Mass balance for the reach is given by:
+
+$$
+    \frac{
+        dV_c
+    }{dt} = Q_{in} - kV_c 
+$$
+
+Then the storage of the reach at time $t + \Delta t$
+
+$$
+    V_c^{t + \Delta t} = \frac{Q_{in}}{k} + 
+    (V_c^t - \frac{Q_{in}}{k}) \cdot 
+    \exp(- k \delta t)
+$$
+
+The average outflow from the reach is given by
+
+$$
+    Q_{out} = Q_{in} - (
+        V_c^{t + \Delta t} - 
+        V_c^t
+        ) / \Delta t
+$$
 
 
 ### 2.2 Kinematic wave
