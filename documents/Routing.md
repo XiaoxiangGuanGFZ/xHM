@@ -209,7 +209,7 @@ Then the storage of the reach at time $t + \Delta t$
 $$
     V_c^{t + \Delta t} = \frac{Q_{in}}{k} + 
     (V_c^t - \frac{Q_{in}}{k}) \cdot 
-    \exp(- k \delta t)
+    \exp(- k \Delta t)
 $$
 
 The average outflow from the reach is given by
