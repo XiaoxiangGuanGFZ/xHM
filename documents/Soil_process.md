@@ -75,9 +75,9 @@ The complete explicit solution is an infinite series giving the infiltration rat
 
 $$
     f(t_e) = K_\upsilon \cdot [
-        0.707 \cdot (\frac{t_e + T^*}{t_e})^{1/2} + 0.667 - 
-        0.236 \cdot (\frac{t_e}{t_e + T^*})^{1/2} - 
-        0.138 \cdot (\frac{t_e}{t_e + T^*})
+        0.707 \cdot (\frac{t_e + T^* }{t_e})^{1/2} + 0.667 - 
+        0.236 \cdot (\frac{t_e}{t_e + T^* })^{1/2} - 
+        0.138 \cdot (\frac{t_e}{t_e + T^* })
     ]
 $$
 
