@@ -86,15 +86,15 @@ the cumulative infiltration $F(t_e)$ is then found by integrating:
 
 
 $$
-    F(t_e) = K_\upsilon \cdot \{ 
+    F(t_e) = K_\upsilon \cdot [ 
         0.529 \cdot t_e + 
         0.471 \cdot (T^* \cdot t_e + t_e^2) ^{1/2} + 
         0.138 \cdot T^* \cdot [\ln( t_e + T^* ) - \ln( T^* )] + 
-        0.471 \cdot T^* \cdot \{ 
+        0.471 \cdot T^* \cdot [ 
             \ln[t_e + T^* / 2 + (T^* \cdot t_e + t_e^2)^{1/2}] - 
             \ln(T^* / 2)
-            \} 
-        \}
+        ] 
+    ]
 $$
 
 
