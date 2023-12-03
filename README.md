@@ -1,8 +1,7 @@
 # xHM
-cross-scale hydrological model
+(cross-scale难说) hydrological model
 
 ## Main processes
-(rough idea)
 - canopy interception
 - snow accumulation and melting
 - evapotranspiration
@@ -10,7 +9,7 @@ cross-scale hydrological model
 - infiltration and surface (excess infiltration) runoff
 - deep percolation, desorption
 - subsurface (saturated) storage and saturated zone runoff 
-- slope water transfer 
+- overland routing
 - river (channel) routing
 
 ## To-Do-List
@@ -21,12 +20,15 @@ cross-scale hydrological model
 - split the functions into more independent source code files
 - give more, detailed explanation for each function,as much as possible 
 - give each source code file a signature
-- "constants.h"
 - how to describe the relationship among different source code files, put it at the beginning of each source code file ?!
 - header (& source code) files for initializing the state (hydrological processes)
 - header (& source code) files for data input 
 - header (& source code) files for look-up table 
 - 
+
+- test individual modules
+- Netcdf read and write
+
 
 
 ## Contact
