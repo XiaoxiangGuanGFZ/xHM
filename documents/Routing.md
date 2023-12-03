@@ -117,7 +117,7 @@ average value of the slope-area term.
 - $b$, and $c$ are coefficients determined by calibration (basically, $b=c=0.5$)
 
 It turns out to be useful to limit the velocity values to an
-acceptable range [$ V_{min} $, $ V_{max} $] to ensure that least a minimal velocity from areas of flat slope having little drainage area and to ensure that flow in large streams does not move with unrealistically high velocities. The upper and lower bounds of 220m/min and 1.65m/min can be used. 
+acceptable range [ $V_{min}$ , $V_{max}$ ] to ensure that least a minimal velocity from areas of flat slope having little drainage area and to ensure that flow in large streams does not move with unrealistically high velocities. The upper and lower bounds of 220m/min and 1.65m/min can be used. 
 
 #### 1.1.4 Subarea unit hydrograph (combined translation and storage model)
 
