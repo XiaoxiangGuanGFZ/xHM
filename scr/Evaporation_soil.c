@@ -14,7 +14,7 @@
  * two-layer soil conceptualization: upper layer and lower layer.
  * 
  * Evaporation from the upper soil layer is simulated in the absence of an understory, 
- * otherwise soil evaporation is ignored.
+ *  otherwise soil evaporation is ignored.
  * 
  * When wet, a soil may be able to supply water to the surface 
  *  at a rate equal to or greater than the potential evaporation 
@@ -23,6 +23,9 @@
  *  the evaporation rate is soil-controlled and is a nonlinear 
  *  function of the soil moisture content. 
  * 
+ * The soil desorption (Soil_Fe) is estimated by 
+ *      Soil_Desorption() in Soil_Desorption.c.
+ *      It is a function of soil texture and moisture
  */
 
 
@@ -31,10 +34,10 @@
 #include "Evaporation_soil.h"
 
 double ET_soil(
-    double ET_soil_pot, // potential evaporation rate, m/h
-    double Soil_Fe //  soil desorptivity, should be m/h
-){
-    // remains to be figured out
+    double ET_soil_pot, /* potential evaporation rate, m/h */ 
+    double Soil_Fe      /* soil desorptivity, should be m/h */  
+)
+{
     /****
      * Soil_Fe: 
      * the soil desorptivity, determined by the rate at 
@@ -46,4 +49,3 @@ double ET_soil(
     ET_s = min(ET_soil_pot, Soil_Fe);
     return ET_s;
 }
-
