@@ -1,6 +1,6 @@
 /*
  * SUMMARY:      Evapotranspiration.c
- * USAGE:        Calculate evapotranspiration (two layers model )
+ * USAGE:        Calculate evapotranspiration (two layers model)
  *               overstory canopy and understory 
  * AUTHOR:       Xiaoxiang Guan
  * ORG:          Section Hydrology, GFZ
@@ -14,6 +14,17 @@
  * 
  * COMMENTS:
  * 
+ *
+ * REFERENCES:
+ * Wigmosta, M.S., L. W. Vail, and D. P. Lettenmaier,
+ *      A distributed hydrologyvegetation model
+ *      for complex terrain, Water Resources Research, 30 (6), 1665-1679, 1994.
+ *
+ * Dickinson, R. E., A. Henderson-Sellers, and P. J. Kennedy,
+ *      Biosphere-atmosphere transfer scheme (BATS) Version leas coupled to the
+ *      NCAR Community Climate Model, NCAR Technical Note, NCARITN-387+STR,
+ *      Boulder, Colorado, 1993.
+ *
  */
 
 
@@ -26,46 +37,42 @@ double PotentialEvaporation(
     double Air_tem_avg, /*scalar: average air tempeature (℃)*/
     double Air_tem_min, /*scalar: minimum air temperature (℃)*/
     double Air_tem_max, /*scalar: maximum air temperature (℃)*/
-    double Air_pres,  // air pressure, kPa
-    double Air_rhu,   // relative humidity, %
-    double Radia_net, // the net radiation flux density, kJ/h/m2
-    double Resist_aero 
+    double Air_pres,    /* air pressure, kPa */ 
+    double Air_rhu,     /* relative humidity, % */ 
+    double Radia_net,   /* the net radiation flux density, kJ/h/m2 */ 
+    double Resist_aero
     /***
-     * Resist_aero: the aerodynamic resistance to vapor transport 
+     * Resist_aero: the aerodynamic resistance to vapor transport
      * between the overstory and the reference height, with the unit of h/m
-    */
-){
+     */
+)
+{
     /******
      * calculate the potential evaporation rate [m/h], following (Wigmosta et al., 1994)
      * this is the maximum water that can be evaporated and absorbed by the atmosphre,
      * under the weather conditions. The estimated real evaporation and transpiration 
      * are restricted under the potential evaporation.
      * 
-     * 
     */
     double delta;  // the slope of saturation vapor pressure curve (kPa/℃)
     double es, ea; // saturated, and actual vapor pressure (kPa)
     
-    double gamma;  // // psychrometric constant, kPa/℃
+    double gamma;  // psychrometric constant, kPa/℃
     double ET;
 
-    es = 0.5 * (e0(Air_tem_max) + e0(Air_tem_min)); 
-    ea = Air_rhu * es / 100; 
+    es = 0.5 * (e0(Air_tem_max) + e0(Air_tem_min));
+    ea = Air_rhu * es / 100;
 
     delta = VaporPresSlope(
-        Air_tem_avg, Air_tem_min, Air_tem_max
-    ); 
+        Air_tem_avg, Air_tem_min, Air_tem_max);
     gamma = Const_psychrometric(Air_pres);
 
-    ET = (
-        delta * Radia_net + 
-        Density_air * SpecificHeat_air * (es - ea) / Resist_aero
-    ) / (lambda_v * (delta + gamma));
+    ET = (delta * Radia_net +
+          Density_air * SpecificHeat_air * (es - ea) / Resist_aero) /
+         (lambda_v * (delta + gamma));
 
     return ET;
 }
-
-
 
 double Transpiration(
     double Evapoation_pot, /* appropriate potential evaporation, [m/h] */ 
@@ -91,15 +98,12 @@ double Transpiration(
     double delta;  // the slope of saturation vapor pressure curve (kPa/℃)
     double gamma;  // psychrometric constant, kPa/℃
     delta = VaporPresSlope(
-        Air_tem_avg, Air_tem_min, Air_tem_max
-    ); 
+        Air_tem_avg, Air_tem_min, Air_tem_max);
     gamma = Const_psychrometric(Air_pres);
 
-    Transpiration = Evapoation_pot * 
-        (delta + gamma) / (
-            delta + gamma * (1 + Resist_canopy / Resist_aero)
-        );
-    
+    Transpiration = Evapoation_pot *
+                    (delta + gamma) / (delta + gamma * (1 + Resist_canopy / Resist_aero));
+
     return Transpiration;
 }
 
@@ -198,7 +202,7 @@ void ET_story(
     double Resist_aero,       /* aerodynamic resistance, h/m */
     double LAI,
     double Frac_canopy,       /* canopy fraction */
-    int step_time // hours
+    int step_time             /* time interval, time step; hours*/ 
 
 ){
     /***********************
@@ -281,9 +285,9 @@ void ET_iteration(
     double Air_tem_avg, /*scalar: average air tempeature (℃)*/
     double Air_tem_min, /*scalar: minimum air temperature (℃)*/
     double Air_tem_max, /*scalar: maximum air temperature (℃)*/
-    double Air_pres,    // air pressure, kPa
-    double Air_rhu,     // relative humidity, %
-    double Radia_net,   // the net radiation flux density, kJ/h/m2
+    double Air_pres,    /* air pressure, kPa */ 
+    double Air_rhu,     /* relative humidity, % */ 
+    double Radia_net,   /* the net radiation flux density, kJ/h/m2 */ 
     
     double Prec,                /* precipitation (total) within the time step, m */
     double *Prec_throughfall,   /* precipitation throughfall from overstory*/
@@ -383,21 +387,10 @@ void ET_iteration(
         *ET_u = 0.0;
         *Interception_u = 0.0;
         *Prec_net = *Prec_throughfall - *ET_s;
-        if (*Prec_net < 0.0) {*Prec_net = 0.0;}
-
+        if (*Prec_net < 0.0)
+        {
+            *Prec_net = 0.0;
+        }
     }
 }
 
-/****** Reference:
- *
- * Reference:
- * Wigmosta, M.S., L. W. Vail, and D. P. Lettenmaier,
- *      A distributed hydrologyvegetation model
- *      for complex terrain, Water Resources Research, 30 (6), 1665-1679, 1994.
- *
- * Dickinson, R. E., A. Henderson-Sellers, and P. J. Kennedy,
- *      Biosphere-atmosphere transfer scheme (BATS) Version leas coupled to the
- *      NCAR Community Climate Model, NCAR Technical Note, NCARITN-387+STR,
- *      Boulder, Colorado, 1993.
- *
- */
