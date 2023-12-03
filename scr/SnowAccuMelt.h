@@ -5,36 +5,36 @@ SnowAccuMelt.c
 main process in snow accumulation and melting
 */
 void Partition_RainSnow(
-    double *Prec,    // precipitation, [depth unit],
-    double *Tem_air, // air temperature, [celsius degree]
+    double *Prec,      // precipitation, [depth unit],
+    double *Tem_air,   // air temperature, [celsius degree]
     double *Prec_rain, // rainfall, [depth unit]
-    double *Prec_snow // snowfall, [depth unit]
+    double *Prec_snow  // snowfall, [depth unit]
 );
 
 void SnowAlbedo(
-    double *Albedo,  // the albedo of snow (under specific season)
-    double t,  // the time since the last snowfall (in hours)
-    int stage  // season indicator (1: snow accumulation season) 
+    double *Albedo, // the albedo of snow (under specific season)
+    double t,       // the time since the last snowfall (in hours)
+    int stage       // season indicator (1: snow accumulation season)
 );
 
 void SnowDensity(
-    double *Density_snow,  // snow density, kg/m3
+    double *Density_snow, // snow density, kg/m3
     // double *Depth_snow,  // the depth of snowpack, [m]
-    double Tem_snow,   // temperature of snow surface, [celsius degree]
-    double Density_BulkWater, //the bulk density of the liquid water in the snowpack.
-    double Wns,   //  amounts of newly fallen snow (in water equivalent units, m)
-    double Ws,    // amounts of snow on the ground (in water equivalent units, m)
-    double time_interval // time interval / time step, hours
+    double Tem_snow,          // temperature of snow surface, [celsius degree]
+    double Density_BulkWater, // the bulk density of the liquid water in the snowpack.
+    double Wns,               //  amounts of newly fallen snow (in water equivalent units, m)
+    double Ws,                // amounts of snow on the ground (in water equivalent units, m)
+    double time_interval      // time interval / time step, hours
 );
 
 double SNOW_depth(
-    double SNOW_DENSITY,    // snowpack density, kg/m3
-    double W        // snowpack water equivalent, m
+    double SNOW_DENSITY, // snowpack density, kg/m3
+    double W             // snowpack water equivalent, m
 );
 
 double CanopySnowCapacity(
-    double Tem_air,  // ambient air temperature, degree Celsius
-    double LAI       // single-sided leaf-area-index of canopy
+    double Tem_air, // ambient air temperature, degree Celsius
+    double LAI      // single-sided leaf-area-index of canopy
 );
 
 void SnowMassBalance(
