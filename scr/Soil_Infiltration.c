@@ -1,12 +1,12 @@
 
 /*
- * SUMMARY:      Soil_Percolation.c
- * USAGE:        Calculate the percolation in unsaturated soil zone
+ * SUMMARY:      Soil_Infiltration.c
+ * USAGE:        Calculate the infiltration
  * AUTHOR:       Xiaoxiang Guan
  * ORG:          Section Hydrology, GFZ
  * E-MAIL:       guan@gfz-potsdam.de
  * ORIG-DATE:    Nov-2023
- * DESCRIPTION:  Calculate unsaturated soil zone percolation
+ * DESCRIPTION:  Calculate the infiltration from ground surface into soil
  * DESCRIP-END.
  * FUNCTIONS:    
  * 
@@ -15,3 +15,7 @@
  * 
  * 
  */
+
+#include <math.h>
+#include "Soil_Infiltration.h"
+
