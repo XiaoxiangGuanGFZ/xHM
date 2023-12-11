@@ -24,11 +24,9 @@
 - header (& source code) files for initializing the state (hydrological processes)
 - header (& source code) files for data input 
 - header (& source code) files for look-up table 
-- 
-
 - test individual modules
 - Netcdf read and write
-
+- watershed delineation (DEM fill, flow direction, flow accumulation, riverlinks, subbasins)
 
 
 ## Contact
