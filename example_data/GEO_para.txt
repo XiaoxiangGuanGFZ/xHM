@@ -1,0 +1,11 @@
+FP_DEM,D:/xHM/example_data/dem_fill.txt
+FP_FDR,D:/xHM/example_data/fdr.txt
+FP_FAC,D:/xHM/example_data/fac.txt
+FP_STR,D:/xHM/example_data/str.txt
+FP_OUTLET,D:/xHM/example_data/outlets.txt
+FP_GEONC,D:/xHM/example_data/GEO_data.nc
+Projection,GEOGRAPHIC
+Datum,WGS84
+Spheroid,WGS84
+Units,DD
+Zunits,NO
