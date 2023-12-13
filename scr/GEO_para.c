@@ -1,5 +1,25 @@
+/*
+ * SUMMARY:      GEO_para.c
+ * USAGE:        read the parameter file for GEO program
+ * AUTHOR:       Xiaoxiang Guan
+ * ORG:          Section Hydrology, GFZ
+ * E-MAIL:       guan@gfz-potsdam.de
+ * ORIG-DATE:    Dec-2023
+ * DESCRIPTION:  
+ * DESCRIP-END.
+ * FUNCTIONS:    Import_para(); Para_check()
+ * 
+ * COMMENTS:
+ * 
+ *
+ */
 
-
+/*************************************************************
+ * VARIABLEs:
+ * char FP[]                - file path and name the parameter file
+ * ST_GEO2NC_Para *gp       - point to a parameter structure
+ * 
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

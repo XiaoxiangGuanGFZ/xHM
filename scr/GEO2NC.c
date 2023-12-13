@@ -5,10 +5,9 @@
  * ORG:          Section Hydrology, GFZ
  * E-MAIL:       guan@gfz-potsdam.de
  * ORIG-DATE:    Dec-2023
- * DESCRIPTION:  
+ * DESCRIPTION:  read geodata from ASCII files and store into NetCDF format
  * DESCRIP-END.
  * FUNCTIONS:    Import_data(); Import_raster(); Header_read(); 
- *               handle_error();
  * 
  * COMMENTS:
  * 

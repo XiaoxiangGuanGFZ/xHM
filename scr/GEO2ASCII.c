@@ -7,13 +7,30 @@
  * ORIG-DATE:    Dec-2023
  * DESCRIPTION:  
  * DESCRIP-END.
- * FUNCTIONS:    
+ * FUNCTIONS:    Export_raster();Export_header();Export_GEO_data()
  * 
  * COMMENTS:
- * 
+ *  1. this module is aimed to read the data from NetCDF format file and 
+ *     transfer and store in the ASCII text files
+ *  2. The variable names in the NetCDF file could be DEM
+ *     FDR, FAC, STR, OUTLET
+ *  3. This module is actually optional, 
+ *     aimed to help check the GEO2NC.c module.
  *
  */
 
+/*************************************************************
+ * VARIABLEs:
+ * int *rdata              - point to the data to be stored into ASCII file
+ * FILE *fp_geo            - point to the (ASCII) file
+ * int ncols               - number of cell columns of the raster/gridded (2D) data
+ * int nrows               - number of cell rows of the raster/gridded (2D) data
+ * ST_Header HD            - structure for the ASCII header
+ * char FP[]               - ASCII file name 
+ * int ncID                - NetCDF file ID
+ * char varNAME[]          - variable name in the NetCDF file
+ * int varID               - variable ID
+*/
 
 
 #include <stdio.h>
@@ -31,6 +48,10 @@ void Export_raster(
     int nrows
 )
 {
+    /************************
+     * write the raster/gridded data in to ASCII text file
+     * rdata locates the first value of a sequence data
+    */
     int i, j;
     for (i = 0; i < nrows; i++)
     {
@@ -49,6 +70,9 @@ void Export_header(
     ST_Header HD
 )
 {
+    /*******************************
+     * write the header info into text file
+    */
     fprintf(fp_geo, "%-14s%d\n", "ncols", HD.ncols);
     fprintf(fp_geo, "%-14s%d\n", "nrows", HD.nrows);
     fprintf(fp_geo, "%-14s%-.12f\n", "xllcorner", HD.xllcorner);
@@ -64,6 +88,11 @@ void Export_GEO_data(
     char FP[]
 )
 {
+    /**************************************
+     * write variable from a NetCDF file into 
+     * independent ASCII text file, including
+     * both header and data part
+    */
     int varID;
     int *rdata;
     nc_inq_varid(ncID, varNAME, &varID);
