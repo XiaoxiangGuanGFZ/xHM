@@ -6,6 +6,7 @@
 #include "GEO_ST.h"
 #include "GEO2NC.h"
 #include "GEO_para.h"
+#include "GEO2ASCII.h"
 
 void handle_error(int status);
 
@@ -33,7 +34,7 @@ int main(int argc, char * argv[])
     Para_check(&GP);
     if (GP.FP_GEONC[0] == '\0')
     {
-        printf("Field FP_GEONC parameter file is empty! Program failed\n");
+        printf("Field FP_GEONC in parameter file is empty! Program failed\n");
         exit(0);
     }
     
@@ -109,8 +110,7 @@ int main(int argc, char * argv[])
         int old_fill_mode;
 
         IO_status = nc_create(GP.FP_GEONC, NC_CLOBBER, &ncID);
-        if (IO_status != NC_NOERR)
-            handle_error(IO_status);
+        handle_error(IO_status);
         /**** define mode ****/ 
         nc_set_fill(ncID, NC_FILL, &old_fill_mode);
         nc_def_dim(ncID, "lon", HD_dem.ncols, &dimID_lon);
@@ -146,12 +146,12 @@ int main(int argc, char * argv[])
         // DEM 
         nc_put_att_text(ncID, varID_dem, "long_name", 40L, "Digital Elevation Model");
         nc_put_att_text(ncID, varID_dem, "units", 40L, "meters");
-        nc_put_att_int(ncID, varID_dem, "missing_value", NC_INT, 1, &HD_dem.NODATA_value);
+        nc_put_att_int(ncID, varID_dem, "NODATA_value", NC_INT, 1, &HD_dem.NODATA_value);
 
         // flow direction: fdr
         nc_put_att_text(ncID, varID_fdr, "long_name", 40L, "flow direction");
         nc_put_att_text(ncID, varID_fdr, "units", 40L, "NULL");
-        nc_put_att_int(ncID, varID_fdr, "missing_value", NC_INT, 1, &HD_dem.NODATA_value);
+        nc_put_att_int(ncID, varID_fdr, "NODATA_value", NC_INT, 1, &HD_dem.NODATA_value);
         nc_put_att_int(ncID, varID_fdr, "valid_range", NC_INT, 8, fdr_ranges);
         nc_put_att_text(ncID, varID_fdr, "description", 200L, \
             "D8 direction type: 1(East/Right); 2(SouthEast/LowerRight); 4(South/Down); 8(SouthWest/Lowerleft); 16(West/Left); 32(NorthWest/UpperLeft); 64(North/Up); 128(NorthEst/UpperRight)");
@@ -159,17 +159,17 @@ int main(int argc, char * argv[])
         // flow accumulation: fac
         nc_put_att_text(ncID, varID_fac, "long_name", 40L, "flow accumulation");
         nc_put_att_text(ncID, varID_fac, "units", 40L, "number of cells");
-        nc_put_att_int(ncID, varID_fac, "missing_value", NC_INT, 1, &HD_dem.NODATA_value);
+        nc_put_att_int(ncID, varID_fac, "NODATA_value", NC_INT, 1, &HD_dem.NODATA_value);
 
         // stream: str
         nc_put_att_text(ncID, varID_str, "long_name", 40L, "stream");
-        nc_put_att_int(ncID, varID_str, "missing_value", NC_INT, 1, &HD_dem.NODATA_value);
+        nc_put_att_int(ncID, varID_str, "NODATA_value", NC_INT, 1, &HD_dem.NODATA_value);
         nc_put_att_int(ncID, varID_str, "valid_range", NC_INT, 1, (int[]){1});
         nc_put_att_text(ncID, varID_str, "description", 40L, "1: this cell is the stream");
 
         // outlet
         nc_put_att_text(ncID, varID_outlet, "long_name", 40L, "outlet of watersheds");
-        nc_put_att_int(ncID, varID_outlet, "missing_value", NC_INT, 1, &HD_dem.NODATA_value);
+        nc_put_att_int(ncID, varID_outlet, "NODATA_value", NC_INT, 1, &HD_dem.NODATA_value);
         nc_put_att_int(ncID, varID_outlet, "valid_range", NC_INT, 1, (int[]){1});
         nc_put_att_text(ncID, varID_outlet, "description", 40L, "1: this cell is an outlet");
 
@@ -213,7 +213,32 @@ int main(int argc, char * argv[])
         /****************************************************
          * NetCDF to ASCII
         */
-           
+        int ncID;
+        int status_nc;
+        
+        status_nc = nc_open(GP.FP_GEONC, NC_NOWRITE, &ncID);
+        handle_error(status_nc);
+
+        /****** attributes ******/
+        ST_Header HD;
+        // int ncols,nrows;
+        // double xllcorner, yllcorner, cellsize;
+        nc_get_att_int(ncID, NC_GLOBAL, "ncols", &HD.ncols);
+        nc_get_att_int(ncID, NC_GLOBAL, "nrows", &HD.nrows);
+        nc_get_att_double(ncID, NC_GLOBAL, "xllcorner", &HD.xllcorner);
+        nc_get_att_double(ncID, NC_GLOBAL, "yllcorner", &HD.yllcorner);
+        nc_get_att_double(ncID, NC_GLOBAL, "cellsize", &HD.cellsize);
+        printf("ncols: %d\nnrows: %d\nxllcorner: %.12f\nyllcorner: %.12f\ncellsize: %.12f\n",
+            HD.ncols, HD.nrows, HD.xllcorner, HD.yllcorner, HD.cellsize
+        );
+        /**** variables ***/
+        Export_GEO_data(ncID, "DEM", HD, GP.FP_DEM);
+        Export_GEO_data(ncID, "FDR", HD, GP.FP_FDR);
+        Export_GEO_data(ncID, "FAC", HD, GP.FP_FAC);
+        Export_GEO_data(ncID, "STR", HD, GP.FP_STR);
+        Export_GEO_data(ncID, "OUTLET", HD, GP.FP_OUTLET);
+        nc_close(ncID);
+
     }
     
     
