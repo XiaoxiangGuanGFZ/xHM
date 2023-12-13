@@ -128,6 +128,91 @@ snow/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\snow.dir\build.make CMakeFiles/snow.dir/build
 .PHONY : snow/fast
 
+#=============================================================================
+# Target rules for targets named GEO
+
+# Build rule for target.
+GEO: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 GEO
+.PHONY : GEO
+
+# fast build rule for target.
+GEO/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/build
+.PHONY : GEO/fast
+
+GEO2NC.obj: GEO2NC.c.obj
+.PHONY : GEO2NC.obj
+
+# target to build an object file
+GEO2NC.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/GEO2NC.c.obj
+.PHONY : GEO2NC.c.obj
+
+GEO2NC.i: GEO2NC.c.i
+.PHONY : GEO2NC.i
+
+# target to preprocess a source file
+GEO2NC.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/GEO2NC.c.i
+.PHONY : GEO2NC.c.i
+
+GEO2NC.s: GEO2NC.c.s
+.PHONY : GEO2NC.s
+
+# target to generate assembly for a file
+GEO2NC.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/GEO2NC.c.s
+.PHONY : GEO2NC.c.s
+
+GEO2NC_main.obj: GEO2NC_main.c.obj
+.PHONY : GEO2NC_main.obj
+
+# target to build an object file
+GEO2NC_main.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/GEO2NC_main.c.obj
+.PHONY : GEO2NC_main.c.obj
+
+GEO2NC_main.i: GEO2NC_main.c.i
+.PHONY : GEO2NC_main.i
+
+# target to preprocess a source file
+GEO2NC_main.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/GEO2NC_main.c.i
+.PHONY : GEO2NC_main.c.i
+
+GEO2NC_main.s: GEO2NC_main.c.s
+.PHONY : GEO2NC_main.s
+
+# target to generate assembly for a file
+GEO2NC_main.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/GEO2NC_main.c.s
+.PHONY : GEO2NC_main.c.s
+
+GEO_para.obj: GEO_para.c.obj
+.PHONY : GEO_para.obj
+
+# target to build an object file
+GEO_para.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/GEO_para.c.obj
+.PHONY : GEO_para.c.obj
+
+GEO_para.i: GEO_para.c.i
+.PHONY : GEO_para.i
+
+# target to preprocess a source file
+GEO_para.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/GEO_para.c.i
+.PHONY : GEO_para.c.i
+
+GEO_para.s: GEO_para.c.s
+.PHONY : GEO_para.s
+
+# target to generate assembly for a file
+GEO_para.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/GEO_para.c.s
+.PHONY : GEO_para.c.s
+
 Radiation_Calc.obj: Radiation_Calc.c.obj
 .PHONY : Radiation_Calc.obj
 
@@ -256,7 +341,17 @@ help:
 	@echo ... depend
 	@echo ... edit_cache
 	@echo ... rebuild_cache
+	@echo ... GEO
 	@echo ... snow
+	@echo ... GEO2NC.obj
+	@echo ... GEO2NC.i
+	@echo ... GEO2NC.s
+	@echo ... GEO2NC_main.obj
+	@echo ... GEO2NC_main.i
+	@echo ... GEO2NC_main.s
+	@echo ... GEO_para.obj
+	@echo ... GEO_para.i
+	@echo ... GEO_para.s
 	@echo ... Radiation_Calc.obj
 	@echo ... Radiation_Calc.i
 	@echo ... Radiation_Calc.s

@@ -17,11 +17,26 @@ set(SNOW_module
     SnowEnergy.c
     Radiation_Calc.c
 )
+set(GEO
+    GEO2NC_main.c
+    GEO2NC.c
+    GEO_para.c
+)
 
-project(kNN_MOF_cp)  # Set your project name here
+project(xHM)  # Set your project name here
+
+# Specify the path to NetCDF include directory
+include_directories("C:/netCDF4.9.2/include")
+
+# Specify the path to NetCDF libraries directory
+link_directories("C:/netCDF4.9.2/lib")
+
 # Add the executable target
 add_executable(snow ${SNOW_module})
+add_executable(GEO ${GEO})
 
+# Link NetCDF libraries
+target_link_libraries(GEO PRIVATE netcdf)
 
 ## cmake -G "MinGW Makefiles" .
 ## mingw32-make
