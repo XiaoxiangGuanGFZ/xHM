@@ -19,7 +19,7 @@ int main(int argc, char * argv[])
         printf("---- Transfer 2D array data from NetCDF to ASCII format! ----\n");
     }
 
-    ST_Para GP;
+    ST_GEO2NC_Para GP;
     Import_para(*(++argv), &GP, 1);
     Para_check(&GP);
     if (GP.FP_GEONC[0] == '\0')
@@ -28,7 +28,6 @@ int main(int argc, char * argv[])
         exit(0);
     }
     
-    // printf("cellsize_m:%d\n", GP.cellsize_m);
     if (strcmp(IO, "-I") == 0)
     {
         // DEM

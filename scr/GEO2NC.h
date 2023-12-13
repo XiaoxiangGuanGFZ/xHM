@@ -5,38 +5,34 @@
 
 typedef struct 
 {
-    char FP_DEM[MAXCHAR];
-    char FP_FDR[MAXCHAR];
-    char FP_FAC[MAXCHAR];
-    char FP_STR[MAXCHAR];
-    char FP_OUTLET[MAXCHAR];
-    char FP_GEONC[MAXCHAR];
-    char Projection[MAXCHAR];
-    char Datum[MAXCHAR];
-    char Spheroid[MAXCHAR];
-    char Units[MAXCHAR];
+    char FP_DEM[MAXCHAR];     /* file path and name of DEM data */
+    char FP_FDR[MAXCHAR];     /* file path and name of flow direction (fdr) data*/
+    char FP_FAC[MAXCHAR];     /* file path and name of flow accumulation (fac) data */
+    char FP_STR[MAXCHAR];     /* file path and name of stream (str) data */
+    char FP_OUTLET[MAXCHAR];  /* file path and name of watershed outlet data */
+    char FP_GEONC[MAXCHAR];   /* file path and name of NetCDF data*/
+    char Projection[MAXCHAR]; /* projection of the raster data */
+    char Datum[MAXCHAR];      
+    char Spheroid[MAXCHAR]; 
+    char Units[MAXCHAR];      /* unit of the coordinate system. DD: decimal */
     char Zunits[MAXCHAR];
-    int cellsize_m;
-} ST_Para;
+    int cellsize_m;           /* cell size in the unit of meters; spatial resolution */
+} ST_GEO2NC_Para;
 
 typedef struct 
 {
-    int ncols;
-    int nrows;
-    double xllcorner;
-    double yllcorner;
-    double cellsize;
-    int NODATA_value;
+    int ncols;         /* number of cell columns */
+    int nrows;         /* number of cell rows */
+    double xllcorner;  /* X-coordinate of the origin (by center or lower left corner of the cell) */
+    double yllcorner;  /* Y-coordinate of the origin (by center or lower left corner of the cell) */
+    double cellsize;   /* Cell size */
+    int NODATA_value;  /* The input values to be NoData in the output raster */
 
 } ST_Header;
 
 
 void handle_error(int status);
-void print2D(
-    int *ptr,
-    int m,
-    int n
-);
+
 
 int Header_read(
     FILE *fp_geo,
@@ -46,12 +42,12 @@ int Header_read(
 
 void Import_para(
     char FP[],
-    ST_Para *gp,
+    ST_GEO2NC_Para *gp,
     int display    
 );
 
 void Para_check(
-    ST_Para *gp
+    ST_GEO2NC_Para *gp
 );
 
 void Import_raster(
