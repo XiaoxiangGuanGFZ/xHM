@@ -141,6 +141,30 @@ GEO/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/build
 .PHONY : GEO/fast
 
+GEO2ASCII.obj: GEO2ASCII.c.obj
+.PHONY : GEO2ASCII.obj
+
+# target to build an object file
+GEO2ASCII.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/GEO2ASCII.c.obj
+.PHONY : GEO2ASCII.c.obj
+
+GEO2ASCII.i: GEO2ASCII.c.i
+.PHONY : GEO2ASCII.i
+
+# target to preprocess a source file
+GEO2ASCII.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/GEO2ASCII.c.i
+.PHONY : GEO2ASCII.c.i
+
+GEO2ASCII.s: GEO2ASCII.c.s
+.PHONY : GEO2ASCII.s
+
+# target to generate assembly for a file
+GEO2ASCII.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/GEO2ASCII.c.s
+.PHONY : GEO2ASCII.c.s
+
 GEO2NC.obj: GEO2NC.c.obj
 .PHONY : GEO2NC.obj
 
@@ -343,6 +367,9 @@ help:
 	@echo ... rebuild_cache
 	@echo ... GEO
 	@echo ... snow
+	@echo ... GEO2ASCII.obj
+	@echo ... GEO2ASCII.i
+	@echo ... GEO2ASCII.s
 	@echo ... GEO2NC.obj
 	@echo ... GEO2NC.i
 	@echo ... GEO2NC.s
