@@ -1,5 +1,10 @@
+
 #ifndef GEO2NC
 #define GEO2NC
+
+#include <stdlib.h>
+#include <stdio.h>
+#include "GEO_ST.h"
 
 int Import_data(
     char FP[],
