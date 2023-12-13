@@ -189,29 +189,29 @@ GEO2NC.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/GEO2NC.c.s
 .PHONY : GEO2NC.c.s
 
-GEO2NC_main.obj: GEO2NC_main.c.obj
-.PHONY : GEO2NC_main.obj
+GEO_main.obj: GEO_main.c.obj
+.PHONY : GEO_main.obj
 
 # target to build an object file
-GEO2NC_main.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/GEO2NC_main.c.obj
-.PHONY : GEO2NC_main.c.obj
+GEO_main.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/GEO_main.c.obj
+.PHONY : GEO_main.c.obj
 
-GEO2NC_main.i: GEO2NC_main.c.i
-.PHONY : GEO2NC_main.i
+GEO_main.i: GEO_main.c.i
+.PHONY : GEO_main.i
 
 # target to preprocess a source file
-GEO2NC_main.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/GEO2NC_main.c.i
-.PHONY : GEO2NC_main.c.i
+GEO_main.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/GEO_main.c.i
+.PHONY : GEO_main.c.i
 
-GEO2NC_main.s: GEO2NC_main.c.s
-.PHONY : GEO2NC_main.s
+GEO_main.s: GEO_main.c.s
+.PHONY : GEO_main.s
 
 # target to generate assembly for a file
-GEO2NC_main.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/GEO2NC_main.c.s
-.PHONY : GEO2NC_main.c.s
+GEO_main.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/GEO_main.c.s
+.PHONY : GEO_main.c.s
 
 GEO_para.obj: GEO_para.c.obj
 .PHONY : GEO_para.obj
@@ -373,9 +373,9 @@ help:
 	@echo ... GEO2NC.obj
 	@echo ... GEO2NC.i
 	@echo ... GEO2NC.s
-	@echo ... GEO2NC_main.obj
-	@echo ... GEO2NC_main.i
-	@echo ... GEO2NC_main.s
+	@echo ... GEO_main.obj
+	@echo ... GEO_main.i
+	@echo ... GEO_main.s
 	@echo ... GEO_para.obj
 	@echo ... GEO_para.i
 	@echo ... GEO_para.s

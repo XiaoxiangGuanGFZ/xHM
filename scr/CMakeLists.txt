@@ -18,7 +18,7 @@ set(SNOW_module
     Radiation_Calc.c
 )
 set(GEO
-    GEO2NC_main.c
+    GEO_main.c
     GEO2NC.c
     GEO2ASCII.c
     GEO_para.c
