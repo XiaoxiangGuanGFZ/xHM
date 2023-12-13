@@ -17,9 +17,15 @@ int main(int argc, char * argv[])
     {
         printf("---- Transfer 2D array data from ASCII to NetCDF format! ----\n");
     } 
-    else
+    else if (strcmp(IO, "-O") == 0)
     {
         printf("---- Transfer 2D array data from NetCDF to ASCII format! ----\n");
+    } else {
+        printf("Unrecognized argument!\n");
+        printf("-I or -O is required to indicate the behavior of the program: \n");
+        printf("-I: ASCII to NetCDF \n");
+        printf("-O: NetCDf to ASCII \n");
+        exit(0);
     }
 
     ST_GEO2NC_Para GP;
@@ -201,7 +207,15 @@ int main(int argc, char * argv[])
         }
         
         nc_close(ncID);
+    } 
+    else if (strcmp(IO, "-O") == 0)
+    {
+        /****************************************************
+         * NetCDF to ASCII
+        */
+           
     }
+    
     
     return 1;
 }
