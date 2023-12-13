@@ -4,7 +4,8 @@
 #include <string.h>
 #include <math.h>
 #include "GEO2NC.h"
-
+#include "GEO_ST.h"
+#include "GEO_para.h"
 
 int main(int argc, char * argv[])
 {
