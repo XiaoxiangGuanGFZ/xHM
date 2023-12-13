@@ -3,9 +3,11 @@
 #include <netcdf.h>
 #include <string.h>
 #include <math.h>
-#include "GEO2NC.h"
 #include "GEO_ST.h"
+#include "GEO2NC.h"
 #include "GEO_para.h"
+
+void handle_error(int status);
 
 int main(int argc, char * argv[])
 {
@@ -204,3 +206,15 @@ int main(int argc, char * argv[])
     return 1;
 }
 
+void handle_error(int status)
+{
+    /*****************************
+     * error handling function for 
+     * netcdf data reading and writing
+    */
+    if (status != NC_NOERR)
+    {
+        fprintf(stderr, "%s\n", nc_strerror(status));
+        exit(-1);
+    }
+}

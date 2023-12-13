@@ -28,11 +28,11 @@
 ********************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
-#include <netcdf.h>
 #include <math.h>
 #include <string.h>
-#include "GEO2NC.h"
+
 #include "GEO_ST.h"
+#include "GEO2NC.h"
 
 int Header_read(
     FILE *fp_geo,
@@ -201,16 +201,4 @@ int Import_data(
 
 
 
-void handle_error(int status)
-{
-    /*****************************
-     * error handling function for 
-     * netcdf data reading and writing
-    */
-    if (status != NC_NOERR)
-    {
-        fprintf(stderr, "%s\n", nc_strerror(status));
-        exit(-1);
-    }
-}
 

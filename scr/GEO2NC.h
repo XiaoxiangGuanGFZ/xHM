@@ -22,7 +22,5 @@ void Import_raster(
 );
 
 
-void handle_error(int status);
-
 #endif
 

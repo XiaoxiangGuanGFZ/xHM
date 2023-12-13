@@ -2,8 +2,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <netcdf.h>
+#include <string.h>
 #include "GEO_ST.h"
+#include "GEO_para.h"
 
 
 void Import_para(
