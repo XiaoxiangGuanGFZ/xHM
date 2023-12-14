@@ -26,83 +26,93 @@
 #include "GEO_ST.h"
 #include "GEO_para.h"
 
-
 void Import_para(
     char FP[],
     ST_GEO2NC_Para *gp,
-    int display    
-)
+    int display)
 {
     char row[MAXCHAR];
     char S1[MAXCHAR];
     char S2[MAXCHAR];
 
     FILE *fp;
-    if ((fp=fopen(FP, "r")) == NULL) {
+    if ((fp = fopen(FP, "r")) == NULL)
+    {
         printf("cannot open global parameter file\n");
         exit(0);
     }
-
+    int i;
     while (fgets(row, MAXCHAR, fp) != NULL)
     {
-        if (sscanf(row, "%[^,],%s", S1, S2) == 2)
+        if (row != NULL && strlen(row) > 1 && row[0] != '#')
         {
-            if (display == 1)
+            for (i = 0; i < strlen(row); i++)
             {
-                printf("%s,%s\n", S1, S2);
+                /* remove all the characters after # */
+                if (row[i] == '#')
+                {
+                    row[i] = '\0'; // replace the '#' with '\0', end sign.
+                }
             }
-            if (strcmp(S1, "FP_DEM") == 0)
+            if (sscanf(row, "%[^,],%s", S1, S2) == 2)
             {
-                strcpy(gp->FP_DEM, S2);
-            }
-            else if (strcmp(S1, "FP_FDR") == 0)
-            {
-                strcpy(gp->FP_FDR, S2);
-            }
-            else if (strcmp(S1, "FP_FAC") == 0)
-            {
-                strcpy(gp->FP_FAC, S2);
-            }
-            else if (strcmp(S1, "FP_STR") == 0)
-            {
-                strcpy(gp->FP_STR, S2);
-            }
-            else if (strcmp(S1, "FP_OUTLET") == 0)
-            {
-                strcpy(gp->FP_OUTLET, S2);
-            }
-            else if (strcmp(S1, "FP_GEONC") == 0)
-            {
-                strcpy(gp->FP_GEONC, S2);
-            }
-            else if (strcmp(S1, "Projection") == 0)
-            {
-                strcpy(gp->Projection, S2);
-            }
-            else if (strcmp(S1, "Datum") == 0)
-            {
-                strcpy(gp->Datum, S2);
-            }
-            else if (strcmp(S1, "Spheroid") == 0)
-            {
-                strcpy(gp->Spheroid, S2);
-            }
-            else if (strcmp(S1, "Units") == 0)
-            {
-                strcpy(gp->Units, S2);
-            }
-            else if (strcmp(S1, "Zunits") == 0)
-            {
-                strcpy(gp->Zunits, S2);
-            }
-            else if (strcmp(S1, "cellsize_m") == 0)
-            {
-                gp->cellsize_m = atoi(S2);
-            }            
-            else
-            {
-                printf("Unrecognized field!");
-                exit(0);
+                if (display == 1)
+                {
+                    printf("%s,%s\n", S1, S2);
+                }
+                if (strcmp(S1, "FP_DEM") == 0)
+                {
+                    strcpy(gp->FP_DEM, S2);
+                }
+                else if (strcmp(S1, "FP_FDR") == 0)
+                {
+                    strcpy(gp->FP_FDR, S2);
+                }
+                else if (strcmp(S1, "FP_FAC") == 0)
+                {
+                    strcpy(gp->FP_FAC, S2);
+                }
+                else if (strcmp(S1, "FP_STR") == 0)
+                {
+                    strcpy(gp->FP_STR, S2);
+                }
+                else if (strcmp(S1, "FP_OUTLET") == 0)
+                {
+                    strcpy(gp->FP_OUTLET, S2);
+                }
+                else if (strcmp(S1, "FP_GEONC") == 0)
+                {
+                    strcpy(gp->FP_GEONC, S2);
+                }
+                else if (strcmp(S1, "Projection") == 0)
+                {
+                    strcpy(gp->Projection, S2);
+                }
+                else if (strcmp(S1, "Datum") == 0)
+                {
+                    strcpy(gp->Datum, S2);
+                }
+                else if (strcmp(S1, "Spheroid") == 0)
+                {
+                    strcpy(gp->Spheroid, S2);
+                }
+                else if (strcmp(S1, "Units") == 0)
+                {
+                    strcpy(gp->Units, S2);
+                }
+                else if (strcmp(S1, "Zunits") == 0)
+                {
+                    strcpy(gp->Zunits, S2);
+                }
+                else if (strcmp(S1, "cellsize_m") == 0)
+                {
+                    gp->cellsize_m = atoi(S2);
+                }
+                else
+                {
+                    printf("Unrecognized field!");
+                    exit(0);
+                }
             }
         }
     }
