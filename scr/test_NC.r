@@ -1,6 +1,7 @@
 library(ncdf4)
-
-nc <- nc_open("D:/xHM/example_data/GEO_data.nc")
+fname = "D:/xHM/example_data/GEO_data.nc"
+fname = "D:/xHM/example_data/CT_GEO_1km/GEO1km_data.nc"
+nc <- nc_open(fname)
 nc
 df_dem <- ncvar_get(nc, "DEM")
 df_dem <- as.data.frame(t(df_dem))
@@ -39,4 +40,17 @@ for (i in 1:ncols) {
   )
 }
 
-#
+# -------- weather nc -------
+
+fp <- "D:/xHM/example_data/weather/weather.nc"
+nc <- nc_open(fp)
+nc
+df <- ncvar_get(nc, "PRE")
+dim(df)
+
+df_clip<- as.data.frame(t(df[,,24]))
+dim(df_clip)
+View(df_clip)
+
+nc_close(nc)
+
