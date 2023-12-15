@@ -1,0 +1,12 @@
+FP_DEM,D:/xHM/example_data/CT_GEO_250m/dem_fill.txt
+FP_FDR,D:/xHM/example_data/CT_GEO_250m/fdr.txt
+FP_FAC,D:/xHM/example_data/CT_GEO_250m/fac.txt
+FP_STR,D:/xHM/example_data/CT_GEO_250m/str.txt
+FP_OUTLET,D:/xHM/example_data/CT_GEO_250m/outlets.txt
+FP_GEONC,D:/xHM/example_data/CT_GEO_250m/GEO_data.nc
+Projection,GEOGRAPHIC
+Datum,WGS84
+Spheroid,WGS84
+Units,DD
+Zunits,NO
+cellsize_m,250
