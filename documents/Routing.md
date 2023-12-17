@@ -155,8 +155,8 @@ $$
 
 
 $$
-    h(t) = \frac{1}{\Delta t} [1 - \exp(
-        \frac{t-T_s}{T_r}
+    h(t) = \frac{1}{\Delta t} [\exp(1) - \exp(
+        1-\frac{t-T_s}{T_r}
     )], T_s \leqslant t \leqslant T_s + \Delta t
 $$
 
