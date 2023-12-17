@@ -116,17 +116,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named snow
+# Target rules for targets named SNOW
 
 # Build rule for target.
-snow: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 snow
-.PHONY : snow
+SNOW: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 SNOW
+.PHONY : SNOW
 
 # fast build rule for target.
-snow/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\snow.dir\build.make CMakeFiles/snow.dir/build
-.PHONY : snow/fast
+SNOW/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\SNOW.dir\build.make CMakeFiles/SNOW.dir/build
+.PHONY : SNOW/fast
 
 #=============================================================================
 # Target rules for targets named GEO
@@ -140,6 +140,19 @@ GEO: cmake_check_build_system
 GEO/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/build
 .PHONY : GEO/fast
+
+#=============================================================================
+# Target rules for targets named WEATHER
+
+# Build rule for target.
+WEATHER: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 WEATHER
+.PHONY : WEATHER
+
+# fast build rule for target.
+WEATHER/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\WEATHER.dir\build.make CMakeFiles/WEATHER.dir/build
+.PHONY : WEATHER/fast
 
 GEO2ASCII.obj: GEO2ASCII.c.obj
 .PHONY : GEO2ASCII.obj
@@ -242,7 +255,7 @@ Radiation_Calc.obj: Radiation_Calc.c.obj
 
 # target to build an object file
 Radiation_Calc.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\snow.dir\build.make CMakeFiles/snow.dir/Radiation_Calc.c.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\SNOW.dir\build.make CMakeFiles/SNOW.dir/Radiation_Calc.c.obj
 .PHONY : Radiation_Calc.c.obj
 
 Radiation_Calc.i: Radiation_Calc.c.i
@@ -250,7 +263,7 @@ Radiation_Calc.i: Radiation_Calc.c.i
 
 # target to preprocess a source file
 Radiation_Calc.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\snow.dir\build.make CMakeFiles/snow.dir/Radiation_Calc.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\SNOW.dir\build.make CMakeFiles/SNOW.dir/Radiation_Calc.c.i
 .PHONY : Radiation_Calc.c.i
 
 Radiation_Calc.s: Radiation_Calc.c.s
@@ -258,7 +271,7 @@ Radiation_Calc.s: Radiation_Calc.c.s
 
 # target to generate assembly for a file
 Radiation_Calc.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\snow.dir\build.make CMakeFiles/snow.dir/Radiation_Calc.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\SNOW.dir\build.make CMakeFiles/SNOW.dir/Radiation_Calc.c.s
 .PHONY : Radiation_Calc.c.s
 
 SnowAccuMelt.obj: SnowAccuMelt.c.obj
@@ -266,7 +279,7 @@ SnowAccuMelt.obj: SnowAccuMelt.c.obj
 
 # target to build an object file
 SnowAccuMelt.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\snow.dir\build.make CMakeFiles/snow.dir/SnowAccuMelt.c.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\SNOW.dir\build.make CMakeFiles/SNOW.dir/SnowAccuMelt.c.obj
 .PHONY : SnowAccuMelt.c.obj
 
 SnowAccuMelt.i: SnowAccuMelt.c.i
@@ -274,7 +287,7 @@ SnowAccuMelt.i: SnowAccuMelt.c.i
 
 # target to preprocess a source file
 SnowAccuMelt.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\snow.dir\build.make CMakeFiles/snow.dir/SnowAccuMelt.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\SNOW.dir\build.make CMakeFiles/SNOW.dir/SnowAccuMelt.c.i
 .PHONY : SnowAccuMelt.c.i
 
 SnowAccuMelt.s: SnowAccuMelt.c.s
@@ -282,7 +295,7 @@ SnowAccuMelt.s: SnowAccuMelt.c.s
 
 # target to generate assembly for a file
 SnowAccuMelt.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\snow.dir\build.make CMakeFiles/snow.dir/SnowAccuMelt.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\SNOW.dir\build.make CMakeFiles/SNOW.dir/SnowAccuMelt.c.s
 .PHONY : SnowAccuMelt.c.s
 
 SnowAtmosphericStability.obj: SnowAtmosphericStability.c.obj
@@ -290,7 +303,7 @@ SnowAtmosphericStability.obj: SnowAtmosphericStability.c.obj
 
 # target to build an object file
 SnowAtmosphericStability.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\snow.dir\build.make CMakeFiles/snow.dir/SnowAtmosphericStability.c.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\SNOW.dir\build.make CMakeFiles/SNOW.dir/SnowAtmosphericStability.c.obj
 .PHONY : SnowAtmosphericStability.c.obj
 
 SnowAtmosphericStability.i: SnowAtmosphericStability.c.i
@@ -298,7 +311,7 @@ SnowAtmosphericStability.i: SnowAtmosphericStability.c.i
 
 # target to preprocess a source file
 SnowAtmosphericStability.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\snow.dir\build.make CMakeFiles/snow.dir/SnowAtmosphericStability.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\SNOW.dir\build.make CMakeFiles/SNOW.dir/SnowAtmosphericStability.c.i
 .PHONY : SnowAtmosphericStability.c.i
 
 SnowAtmosphericStability.s: SnowAtmosphericStability.c.s
@@ -306,7 +319,7 @@ SnowAtmosphericStability.s: SnowAtmosphericStability.c.s
 
 # target to generate assembly for a file
 SnowAtmosphericStability.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\snow.dir\build.make CMakeFiles/snow.dir/SnowAtmosphericStability.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\SNOW.dir\build.make CMakeFiles/SNOW.dir/SnowAtmosphericStability.c.s
 .PHONY : SnowAtmosphericStability.c.s
 
 SnowEnergy.obj: SnowEnergy.c.obj
@@ -314,7 +327,7 @@ SnowEnergy.obj: SnowEnergy.c.obj
 
 # target to build an object file
 SnowEnergy.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\snow.dir\build.make CMakeFiles/snow.dir/SnowEnergy.c.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\SNOW.dir\build.make CMakeFiles/SNOW.dir/SnowEnergy.c.obj
 .PHONY : SnowEnergy.c.obj
 
 SnowEnergy.i: SnowEnergy.c.i
@@ -322,7 +335,7 @@ SnowEnergy.i: SnowEnergy.c.i
 
 # target to preprocess a source file
 SnowEnergy.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\snow.dir\build.make CMakeFiles/snow.dir/SnowEnergy.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\SNOW.dir\build.make CMakeFiles/SNOW.dir/SnowEnergy.c.i
 .PHONY : SnowEnergy.c.i
 
 SnowEnergy.s: SnowEnergy.c.s
@@ -330,7 +343,7 @@ SnowEnergy.s: SnowEnergy.c.s
 
 # target to generate assembly for a file
 SnowEnergy.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\snow.dir\build.make CMakeFiles/snow.dir/SnowEnergy.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\SNOW.dir\build.make CMakeFiles/SNOW.dir/SnowEnergy.c.s
 .PHONY : SnowEnergy.c.s
 
 Snow_main.obj: Snow_main.c.obj
@@ -338,7 +351,7 @@ Snow_main.obj: Snow_main.c.obj
 
 # target to build an object file
 Snow_main.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\snow.dir\build.make CMakeFiles/snow.dir/Snow_main.c.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\SNOW.dir\build.make CMakeFiles/SNOW.dir/Snow_main.c.obj
 .PHONY : Snow_main.c.obj
 
 Snow_main.i: Snow_main.c.i
@@ -346,7 +359,7 @@ Snow_main.i: Snow_main.c.i
 
 # target to preprocess a source file
 Snow_main.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\snow.dir\build.make CMakeFiles/snow.dir/Snow_main.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\SNOW.dir\build.make CMakeFiles/SNOW.dir/Snow_main.c.i
 .PHONY : Snow_main.c.i
 
 Snow_main.s: Snow_main.c.s
@@ -354,8 +367,56 @@ Snow_main.s: Snow_main.c.s
 
 # target to generate assembly for a file
 Snow_main.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\snow.dir\build.make CMakeFiles/snow.dir/Snow_main.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\SNOW.dir\build.make CMakeFiles/SNOW.dir/Snow_main.c.s
 .PHONY : Snow_main.c.s
+
+Weather2NC.obj: Weather2NC.c.obj
+.PHONY : Weather2NC.obj
+
+# target to build an object file
+Weather2NC.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\WEATHER.dir\build.make CMakeFiles/WEATHER.dir/Weather2NC.c.obj
+.PHONY : Weather2NC.c.obj
+
+Weather2NC.i: Weather2NC.c.i
+.PHONY : Weather2NC.i
+
+# target to preprocess a source file
+Weather2NC.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\WEATHER.dir\build.make CMakeFiles/WEATHER.dir/Weather2NC.c.i
+.PHONY : Weather2NC.c.i
+
+Weather2NC.s: Weather2NC.c.s
+.PHONY : Weather2NC.s
+
+# target to generate assembly for a file
+Weather2NC.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\WEATHER.dir\build.make CMakeFiles/WEATHER.dir/Weather2NC.c.s
+.PHONY : Weather2NC.c.s
+
+Weather2NC_main.obj: Weather2NC_main.c.obj
+.PHONY : Weather2NC_main.obj
+
+# target to build an object file
+Weather2NC_main.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\WEATHER.dir\build.make CMakeFiles/WEATHER.dir/Weather2NC_main.c.obj
+.PHONY : Weather2NC_main.c.obj
+
+Weather2NC_main.i: Weather2NC_main.c.i
+.PHONY : Weather2NC_main.i
+
+# target to preprocess a source file
+Weather2NC_main.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\WEATHER.dir\build.make CMakeFiles/WEATHER.dir/Weather2NC_main.c.i
+.PHONY : Weather2NC_main.c.i
+
+Weather2NC_main.s: Weather2NC_main.c.s
+.PHONY : Weather2NC_main.s
+
+# target to generate assembly for a file
+Weather2NC_main.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\WEATHER.dir\build.make CMakeFiles/WEATHER.dir/Weather2NC_main.c.s
+.PHONY : Weather2NC_main.c.s
 
 # Help Target
 help:
@@ -366,7 +427,8 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... GEO
-	@echo ... snow
+	@echo ... SNOW
+	@echo ... WEATHER
 	@echo ... GEO2ASCII.obj
 	@echo ... GEO2ASCII.i
 	@echo ... GEO2ASCII.s
@@ -394,6 +456,12 @@ help:
 	@echo ... Snow_main.obj
 	@echo ... Snow_main.i
 	@echo ... Snow_main.s
+	@echo ... Weather2NC.obj
+	@echo ... Weather2NC.i
+	@echo ... Weather2NC.s
+	@echo ... Weather2NC_main.obj
+	@echo ... Weather2NC_main.i
+	@echo ... Weather2NC_main.s
 .PHONY : help
 
 
