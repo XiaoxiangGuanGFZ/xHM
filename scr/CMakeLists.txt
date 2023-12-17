@@ -23,7 +23,10 @@ set(GEO
     GEO2ASCII.c
     GEO_para.c
 )
-
+set(WEATHER
+    Weather2NC.c
+    Weather2NC_main.c
+)
 project(xHM)  # Set your project name here
 
 # Specify the path to NetCDF include directory
@@ -33,11 +36,15 @@ include_directories("C:/netCDF4.9.2/include")
 link_directories("C:/netCDF4.9.2/lib")
 
 # Add the executable target
-add_executable(snow ${SNOW_module})
+add_executable(SNOW ${SNOW_module})
 add_executable(GEO ${GEO})
+add_executable(WEATHER ${WEATHER})
+
 
 # Link NetCDF libraries
 target_link_libraries(GEO PRIVATE netcdf)
+target_link_libraries(WEATHER PRIVATE netcdf)
+
 
 ## cmake -G "MinGW Makefiles" .
 ## mingw32-make
