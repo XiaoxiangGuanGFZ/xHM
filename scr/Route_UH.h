@@ -1,0 +1,72 @@
+
+#ifndef ROUTE_UH
+#define ROUTE_UH
+
+#include "GEO_ST.h"
+
+void Grid_Slope(
+    int *data_DEM,
+    int *data_FDR,
+    double *data_Slope,
+    double *data_FlowDistance,
+    int ncols,
+    int nrows,
+    int NODATA_value,
+    int cellsize_m
+);
+
+void Grid_SlopeArea(
+    int *data_FAC,
+    double *data_Slope,
+    double *data_SlopeArea,
+    double *slope_area_avg,
+    double b,
+    double c,
+    int ncols,
+    int nrows,
+    int NODATA_value,
+    int cellsize_m
+);
+
+void Grid_Velocity(
+    int *data_FAC,
+    double *data_SlopeArea,
+    double slope_area_avg,
+    double *data_V,
+    double V_avg,
+    double V_max,
+    double V_min,
+    int ncols,
+    int nrows,
+    int NODATA_value
+);
+
+void Grid_FlowTime(
+    int *data_mask,
+    int *data_FDR,
+    double *data_V,
+    double *data_FlowDistance,
+    double *data_FlowTime,
+    int outlet_index_row,
+    int outlet_index_col,
+    int ncols,
+    int nrows,
+    int NODATA_value
+);
+
+void Grid_UH(
+    int *data_mask,
+    double *data_FlowTime,
+    double **data_UH,
+    int *time_steps,
+    double beta,
+    int step_time,
+    int ncols,
+    int nrows,
+    int NODATA_value
+);
+
+
+#endif
+
+
