@@ -3,6 +3,7 @@
 #define ROUTE_UH
 
 #include "GEO_ST.h"
+#define MAX_OUTLETS 100     // maximum number of outlets
 
 void Grid_Slope(
     int *data_DEM,
