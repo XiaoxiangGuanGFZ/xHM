@@ -8,12 +8,38 @@
 
 #define ERR(e) {printf("Error: %s\n", nc_strerror(e)); return e;}
 int copy_global_attributes(int input_ncid, int output_ncid);
+void Import_para(
+    char FP[],
+    char FP_GEO[],
+    char FP_UH[],
+    int *step_time,
+    double *Velocity_avg,
+    double *Velocity_max,
+    double *Velocity_min,
+    double *b,
+    double *c
+);
 
-void main()
+void main(int argc, char * argv[])
 {
+    char FP_GEO[MAXCHAR];
+    char FP_UH[MAXCHAR];
+    int step_time;
+    double Velocity_avg, Velocity_max, Velocity_min;
+    double b, c;
+
+    Import_para(
+        *(++argv), FP_GEO, FP_UH,
+        &step_time,
+        &Velocity_avg,
+        &Velocity_max,
+        &Velocity_min,
+        &b,
+        &c);
+    
     int i,j;
     int ncID_GEO;
-    char FP_GEO[MAXCHAR] = "D:/xHM/example_data/CT_GEO_250m/GEO_data.nc";
+    // char FP_GEO[MAXCHAR] = "D:/xHM/example_data/CT_GEO_250m/GEO_data.nc";
     ST_Header GEO_header;
     int varID_FDR, varID_FAC, varID_DEM, varID_OUTLET;
     int varID_lon, varID_lat;
@@ -64,11 +90,11 @@ void main()
                GEO_header.NODATA_value,
                cellsize_m);
     
-    double V_avg = 480.0;
-    double V_max = 13200.0;
-    double V_min = 100.0;
-    double b = 0.5;
-    double c = 0.5;
+    // double V_avg = 480.0;
+    // double V_max = 13200.0;
+    // double V_min = 100.0;
+    // double b = 0.5;
+    // double c = 0.5;
     double *data_SlopeArea;
     data_SlopeArea = (double *)malloc(sizeof(double) * GEO_header.nrows * GEO_header.ncols);
     double slope_area_avg;
@@ -83,7 +109,7 @@ void main()
     double *data_V;
     data_V = (double *)malloc(sizeof(double) * GEO_header.nrows * GEO_header.ncols);
     Grid_Velocity(data_FAC, data_SlopeArea, slope_area_avg, data_V,
-                  V_avg, V_max, V_min,
+                  Velocity_avg, Velocity_max, Velocity_min,
                   GEO_header.ncols,
                   GEO_header.nrows,
                   GEO_header.NODATA_value);
@@ -107,11 +133,11 @@ void main()
     }
 
     
-    /********** to NetCDF ***********/
+    /********** write data to NetCDF ***********/
     int ncID_UH;
     int dimID_lon, dimID_lat, dimID_time;
     int varID_UH, varID_Slope, varID_FlowDistance, varID_SlopeArea, varID_V, varID_FlowTime; 
-    nc_create("D:/CT_UH.nc", NC_CLOBBER, &ncID_UH);
+    nc_create(FP_UH, NC_CLOBBER, &ncID_UH);
     
     nc_def_dim(ncID_UH, "lon", GEO_header.ncols, &dimID_lon);
     nc_def_dim(ncID_UH, "lat", GEO_header.nrows, &dimID_lat);
@@ -224,6 +250,89 @@ void main()
     nc_close(ncID_GEO);
     nc_close(ncID_UH);
 }
+
+
+
+void Import_para(
+    char FP[],
+    char FP_GEO[],
+    char FP_UH[],
+    int *step_time,
+    double *Velocity_avg,
+    double *Velocity_max,
+    double *Velocity_min,
+    double *b,
+    double *c
+)
+{
+    char row[MAXCHAR];
+    char S1[MAXCHAR];
+    char S2[MAXCHAR];
+
+    FILE *fp;
+    if ((fp = fopen(FP, "r")) == NULL)
+    {
+        printf("cannot open global parameter file %s\n", FP);
+        exit(0);
+    }
+    int i;
+    while (fgets(row, MAXCHAR, fp) != NULL)
+    {
+        if (row != NULL && strlen(row) > 1 && row[0] != '#')
+        {
+            for (i = 0; i < strlen(row); i++)
+            {
+                /* remove all the characters after # */
+                if (row[i] == '#')
+                {
+                    row[i] = '\0'; // replace the '#' with '\0', end sign.
+                }
+            }
+            if (sscanf(row, "%[^,],%s", S1, S2) == 2)
+            {
+                
+                if (strcmp(S1, "FP_GEO") == 0)
+                {
+                    strcpy(FP_GEO, S2);
+                }
+                else if (strcmp(S1, "FP_UH") == 0)
+                {
+                    strcpy(FP_UH, S2);
+                }
+                else if (strcmp(S1, "step_time") == 0)
+                {
+                    *step_time = atoi(S2);
+                }
+                else if (strcmp(S1, "Velocity_avg") == 0)
+                {
+                    *Velocity_avg = atof(S2);
+                }
+                else if (strcmp(S1, "Velocity_max") == 0)
+                {
+                    *Velocity_max = atof(S2);
+                }
+                else if (strcmp(S1, "Velocity_min") == 0)
+                {
+                    *Velocity_min = atof(S2);
+                }
+                else if (strcmp(S1, "b") == 0)
+                {
+                    *b = atof(S2);
+                }
+                else if (strcmp(S1, "c") == 0)
+                {
+                    *c = atof(S2);
+                }
+                else
+                {
+                    printf("Unrecognized field in %s!", FP);
+                    exit(0);
+                }
+            }
+        }
+    }
+}
+
 
 
 int copy_global_attributes(int input_ncid, int output_ncid) {

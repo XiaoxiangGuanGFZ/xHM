@@ -1,0 +1,8 @@
+FP_GEO,D:/xHM/example_data/CT_GEO_1km/GEO_data.nc
+FP_UH,D:/xHM/example_data/CT_GEO_1km/UH.nc
+step_time,24
+Velocity_avg,480.0
+Velocity_max,13200.0
+Velocity_min,100.0
+b,0.5
+c,0.5
