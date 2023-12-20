@@ -9,7 +9,7 @@
  *               the UH is derived based on topography (DEM). 
  * DESCRIP-END.
  * FUNCTIONS:    Grid_Slope(), Grid_SlopeArea(), Grid_Velocity()
- *                  Grid_FlowTime(), Grid_UH()
+ *                  Grid_FlowTime(), Grid_UH(), Grid_Outlets()
  * 
  * COMMENTS:
  * - Grid_Slope():          derive the slope from DEM and flow direction (D8)
@@ -17,7 +17,9 @@
  * - Grid_Velocity():       assign flow velocity to each grid cell
  * - Grid_FlowTime():       compute the flow time of each grid to the outlet
  * - Grid_UH():             generate UH for each grid cell
- *
+ * - Grid_Outlets():        extract the number and coordinates (row and col index) of outlets
+ * - Grid_OutletMask():     extract the mask (the upstream region) of an outlet (based on coordinates)
+ * 
  * REFERENCES:
  * 
  *
@@ -25,10 +27,31 @@
 
 /*****************************************************************************
  * VARIABLEs:
- * 
- * 
- * 
- * 
+ * int *data_DEM             - point to the gridded 2D DEM data
+ * int *data_FDR             - point to the gridded 2D dlow direction data
+ * int *data_FAC             - point to the gridded 2D flow accumulation data
+ * double *data_Slope        - point to the gridded 2D slope data
+ * double *data_FlowDistance - point to the gridded 2D flow distance (between two neighboring grid cells) data, [m] 
+ * double *data_SlopeArea    - point to the gridded 2D flow-area term data
+ * double *slope_area_avg    - point to the basin-average slope-area term
+ * double *data_V            - point to the gridded 2D flow velocity data [m/h]
+ * double V_avg              - parameter, indicating the basin-average flow velocity [m/h]
+ * double V_max              - parameter, indicating the basin-maximum flow velocity [m/h]
+ * double V_min              - parameter, indicating the basin-minimum flow velocity [m/h]
+ * double b, c               - parameters in slope-area term formula
+ * int *data_Outlet          - point to the gridded 2D outlet data, 1: this is an outlet
+ * int outlet_index_row[]    - 1D array: row index for the outlets, the index starting from 0
+ * int outlet_index_col[]    - 1D array: col index for the outlets, the index starting from 0
+ * int *data_Mask            - point to the gridded 2D mask data for one specific outlet
+ * int outlet_count          - number of outlets
+ * int ncols                 - nunber of the columns of the gridded 2D data
+ * int nrows                 - nunber of the rows of the gridded 2D data
+ * int NODATA_value          - the missing data value
+ * int cellsize_m            - the size of the grid cell, in meters
+ * int time_steps            - the steps(length) of a UH 
+ * double beta               - parameter in h(t) formula in UH, 
+ *                             ratio of the residence time flow water in the reservoir to the total flow time
+ * double **data_UH          - a pointer to a pointer pointing to the gridded 2D UH data for a specific outlet
  * 
 ******************************************************************************/
 
