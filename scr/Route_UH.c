@@ -277,7 +277,6 @@ void Grid_Outlets(
 void Grid_OutletMask(
     int outlet_index_row,
     int outlet_index_col,
-    int *data_DEM,
     int *data_FDR,
     int *data_Mask,
     int ncols,
@@ -290,16 +289,144 @@ void Grid_OutletMask(
      * based on the coordinate (row and col index) of outlet,
      * a gridded mask data is generated.
     */
-    int i,j;
+    int i, j;
+    
     for (i = 0; i < nrows; i++)
     {
         for (j = 0; j < ncols; j++)
         {
-            /* code */
+            // preset all cell as NODATA_value
+            *(data_Mask + i * ncols + j) = NODATA_value;
+            
         }
-        
     }
-           
+    // this is the outlet
+    *(data_Mask + outlet_index_row * ncols + outlet_index_col) = 1;
+
+    int ite_i, ite_j;
+    int cell_in;
+    int fdr;
+    for (i = 0; i < nrows; i++)
+    {
+        for (j = 0; j < ncols; j++)
+        {
+            ite_i = i; ite_j = j;
+            fdr = *(data_FDR + ite_i * ncols + ite_j);
+            if (fdr != NODATA_value)
+            {
+                cell_in = 0;
+                while (ite_i < nrows && ite_i >=0 && ite_j < ncols && ite_j >= 0)
+                {
+                    // iterate cell within the domain
+                    if (
+                        *(data_Mask + ite_i * ncols + ite_j) == 1
+                    )
+                    {
+                        /**********
+                         * if a grid cell points (directs) to a cell within 
+                         *      the upstream region of the outlet, then, the grid cell itself is 
+                         *      also located within this mask.
+                         * */ 
+                        cell_in = 1;
+                        break; // jump out from the while loop
+                    }
+                    else if (*(data_Mask + ite_i * ncols + ite_j) == 0)
+                    {
+                        cell_in = 0;
+                        break;
+                    }                    
+                    else
+                    {
+                        /**********
+                         * search the next one along the flow direction
+                        */
+                        switch (fdr)
+                        {
+                        case 1:
+                        {
+                            ite_j += 1;
+                            break;
+                        }
+                        case 2:
+                        {
+                            ite_i += 1;
+                            ite_j += 1;
+                            break;
+                        }
+                        case 4:
+                        {
+                            ite_i += 1;
+                            break;
+                        }
+                        case 8:
+                        {
+                            ite_i += 1;
+                            ite_j -= 1;
+                            break;
+                        }
+                        case 16:
+                        {
+                            ite_j -= 1;
+                            break;
+                        }
+                        case 32:
+                        {
+                            ite_i -= 1;
+                            ite_j -= 1;
+                            break;
+                        }
+                        case 64:
+                        {
+                            ite_i -= 1;
+                            break;
+                        }
+                        case 128:
+                        {
+                            ite_i -= 1;
+                            ite_j += 1;
+                            break;
+                        }
+                        default:
+                        {
+                            printf("Unrecognized flow direction field value at the location row: %d, col: %d!\n", i + 1, j + 1);
+                            exit(0);
+                        }
+                        }
+                        fdr = *(data_FDR + ite_i * ncols + ite_j);
+                        if (fdr == NODATA_value)
+                        {
+                            cell_in = 0;
+                            break;  // jump out from the while loop
+                        }
+                    }
+                }
+                if (cell_in == 1)
+                {
+                    *(data_Mask + i * ncols + j) = 1;
+                }
+                else
+                {
+                    *(data_Mask + i * ncols + j) = 0;
+                }
+            }        
+        }        
+    }
+
+    /*******************
+     * turn all 0 into NODATA_value,
+     * exclude the grid cells not located in the outlet-mask
+    */
+    for (i = 0; i < nrows; i++)
+    {
+        for (j = 0; j < ncols; j++)
+        {
+            if (*(data_Mask + i * ncols + j) == 0)
+            {
+                *(data_Mask + i * ncols + j) = NODATA_value;
+            }
+        }
+    }
+
 }
 
 

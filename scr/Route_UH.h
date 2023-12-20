@@ -42,6 +42,27 @@ void Grid_Velocity(
     int NODATA_value
 );
 
+void Grid_Outlets(
+    int *data_Outlet,
+    int outlet_index_row[],
+    int outlet_index_col[],
+    int *outlet_count,
+    int ncols,
+    int nrows,
+    int NODATA_value
+);
+
+void Grid_OutletMask(
+    int outlet_index_row,
+    int outlet_index_col,
+    int *data_FDR,
+    int *data_Mask,
+    int ncols,
+    int nrows,
+    int NODATA_value
+);
+
+
 void Grid_FlowTime(
     int *data_mask,
     int *data_FDR,
