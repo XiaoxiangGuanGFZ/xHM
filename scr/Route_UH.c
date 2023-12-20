@@ -1,5 +1,36 @@
+/*
+ * SUMMARY:      Route_UH.c
+ * USAGE:        Calculate overland runoff routing using Unit Hydrograph (UH) 
+ * AUTHOR:       Xiaoxiang Guan
+ * ORG:          Section Hydrology, GFZ
+ * E-MAIL:       guan@gfz-potsdam.de
+ * ORIG-DATE:    Dec-2023
+ * DESCRIPTION:  Calculate overland runoff using UH, over a gridded surface. 
+ *               the UH is derived based on topography (DEM). 
+ * DESCRIP-END.
+ * FUNCTIONS:    Grid_Slope(), Grid_SlopeArea(), Grid_Velocity()
+ *                  Grid_FlowTime(), Grid_UH()
+ * 
+ * COMMENTS:
+ * - Grid_Slope():          derive the slope from DEM and flow direction (D8)
+ * - Grid_SlopeArea():      compute the slope-area term for each grid cell
+ * - Grid_Velocity():       assign flow velocity to each grid cell
+ * - Grid_FlowTime():       compute the flow time of each grid to the outlet
+ * - Grid_UH():             generate UH for each grid cell
+ *
+ * REFERENCES:
+ * 
+ *
+ */
 
-
+/*****************************************************************************
+ * VARIABLEs:
+ * 
+ * 
+ * 
+ * 
+ * 
+******************************************************************************/
 
 
 #include <stdio.h>
@@ -198,6 +229,80 @@ void Grid_Velocity(
     printf("Grid_Grid_Velocity: done!\n");
 }
 
+void Grid_Outlets(
+    int *data_Outlet,
+    int outlet_index_row[],
+    int outlet_index_col[],
+    int *outlet_count,
+    int ncols,
+    int nrows,
+    int NODATA_value
+)
+{
+    /***********************************
+     * identify the outlets (from data_Outlet)
+     * 1: it is a outlet,
+     * 0: it is not;
+     * NODATA_value: no data
+     *
+     * count the number of outlets and retrieve the row and col index
+     * of the outlets.
+     *
+     */
+    int i, j;
+    int outlet_value;
+    *outlet_count = 0;
+
+    for (i = 0; i < nrows; i++)
+    {
+        for (j = 0; j < ncols; j++)
+        {
+            if (*outlet_count <= MAX_OUTLETS)
+            {
+                outlet_value = *(data_Outlet + i * ncols + j);
+                if (outlet_value == 1)
+                {
+                    outlet_index_row[*outlet_count] = i;
+                    outlet_index_col[*outlet_count] = j;
+                    (*outlet_count) += 1;
+                }
+            } else {
+                printf("The number of outlets exceeds the defined maximum! Increase the contstant MAX_OUTLETS in Route_UH.h\n");
+                exit(0);
+            }
+        }
+    }
+}
+
+void Grid_OutletMask(
+    int outlet_index_row,
+    int outlet_index_col,
+    int *data_DEM,
+    int *data_FDR,
+    int *data_Mask,
+    int ncols,
+    int nrows,
+    int NODATA_value
+)
+{
+    /****************************
+     * extract the upstream region (mask) of the outlet
+     * based on the coordinate (row and col index) of outlet,
+     * a gridded mask data is generated.
+    */
+    int i,j;
+    for (i = 0; i < nrows; i++)
+    {
+        for (j = 0; j < ncols; j++)
+        {
+            /* code */
+        }
+        
+    }
+           
+}
+
+
 void Grid_FlowTime(
     int *data_mask,
     int *data_FDR,
@@ -364,3 +469,4 @@ void Grid_UH(
     }
     printf("Grid_UH: done!\n");
 }
+
