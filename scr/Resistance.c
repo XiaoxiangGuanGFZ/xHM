@@ -11,8 +11,28 @@
  * FUNCTIONS:    
  *               Resist_aero_o(); Resist_aero_u()
  * COMMENTS:
+ * REFERENCEs:
  * 
+ * Storck, P., Trees, snow and flooding: 
+ *      an investigation of forest canopy effects on snow accumulation 
+ *      and melt at the plot and watershed scales in the Pacific Northwest, 
+ *      Water Resource Series, Technical Report 161, 
+ *      Dept. of Civil Engineering, University of Washington, 2000.
+ * 
+ * Dickinson, R. E., A. Henderson-Sellers, C. Rosenzweig, and P. J. Sellers, 
+ *      Evapotranspiration models with canopy resistance for 
+ *      use in climate models, a review, Agric. For. Meteorol., 54, 373-388, 1991.
+ * 
+ * Dickinson, R. E., A. Henderson-Sellers, and P. J. Kennedy, 
+ *      Biosphere-atmosphere transfer scheme (BATS) Version leas 
+ *      coupled to the NCAR Community Climate Model, NCAR Technical Note, 
+ *      NCARITN-387+STR, Boulder, Colorado, 1993.
+ * 
+ * Feddes, R. A., P. J. Kowalik, and H. Zaradny, 
+ *      Simulation of field water use and crop yield, 
+ *      John Wiley and Sons, New York, 188 pp., 1978.
 */
+
 
 #include <math.h>
 #include "SnowAccuMelt.h"
@@ -273,24 +293,3 @@ double Factor_4(
 }
 
 
-/****** References
- * 
- * Storck, P., Trees, snow and flooding: 
- *      an investigation of forest canopy effects on snow accumulation 
- *      and melt at the plot and watershed scales in the Pacific Northwest, 
- *      Water Resource Series, Technical Report 161, 
- *      Dept. of Civil Engineering, University of Washington, 2000.
- * 
- * Dickinson, R. E., A. Henderson-Sellers, C. Rosenzweig, and P. J. Sellers, 
- *      Evapotranspiration models with canopy resistance for 
- *      use in climate models, a review, Agric. For. Meteorol., 54, 373-388, 1991.
- * 
- * Dickinson, R. E., A. Henderson-Sellers, and P. J. Kennedy, 
- *      Biosphere-atmosphere transfer scheme (BATS) Version leas 
- *      coupled to the NCAR Community Climate Model, NCAR Technical Note, 
- *      NCARITN-387+STR, Boulder, Colorado, 1993.
- * 
- * Feddes, R. A., P. J. Kowalik, and H. Zaradny, 
- *      Simulation of field water use and crop yield, 
- *      John Wiley and Sons, New York, 188 pp., 1978.
-*/
