@@ -46,6 +46,16 @@ double ET_soil(
      *      conditions in the upper soil zone.
     */
     double ET_s;
-    ET_s = min(ET_soil_pot, Soil_Fe);
+    double epsilon = 0.000001; // Adjust according to your precision requirements
+    if ((ET_soil_pot - Soil_Fe) <= epsilon)
+    {
+        ET_s = ET_soil_pot;
+    }
+    else
+    {
+        ET_s = Soil_Fe;
+    }
+
+    // ET_s = min(ET_soil_pot, Soil_Fe);
     return ET_s;
 }
