@@ -221,7 +221,7 @@ void ET_story(
      * - *Prec_throughfall: excess precipitation into soil process (either infiltration or runoff)
     */
     double Ic;
-    double Ep;
+    // double Ep;
     double Et;
     double Aw;
     double tw;
