@@ -2,6 +2,14 @@
 #define PI 3.1415925
 #endif
 
+#ifndef MAXCHAR
+#define MAXCHAR 10000
+#endif
+
+#ifndef MAXrows
+#define MAXrows 10000
+#endif
+
 #ifndef CONSTANTS
 #define CONSTANTS
 
