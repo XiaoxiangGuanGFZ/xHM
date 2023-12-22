@@ -13,6 +13,8 @@
 #ifndef CONSTANTS
 #define CONSTANTS
 
+#define VISFRACT 0.5 /* part of shortwave that is in the visible */
+
 #define g 9.80  // acceleration of gravity, 9.8 m/s2
 #define Density_water 1000   // density of (liquid) water, 1000 kg/m3
 #define Density_air  1.2922  // air density, kg/m3
