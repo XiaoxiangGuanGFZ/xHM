@@ -15,6 +15,16 @@ typedef struct
     int STEP_TIME;
 } GPara_ET_ST;
 
+typedef struct 
+{
+    double PRS;
+    double RHU;
+    double SSD;
+    double WIN;
+    double TEM_AVG;
+    double TEM_MAX;
+    double TEM_MIN;
+} ST_Weather;
 
 #endif
 
