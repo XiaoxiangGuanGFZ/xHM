@@ -27,10 +27,11 @@
  *
  */
 
-
+#include <stdio.h>
 #include <math.h>
 #include "Constants.h"
 #include "Evapotranspiration.h"
+#include "Evapotranspiration_Energy.h"
 #include "Evaporation_soil.h"
 #include "Radiation_Calc.h"
 #include "Resistance.h"
@@ -65,15 +66,15 @@ double PotentialEvaporation(
 
     es = 0.5 * (e0(Air_tem_max) + e0(Air_tem_min));
     ea = Air_rhu * es / 100;
-
+    
     delta = VaporPresSlope(
         Air_tem_avg, Air_tem_min, Air_tem_max);
     gamma = Const_psychrometric(Air_pres);
-
+    
     ET = (delta * Radia_net +
           Density_air * SpecificHeat_air * (es - ea) / Resist_aero) /
-         (lambda_v * (delta + gamma));
-
+         (lambda_v * (delta + gamma)); // unit: kg/m2/h
+    ET = ET / 1000;  // m/h
     return ET;
 }
 
@@ -139,6 +140,7 @@ double Const_psychrometric(
     */
     double gamma; // psychrometric constant, kPa/℃
     gamma = 0.665 * pow(10, -3) * Air_pres ; 
+    return gamma;
 }
 
 
@@ -294,6 +296,7 @@ void ET_iteration(
     double Prec,                /* precipitation (total) within the time step, m */
     double *Prec_throughfall,   /* precipitation throughfall from overstory*/
     double *Prec_net,           /* net precipitation from understory into soil process */
+    double *Ep,
     double *EI_o,               /* actual evaporation from overstory, m */
     double *ET_o,               /* actual transpiration from overstory, m */
     double *EI_u,               /* actual evaporation from understory, m */
@@ -316,7 +319,8 @@ void ET_iteration(
     double Soil_Fe,        /* soil desorptivity */  
     int Toggle_Understory, /* 1: there is an understory */ 
     int step_time          /* iteration time step: in hours */ 
- ){
+ )
+ {
     /****************** description ***************
      * simulate the two-layer evapotranspiration process in a stepwise manner
      * the double type pointers are iterated, indicating the state variables 
@@ -340,16 +344,16 @@ void ET_iteration(
         Frac_canopy = 0.0;
     }
     
-    double Ep_o, Ep_u;
+    double Ep_u;
     if (Toggle_Overstory == 1)
     {
-        Ep_o = PotentialEvaporation(
+        *Ep = PotentialEvaporation(
             Air_tem_avg, Air_tem_min, Air_tem_max,
             Air_pres, Air_rhu, Radia_net, Resist_aero_o);
-
+        printf("Ep: %lf\n", *Ep);
         ET_story(Air_tem_avg, Air_tem_min, Air_tem_max, Air_pres,
                  Prec, Prec_throughfall,
-                 Ep_o,
+                 *Ep,
                  EI_o, ET_o,
                  Interception_o, Resist_canopy_o, Resist_aero_o, LAI_o,
                  Frac_canopy, step_time // hours
@@ -362,13 +366,13 @@ void ET_iteration(
         *EI_o = 0.0;
         *Prec_throughfall = Prec;
         *Interception_o = 0.0;
-        Ep_o = PotentialEvaporation(
+        *Ep = PotentialEvaporation(
             Air_tem_avg, Air_tem_min, Air_tem_max,
             Air_pres, Air_rhu, Radia_net, Resist_aero_u);
     }    
-
+    
     /************ understory *************/
-    Ep_u = Ep_o - (*ET_o + *EI_o) / step_time;
+    Ep_u = *Ep - (*ET_o + *EI_o) / step_time;
     if (Toggle_Understory == 1)
     {
         ET_story(Air_tem_avg, Air_tem_min, Air_tem_max, Air_pres,
@@ -429,7 +433,6 @@ void ET_CELL(
     double Ref_s,       /* reflection coefficient of radiation for soil/ground */
     double LAI_o,       /* LAI for overstory */
     double LAI_u,       /* LAI for understory */
-    double Rp_o,        /* the visible radiation */
     double Rpc_o,       /* the light level where rs is twice the rs_min */
     double rs_min_o,    /* minimum stomatal resistance */
     double rs_max_o,    /* maximum (cuticular) resistance */
@@ -442,7 +445,7 @@ void ET_CELL(
     double z0_o,        /* the roughness of canopy, m */
     double d_u,         /* displacement height of understory, m */
     double z0_u,        /* roughness length of understory, m */
-
+    
     double SM,          /* average soil moisture content */
     double SM_wp,       /* the plant wilting point */
     double SM_free,     /* the moisture content above which soil conditions do not restrict transpiration. */
@@ -450,6 +453,7 @@ void ET_CELL(
 
     double *Prec_throughfall, /* precipitation throughfall from overstory*/
     double *Prec_net,         /* net precipitation from understory into soil process */
+    double *Ep,
     double *EI_o,             /* actual evaporation, m */
     double *ET_o,             /* actual transpiration, m */
     double *EI_u,             /* actual evaporation, m */
@@ -472,6 +476,12 @@ void ET_CELL(
      * - net radiation for two layers
      * - net shortwave radiation for two layers
     */
+
+    /***** 
+     * unit for the sky shortwave and longwave radiations: [MJ/m2/d] 
+     * [MJ/m2/d] = 1000 000 / (3600*24) W/m2, as J/s = W 
+     * 1000 000 / (3600*24) = 11.574
+    */
     double Rs; // received shortwave radiation / solar insolation for the overstory canopy
     Rs = Radiation_downward_short(year, month, day, lat, n, as, bs);
     double L_sky; // received longwave radiation for the overstory canopy
@@ -479,7 +489,14 @@ void ET_CELL(
         year, month, day, lat,
         Air_tem_avg, Air_rhu, n, 0.0);
 
-    int Toggle_Overstory;           /* whether there is overstory, yes: 1 */
+    /*****
+     * convert the radiation unit:
+     * from [MJ/m2/d] to [kJ/m2/h] 
+    */
+    Rs = Rs * 1000/24;
+    L_sky = L_sky * 1000/24;
+
+    int Toggle_Overstory = 1;           /* whether there is overstory, yes: 1 */
     if (Frac_canopy < 0.0001)
     {
         Toggle_Overstory = 0;
@@ -515,8 +532,8 @@ void ET_CELL(
     }
     
     double Rp_o, Rp_u;   // visiable radiation in net shortwave radiation
-    Rp_o = VISFRACT * *Rno_short;
-    Rp_u = VISFRACT * *Rnu_short;
+    Rp_o = VISFRACT * *Rno_short * 11.574;
+    Rp_u = VISFRACT * *Rnu_short * 11.574;
     double Res_canopy_o; // assume only one vegetation (leaf type) for each cell
     double Res_canopy_u;
     double Res_aero_o;
@@ -527,10 +544,10 @@ void ET_CELL(
         Res_canopy_o = Resist_Stomatal(
             Air_tem_avg, Air_tem_min, Air_tem_max, Air_rhu,
             Rp_o, Rpc_o, rs_min_o, rs_max_o,
-            SM, SM_wp, SM_free);
+            SM, SM_wp, SM_free) / LAI_o;
         Res_aero_o = Resist_aero_o(
             Air_ws_obs, ws_obs_z, Canopy_zr,
-            Canopy_h, d_o, z0_o);
+            Canopy_h, d_o, z0_o, d_u, z0_u);
     }
     else
     {
@@ -543,7 +560,7 @@ void ET_CELL(
         Res_canopy_u = Resist_Stomatal(
             Air_tem_avg, Air_tem_min, Air_tem_max, Air_rhu,
             Rp_u, Rpc_u, rs_min_u, rs_max_u,
-            SM, SM_wp, SM_free);
+            SM, SM_wp, SM_free) / LAI_o;
         Res_aero_u = Resist_aero_u(
             Air_ws_obs, ws_obs_z,
             d_u, z0_u);
@@ -553,7 +570,10 @@ void ET_CELL(
         Res_canopy_u = 1.0;
         Res_aero_u = 1.0;
     }
-    
+    printf(
+        "Res_canopy_o: %6.2f\nRes_aero_o: %6.2f\nRes_canopy_u: %6.2f\nRes_aero_u: %6.2f\n",
+        Res_canopy_o, Res_aero_o, Res_canopy_u, Res_aero_u
+    );
     /***********
      * iteration for evapotranspiration computation
      * - evaporation
@@ -567,7 +587,8 @@ void ET_CELL(
     ET_iteration(
         Air_tem_avg, Air_tem_min, Air_tem_max, Air_pres, Air_rhu,     
         R_net,        
-        Prec, Prec_throughfall, Prec_net,         
+        Prec, Prec_throughfall, Prec_net, 
+        Ep,        
         EI_o, ET_o, EI_u, ET_u, ET_s,             
         Interception_o, Interception_u,   
         Res_canopy_o, Res_canopy_u,
