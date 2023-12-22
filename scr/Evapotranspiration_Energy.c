@@ -19,14 +19,14 @@
 
 /*********************************************************
  * VARIABLEs:
- * double Rs            - incident shortwave radiation
+ * double Rs            - incident shortwave radiation, [kJ/m2/h]
  * double Frac_canopy   - fractional ground cover of the overstory
  *                          0: there is no canopy (overstory)
  *                          (0, 1]
  * double Ref_o         - overstory reflection coefficient
  * double Ref_u         - understory reflection coefficient
  * double Ref_s         - soil/ground reflection coefficient
- * double L_sky         - downward sky longwave radiation flux
+ * double L_sky         - downward sky longwave radiation flux, [kJ/m2/h]
  * double Lo            - overstory longwave radiation flux
  * double Lu            - upward understory longwave radiation flux
  * double Tau           - fraction of shortwave radiation transmitted by canopy
@@ -135,6 +135,6 @@ double Emissivity(
     double Radiation; // unit: MJ/(m2 * d)
     double sigma = 4.903 * pow(10, -9); // Stefan-Boltzmann constant MJ/(K4*m2*d)
     Radiation = sigma * pow(Tem + 273.15, 4); //  MJ/(m2*d)
+    Radiation = Radiation * 1000/24; // convert unit from MJ/(m2*d) to kJ/m2/h
     return Radiation; 
-
 }
