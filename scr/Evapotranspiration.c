@@ -196,12 +196,12 @@ void ET_story(
     double Air_tem_max, /*scalar: maximum air temperature (℃)*/
     double Air_pres,    /* air pressure, kPa */ 
 
-    double Prec_input,  /* precipitation input to the story*/
-    double *Prec_throughfall, /* free water leaving the story*/
+    double Prec_input,  /* precipitation input to the story, m */
+    double *Prec_throughfall, /* free water leaving the story, m */
     double Ep,                /* potential evaporation, m/h */
     double *EI,               /* actual evaporation, m */
     double *ET,               /* actual transpiration, m */
-    double *Interception,     /* intercepted water in the story */
+    double *Interception,     /* intercepted water in the story, m */
     double Resist_canopy,     /* canopy resistance, h/m */
     double Resist_aero,       /* aerodynamic resistance, h/m */
     double LAI,
