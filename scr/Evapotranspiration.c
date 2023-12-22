@@ -32,6 +32,9 @@
 #include "Constants.h"
 #include "Evapotranspiration.h"
 #include "Evaporation_soil.h"
+#include "Radiation_Calc.h"
+#include "Resistance.h"
+
 
 double PotentialEvaporation(
     double Air_tem_avg, /*scalar: average air tempeature (℃)*/
@@ -144,7 +147,6 @@ double e0(
 ) {
     /****
      * estimate saturated water-vapor pressures (kPa) from air temperature
-     * 根据气温，计算得到瞬时饱和水汽压kPa
      * 
     */
     double e0;
@@ -287,15 +289,15 @@ void ET_iteration(
     double Air_tem_max, /*scalar: maximum air temperature (℃)*/
     double Air_pres,    /* air pressure, kPa */ 
     double Air_rhu,     /* relative humidity, % */ 
-    double Radia_net,   /* the net radiation flux density, kJ/h/m2 */ 
+    double Radia_net,   /* the net radiation flux density on the cell surface, kJ/h/m2 */ 
     
     double Prec,                /* precipitation (total) within the time step, m */
     double *Prec_throughfall,   /* precipitation throughfall from overstory*/
     double *Prec_net,           /* net precipitation from understory into soil process */
-    double *EI_o,               /* actual evaporation, m */
-    double *ET_o,               /* actual transpiration, m */
-    double *EI_u,               /* actual evaporation, m */
-    double *ET_u,               /* actual transpiration, m */
+    double *EI_o,               /* actual evaporation from overstory, m */
+    double *ET_o,               /* actual transpiration from overstory, m */
+    double *EI_u,               /* actual evaporation from understory, m */
+    double *ET_u,               /* actual transpiration from understory, m */
     double *ET_s,               /* soil evaporation, m */
     double *Interception_o,     /* overstory interception water, m */
     double *Interception_u,     /* understory interception water, m */
@@ -310,15 +312,12 @@ void ET_iteration(
 
     double LAI_o,
     double LAI_u,
-    double Frac_canopy,   //  canopy fraction, [0, 1]
-    double Soil_Fe,       //  soil desorptivity
-    int Toggle_Overstory,
-    // whether there is overstory, yes: 1
-    int Toggle_Understory_BareSoil,
-    // whether the understory is bare soil, yes: 1
-    int step_time         // iteration time step: in hours
+    double Frac_canopy,    /* canopy fraction, [0, 1] */  
+    double Soil_Fe,        /* soil desorptivity */  
+    int Toggle_Understory, /* 1: there is an understory */ 
+    int step_time          /* iteration time step: in hours */ 
  ){
-    /***** description 
+    /****************** description ***************
      * simulate the two-layer evapotranspiration process in a stepwise manner
      * the double type pointers are iterated, indicating the state variables 
      *  
@@ -326,14 +325,21 @@ void ET_iteration(
      * when the overstory is absent, 
      * Resist_canopy_o and Resist_aero_o can be ignored
      * 
-     * when the understory is not bare soil,
-     * *ET_s is ignored, or equals 0.0
+     * when there is an understory,
+     * soil evaporation *ET_s is ignored, or equals 0.0
      * 
-     * Toggle_Overstory != 1 and Toggle_Understory_BareSoil == 1, to 
+     * Toggle_Overstory != 1 and Toggle_Understory != 1, to 
      * simulate the bare soil (the only story) ET .
      * 
     */
-    /************ overstory *************/
+    /******* overstory *******/
+    int Toggle_Overstory = 1;
+    if (Frac_canopy < 0.0001)
+    {
+        Toggle_Overstory = 0;
+        Frac_canopy = 0.0;
+    }
+    
     double Ep_o, Ep_u;
     if (Toggle_Overstory == 1)
     {
@@ -351,23 +357,20 @@ void ET_iteration(
     }
     else
     {
-        // there is no overstory, only understory
-        Ep_o = PotentialEvaporation(
-            Air_tem_avg, Air_tem_min, Air_tem_max,
-            Air_pres, Air_rhu, Radia_net, Resist_aero_u);
+        // there is no overstory, but understory
         *ET_o = 0.0;
         *EI_o = 0.0;
         *Prec_throughfall = Prec;
         *Interception_o = 0.0;
-    }
-    
+        Ep_o = PotentialEvaporation(
+            Air_tem_avg, Air_tem_min, Air_tem_max,
+            Air_pres, Air_rhu, Radia_net, Resist_aero_u);
+    }    
 
     /************ understory *************/
     Ep_u = Ep_o - (*ET_o + *EI_o) / step_time;
-    if (Toggle_Understory_BareSoil != 1)
+    if (Toggle_Understory == 1)
     {
-        /* understory is not bare soil */
-        
         ET_story(Air_tem_avg, Air_tem_min, Air_tem_max, Air_pres,
                  *Prec_throughfall, Prec_net,
                  Ep_u,
@@ -380,7 +383,9 @@ void ET_iteration(
     }
     else
     {
-        /* understory is bare soil */
+        /* there is only bare soil for this cell 
+        * no overstory, no understory
+        */
         *ET_s = ET_soil(
             Ep_u, Soil_Fe);
         *EI_u = 0.0;
@@ -394,3 +399,182 @@ void ET_iteration(
     }
 }
 
+
+void ET_CELL(
+    int year,
+    int month,
+    int day,
+    double lat, /* the latitute of the location */
+
+    double Prec,        /* precipitation (total) within the time step, m */
+    double Air_tem_avg, /* air temperature (in degrees Celsius) */
+    double Air_tem_min, /* scalar: minimum air temperature (℃)*/
+    double Air_tem_max, /* scalar: maximum air temperature (℃)*/
+    double Air_rhu,     /* relative humidity, unit: % */
+    double Air_pres,    /* air pressure, kPa */
+    double Air_ws_obs,  /* wind speed at the measurement height, m/s */
+    double ws_obs_z,    /* the measurement height, m */
+    double n,           /* sunshine duration in a day, hours */
+
+    double as,
+    double bs,          /* as and bs: two empirical coefficients, 0.25 and 0.5 by default */
+    double *Rno,        /* net radiation for the overstory */
+    double *Rno_short,  /* net shortwave radiation for the overstory */
+    double *Rnu,        /* net radiation for the understory */
+    double *Rnu_short,  /* net shortwave radiation for the understory */
+    double *Rns,        /* net radiation for ground/soil */
+    double Frac_canopy, /* the fractional forest cover, between 0.0 and 1.0 */
+    double Ref_o,       /* reflection coefficient of radiation for overstory */
+    double Ref_u,       /* reflection coefficient of radiation for understory */
+    double Ref_s,       /* reflection coefficient of radiation for soil/ground */
+    double LAI_o,       /* LAI for overstory */
+    double LAI_u,       /* LAI for understory */
+    double Rp_o,        /* the visible radiation */
+    double Rpc_o,       /* the light level where rs is twice the rs_min */
+    double rs_min_o,    /* minimum stomatal resistance */
+    double rs_max_o,    /* maximum (cuticular) resistance */
+    double Rpc_u,       /* the light level where rs is twice the rs_min */
+    double rs_min_u,    /* minimum stomatal resistance */
+    double rs_max_u,    /* maximum (cuticular) resistance */
+    double Canopy_zr,   /* reference height of canopy, m */
+    double Canopy_h,    /* height of canopy, m */
+    double d_o,         /* displacement height of canopy, m */
+    double z0_o,        /* the roughness of canopy, m */
+    double d_u,         /* displacement height of understory, m */
+    double z0_u,        /* roughness length of understory, m */
+
+    double SM,          /* average soil moisture content */
+    double SM_wp,       /* the plant wilting point */
+    double SM_free,     /* the moisture content above which soil conditions do not restrict transpiration. */
+    double Soil_Fe,     /* soil desorptivity */
+
+    double *Prec_throughfall, /* precipitation throughfall from overstory*/
+    double *Prec_net,         /* net precipitation from understory into soil process */
+    double *EI_o,             /* actual evaporation, m */
+    double *ET_o,             /* actual transpiration, m */
+    double *EI_u,             /* actual evaporation, m */
+    double *ET_u,             /* actual transpiration, m */
+    double *ET_s,             /* soil evaporation, m */
+    double *Interception_o,   /* overstory interception water, m */
+    double *Interception_u,   /* understory interception water, m */
+    int Toggle_Understory,    
+    int step_time             /* iteration time step: in hours */
+)
+{
+    /******************************
+     * compute the radiation received over the two layers
+     * From sky, considering the effect of cloud cover, 
+     *      only controlled by weather conditions and geolocation
+     * - shortwave radiation from sky
+     * - longwave radiation from sky
+     * 
+     * For two layers: overstory and understory
+     * - net radiation for two layers
+     * - net shortwave radiation for two layers
+    */
+    double Rs; // received shortwave radiation / solar insolation for the overstory canopy
+    Rs = Radiation_downward_short(year, month, day, lat, n, as, bs);
+    double L_sky; // received longwave radiation for the overstory canopy
+    L_sky = Radiation_downward_long(
+        year, month, day, lat,
+        Air_tem_avg, Air_rhu, n, 0.0);
+
+    int Toggle_Overstory;           /* whether there is overstory, yes: 1 */
+    if (Frac_canopy < 0.0001)
+    {
+        Toggle_Overstory = 0;
+        Frac_canopy = 0.0;
+    }
+    
+    double Tem_o;
+    double Tem_u;
+    double Tem_s;
+    Tem_o = Air_tem_avg;
+    Tem_s = Air_tem_avg;
+    Tem_u = Air_tem_avg;
+
+    Radiation_net(
+        Rs, L_sky,
+        Rno, Rno_short, Rnu, Rnu_short, Rns,
+        Frac_canopy, Ref_o, Ref_u, Ref_s,
+        Tem_o, Tem_u, Tem_s,
+        LAI_o, LAI_u, Toggle_Understory);
+
+    double R_net;
+    if (Toggle_Overstory == 1) 
+    {
+        R_net = *Rno;
+    }
+    else if (Toggle_Understory == 1)
+    {
+        R_net = *Rnu;
+    }
+    else
+    {
+        R_net = *Rns;
+    }
+    
+    double Rp_o, Rp_u;   // visiable radiation in net shortwave radiation
+    Rp_o = VISFRACT * *Rno_short;
+    Rp_u = VISFRACT * *Rnu_short;
+    double Res_canopy_o; // assume only one vegetation (leaf type) for each cell
+    double Res_canopy_u;
+    double Res_aero_o;
+    double Res_aero_u;
+
+    if (Toggle_Overstory == 1)
+    {
+        Res_canopy_o = Resist_Stomatal(
+            Air_tem_avg, Air_tem_min, Air_tem_max, Air_rhu,
+            Rp_o, Rpc_o, rs_min_o, rs_max_o,
+            SM, SM_wp, SM_free);
+        Res_aero_o = Resist_aero_o(
+            Air_ws_obs, ws_obs_z, Canopy_zr,
+            Canopy_h, d_o, z0_o);
+    }
+    else
+    {
+        Res_canopy_o = 1.0;
+        Res_aero_o = 1.0;
+    }
+
+    if (Toggle_Understory == 1)
+    {
+        Res_canopy_u = Resist_Stomatal(
+            Air_tem_avg, Air_tem_min, Air_tem_max, Air_rhu,
+            Rp_u, Rpc_u, rs_min_u, rs_max_u,
+            SM, SM_wp, SM_free);
+        Res_aero_u = Resist_aero_u(
+            Air_ws_obs, ws_obs_z,
+            d_u, z0_u);
+    } 
+    else
+    {
+        Res_canopy_u = 1.0;
+        Res_aero_u = 1.0;
+    }
+    
+    /***********
+     * iteration for evapotranspiration computation
+     * - evaporation
+     * - transpiration
+     * 
+     * Two layers:
+     * - overstory (canopy)
+     * - understory (lower canopy or bare soil)
+     * 
+    */
+    ET_iteration(
+        Air_tem_avg, Air_tem_min, Air_tem_max, Air_pres, Air_rhu,     
+        R_net,        
+        Prec, Prec_throughfall, Prec_net,         
+        EI_o, ET_o, EI_u, ET_u, ET_s,             
+        Interception_o, Interception_u,   
+        Res_canopy_o, Res_canopy_u,
+        Res_aero_o, Res_aero_u,
+        LAI_o, LAI_u,
+        Frac_canopy,
+        Soil_Fe,
+        Toggle_Understory, // whether the understory is bare soil, yes: 1
+        step_time);
+}
