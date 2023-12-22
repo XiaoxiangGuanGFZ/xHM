@@ -38,6 +38,8 @@ set(ET
     Evapotranspiration.c
 	Evapotranspiration_Energy.c
 	Evapotranspiration_main.c
+    Radiation_Calc.c
+    Resistance.c
 )
 
 
