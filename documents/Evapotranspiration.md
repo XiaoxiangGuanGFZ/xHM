@@ -279,7 +279,7 @@ where
 - $T_a$: the air temperature (in degree Celsius)
 - $e_c$: the vapor pressure deficit causing stomatal closure (about 4 kPa)
 - $r_{s\max}$: maximum (cuticular) resistance
-- $R_p$: the visible radiation
+- $R_p$: the visible radiation, assumes as half of net shortwave radiation, [w/m2]
 - $R_{pc}$: the light level where $r_s$ is twice the minimum stomatal resistance $r_{s\min}$
 
 Following Feddes et al. (1978), $f_4$ is modeled as a piecewise linear
@@ -329,7 +329,7 @@ where:
 - $\alpha_u$: the understory reflection coefficient
 - $\tau_o$: the fraction of shortwave radiation transmitted by the overs tory canopy
 - $F$: the fractional ground cover of the overstory
-- L_d, L_u, L_o$: downward sky, upward understory, and overstory longwave radiation fluxes
+- $L_d, L_u, L_o$: downward sky, upward understory, and overstory longwave radiation fluxes
 
 The fraction of transmitted
 shortwave radiation is calculated following a Beer's Law relationship of
