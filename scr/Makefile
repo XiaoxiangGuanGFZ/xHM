@@ -378,6 +378,7 @@ Radiation_Calc.obj: Radiation_Calc.c.obj
 # target to build an object file
 Radiation_Calc.c.obj:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\SNOW.dir\build.make CMakeFiles/SNOW.dir/Radiation_Calc.c.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Radiation_Calc.c.obj
 .PHONY : Radiation_Calc.c.obj
 
 Radiation_Calc.i: Radiation_Calc.c.i
@@ -386,6 +387,7 @@ Radiation_Calc.i: Radiation_Calc.c.i
 # target to preprocess a source file
 Radiation_Calc.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\SNOW.dir\build.make CMakeFiles/SNOW.dir/Radiation_Calc.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Radiation_Calc.c.i
 .PHONY : Radiation_Calc.c.i
 
 Radiation_Calc.s: Radiation_Calc.c.s
@@ -394,7 +396,32 @@ Radiation_Calc.s: Radiation_Calc.c.s
 # target to generate assembly for a file
 Radiation_Calc.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\SNOW.dir\build.make CMakeFiles/SNOW.dir/Radiation_Calc.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Radiation_Calc.c.s
 .PHONY : Radiation_Calc.c.s
+
+Resistance.obj: Resistance.c.obj
+.PHONY : Resistance.obj
+
+# target to build an object file
+Resistance.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Resistance.c.obj
+.PHONY : Resistance.c.obj
+
+Resistance.i: Resistance.c.i
+.PHONY : Resistance.i
+
+# target to preprocess a source file
+Resistance.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Resistance.c.i
+.PHONY : Resistance.c.i
+
+Resistance.s: Resistance.c.s
+.PHONY : Resistance.s
+
+# target to generate assembly for a file
+Resistance.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Resistance.c.s
+.PHONY : Resistance.c.s
 
 Route_UH.obj: Route_UH.c.obj
 .PHONY : Route_UH.obj
@@ -628,6 +655,9 @@ help:
 	@echo ... Radiation_Calc.obj
 	@echo ... Radiation_Calc.i
 	@echo ... Radiation_Calc.s
+	@echo ... Resistance.obj
+	@echo ... Resistance.i
+	@echo ... Resistance.s
 	@echo ... Route_UH.obj
 	@echo ... Route_UH.i
 	@echo ... Route_UH.s
