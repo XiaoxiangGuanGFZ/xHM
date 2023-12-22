@@ -327,7 +327,7 @@ where:
 - $R_s$: the incident shortwave radiation
 - $\alpha_o$: the overstory reflection coefficient
 - $\alpha_u$: the understory reflection coefficient
-- $\tau_o$: the fraction of shortwave radiation transmitted by the overs tory canopy
+- $\tau_o$: the fraction of shortwave radiation transmitted by the overstory canopy
 - $F$: the fractional ground cover of the overstory
 - $L_d, L_u, L_o$: downward sky, upward understory, and overstory longwave radiation fluxes
 
@@ -352,9 +352,13 @@ overstory, while in the open it exchanges radiation with the sky and
 ground. The net radiation absorbed by the understory $R_{nu}$:
 
 $$
-    R_{nu} = R_s \cdot (1-\alpha_u) \cdot [(1-F) + \tau_o \cdot F] + 
+    R_{nu} = R_s \cdot [(1-\alpha_u) - \tau_u \cdot (1 - \alpha_g)] \cdot [(1-F) + \tau_o \cdot F] + 
         (1-F) \cdot L_d + F \cdot L_o - L_u
 $$
+
+where:
+- $\tau_u$: the fraction of shortwave radiation transmitted by the understory (lower canopy)
+- $\alpha_g$: the soil reflectionc oefficient
 
 ### 4.3 Emissivity of unity
 
@@ -371,16 +375,24 @@ where:
 - $\sigma$: the Stefan-Boltzmann constant
 - $T_o, T_u$: the temperatures [°C] of the overstory and understory, respectively. These two temperatures are set equal to the air temperature except when snow is present.
 
-### 4.4 (Longwave) Radiation from Soil 
+### 4.4 Soil 
+Shortwave radiation absorbed by the soil surface ($R_{sg}$) is given by:
 
-With bare soil (no understory) and no snowpack
+$$
+    R_{sg} = R_s \cdot \tau_u (1 - \alpha_g) \cdot 
+        [(1-F) + \tau_o F]
+$$
+
+With bare soil (no understory) and no snowpack, 
+the longwave radiation emitted from soil:
 
 $$
     L_u = \sigma (T_g + 273.15)^4
 $$
 
 where:
-$T_g$ equals to the soil surface temperatUre. The soil surface temperature is either set equal to the air temperature or when more 
+$T_g$ equals to the soil surface temperatUre. 
+The soil surface temperature is either set equal to the air temperature or when more 
 accurate surface temperatures are required, calculated through an 
 iterative solution to the nonlinear equation for surface temperature.
 
