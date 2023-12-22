@@ -4,12 +4,14 @@
 
 /*********** aerodynamic resistance ************/
 double Resist_aero_o(
-    double Air_ws_obs,   /* wind speed at the measurement height, m/s */
-    double ws_obs_z, /* the measurement height, m */
-    double zr,       /* reference height, m */
-    double Canopy_h, /* height of canopy, m */
-    double d,        /* displacement height, m */
-    double z0        /* the roughness, m */
+    double Air_ws_obs, /* wind speed at the measurement height, [m/s] */
+    double ws_obs_z,   /* the measurement height, m */
+    double zr,         /* (above canopy) reference height, a value greater than Canopy_h, [m] */
+    double Canopy_h,   /* height of canopy, m */
+    double d,          /* displacement height of canopy, m */
+    double z0,         /* the roughness height of canopy, m */
+    double dg,         /* displacement height of ground/surface, m */
+    double z0_g        /* the roughness height of ground/surface, m */
 );
 
 double Resist_aero_u(
