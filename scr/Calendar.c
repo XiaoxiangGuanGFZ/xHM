@@ -6,9 +6,11 @@
  * ORG:          Section Hydrology, GFZ
  * E-MAIL:       guan@gfz-potsdam.de
  * ORIG-DATE:    Dec-2023
- * DESCRIPTION:  
+ * DESCRIPTION:  given the starting point (time) of the model setup
+ *               and the interval (number of steps) since starting point,
+ *               derive the time structure (struct tm) of working point
  * DESCRIP-END.
- * FUNCTIONS:    ET_soil()
+ * FUNCTIONS:    tm_increment()
  * 
  * COMMENTS:
  * 
