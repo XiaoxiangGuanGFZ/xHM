@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "Constants.h"
 #include "GEO_ST.h"
 #include "GEO_para.h"
 
@@ -38,7 +39,7 @@ void Import_para(
     FILE *fp;
     if ((fp = fopen(FP, "r")) == NULL)
     {
-        printf("cannot open global parameter file\n");
+        printf("cannot open global parameter file %s\n", FP);
         exit(0);
     }
     int i;
@@ -79,6 +80,18 @@ void Import_para(
                 else if (strcmp(S1, "FP_OUTLET") == 0)
                 {
                     strcpy(gp->FP_OUTLET, S2);
+                }
+                else if (strcmp(S1, "FP_VEGTYPE") == 0)
+                {
+                    strcpy(gp->FP_VEGTYPE, S2);
+                }
+                else if (strcmp(S1, "FP_VEGFRAC") == 0)
+                {
+                    strcpy(gp->FP_VEGFRAC, S2);
+                }
+                else if (strcmp(S1, "FP_SOILTYPE") == 0)
+                {
+                    strcpy(gp->FP_SOILTYPE, S2);
                 }
                 else if (strcmp(S1, "FP_GEONC") == 0)
                 {

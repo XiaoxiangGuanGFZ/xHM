@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include "Constants.h"
 #include "GEO_ST.h"
 
 void Export_raster(

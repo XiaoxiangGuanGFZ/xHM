@@ -2,7 +2,7 @@
 #ifndef GEO_ST
 #define GEO_ST
 
-#define MAXCHAR 10000
+#include "Constants.h"
 
 typedef struct 
 {
@@ -11,6 +11,9 @@ typedef struct
     char FP_FAC[MAXCHAR];     /* file path and name of flow accumulation (fac) data */
     char FP_STR[MAXCHAR];     /* file path and name of stream (str) data */
     char FP_OUTLET[MAXCHAR];  /* file path and name of watershed outlet data */
+    char FP_VEGTYPE[MAXCHAR];
+    char FP_VEGFRAC[MAXCHAR];
+    char FP_SOILTYPE[MAXCHAR];
     char FP_GEONC[MAXCHAR];   /* file path and name of NetCDF data*/
     char Projection[MAXCHAR]; /* projection of the raster data */
     char Datum[MAXCHAR];      

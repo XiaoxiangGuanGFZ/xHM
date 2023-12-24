@@ -3,6 +3,9 @@ FP_FDR,D:/xHM/example_data/CT_GEO_1km/fdr.txt
 FP_FAC,D:/xHM/example_data/CT_GEO_1km/fac.txt
 FP_STR,D:/xHM/example_data/CT_GEO_1km/str.txt
 FP_OUTLET,D:/xHM/example_data/CT_GEO_1km/outlet.txt
+FP_VEGTYPE,D:/xHM/example_data/CT_GEO_1km/vegetype.txt
+FP_VEGFRAC,ALL_CELL_100
+FP_SOILTYPE,D:/xHM/example_data/CT_GEO_1km/soil.txt
 FP_GEONC,D:/xHM/example_data/CT_GEO_1km/GEO1km_data.nc
 Projection,GEOGRAPHIC
 Datum,WGS84

@@ -37,7 +37,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <netcdf.h>
-
+#include "Constants.h"
 #include "GEO_ST.h"
 #include "GEO2ASCII.h"
 
@@ -104,7 +104,7 @@ void Export_GEO_data(
     FILE *fp_out;
     if ((fp_out = fopen(FP, "w")) == NULL)
     {
-        printf("Program terminated: cannot create or open output file\n");
+        printf("Program terminated: cannot create or open output file %s\n", FP);
         exit(0);
     }
     Export_header(fp_out, HD);

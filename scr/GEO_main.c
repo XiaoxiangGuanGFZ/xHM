@@ -3,6 +3,7 @@
 #include <netcdf.h>
 #include <string.h>
 #include <math.h>
+#include "Constants.h"
 #include "GEO_ST.h"
 #include "GEO2NC.h"
 #include "GEO_para.h"
@@ -85,6 +86,57 @@ int main(int argc, char * argv[])
             Import_data(GP.FP_OUTLET, &rdata_outlet, &HD_outlet, 0);
         }
         
+        // vegetation type
+        ST_Header HD_VEGTYPE;
+        int *rdata_vegtype;
+        if (GP.FP_VEGTYPE != '\0')
+        {
+            Import_data(GP.FP_VEGTYPE, &rdata_vegtype, &HD_VEGTYPE, 0);
+        }
+
+        // vegetation fraction
+        ST_Header HD_VEGFRAC;
+        int *rdata_vegfrac;
+        if (strcmp(GP.FP_VEGFRAC, "ALL_CELL_100") == 0)
+        {
+            /************
+             * each grid cell is assumed to be composed of only one veg type.
+             * fraction of canopy is 100 (%), if the veg type is forest (with a canopy)
+            */
+            rdata_vegfrac = (int *)malloc(sizeof(int) * HD_dem.ncols * HD_dem.nrows);
+            for (size_t i = 0; i < HD_dem.nrows; i++)
+            {
+                for (size_t j = 0; j < HD_dem.ncols; j++)
+                {
+                    if (*(rdata_vegtype + i * HD_dem.ncols + j) == HD_dem.NODATA_value)
+                    {
+                        // no data
+                        *(rdata_vegfrac + i * HD_dem.ncols + j) = HD_dem.NODATA_value;
+                    } else if (*(rdata_vegtype + i * HD_dem.ncols + j) <= 6)
+                    {
+                        // cell with vegetation type of forest with a canopy
+                        *(rdata_vegfrac + i * HD_dem.ncols + j) = 100;
+                    } else {
+                        // cell with no canopy, like grassland et al.
+                        *(rdata_vegfrac + i * HD_dem.ncols + j) = 0;
+                    }
+                }
+            }
+        }
+        else
+        {
+            Import_data(GP.FP_VEGFRAC, &rdata_vegfrac, &HD_VEGFRAC, 0);
+        }
+
+        // soil type
+        ST_Header HD_SOILTYPE;
+        int *rdata_soiltype;
+        if (GP.FP_SOILTYPE != '\0')
+        {
+            Import_data(GP.FP_SOILTYPE, &rdata_soiltype, &HD_SOILTYPE, 0);
+        }
+
+
         /************* create nc file ****************/
         int i, j;
         double *data_lon;
@@ -107,6 +159,7 @@ int main(int argc, char * argv[])
         int dimID_lon, dimID_lat;
         int varID_lon, varID_lat;
         int varID_dem, varID_fdr, varID_fac, varID_str, varID_outlet;
+        int varID_VEGTYPE, varID_VEGFRAC, varID_SOILTYPE;
         int old_fill_mode;
 
         IO_status = nc_create(GP.FP_GEONC, NC_CLOBBER, &ncID);
@@ -127,6 +180,9 @@ int main(int argc, char * argv[])
         nc_def_var(ncID, "FAC", NC_INT, 2, dims, &varID_fac);
         nc_def_var(ncID, "STR", NC_INT, 2, dims, &varID_str);
         nc_def_var(ncID, "OUTLET", NC_INT, 2, dims, &varID_outlet);
+        nc_def_var(ncID, "VEGTYPE", NC_INT, 2, dims, &varID_VEGTYPE);
+        nc_def_var(ncID, "VEGFRAC", NC_INT, 2, dims, &varID_VEGFRAC);
+        nc_def_var(ncID, "SOILTYPE", NC_INT, 2, dims, &varID_SOILTYPE);
 
         /******** put attributes *******/
         // global attributes
@@ -173,6 +229,23 @@ int main(int argc, char * argv[])
         nc_put_att_int(ncID, varID_outlet, "valid_range", NC_INT, 1, (int[]){1});
         nc_put_att_text(ncID, varID_outlet, "description", 40L, "1: this cell is an outlet");
 
+        // vegetation type
+        nc_put_att_text(ncID, varID_VEGTYPE, "long_name", 40L, "vegetation classification");
+        nc_put_att_int(ncID, varID_VEGTYPE, "NODATA_value", NC_INT, 1, &HD_dem.NODATA_value);
+        nc_put_att_int(ncID, varID_VEGTYPE, "valid_range_min", NC_INT, 1, (int[]){0});
+        nc_put_att_int(ncID, varID_VEGTYPE, "valid_range_max", NC_INT, 1, (int[]){11});
+        nc_put_att_text(ncID, varID_VEGTYPE, "description", 40L, "integer; see VegLib.txt");
+
+        // vegetation: canopy fraction
+        nc_put_att_text(ncID, varID_VEGFRAC, "long_name", 40L, "canopy fraction");
+        nc_put_att_int(ncID, varID_VEGFRAC, "NODATA_value", NC_INT, 1, &HD_dem.NODATA_value);
+        nc_put_att_int(ncID, varID_VEGFRAC, "valid_range_min", NC_INT, 1, (int[]){0});
+        nc_put_att_int(ncID, varID_VEGFRAC, "valid_range_max", NC_INT, 1, (int[]){100});
+        nc_put_att_text(ncID, varID_VEGFRAC, "description", 40L, "integer; 0 means no canopy for the cell");
+
+        // soil type
+        nc_put_att_text(ncID, varID_SOILTYPE, "long_name", 40L, "soil type");
+        nc_put_att_int(ncID, varID_SOILTYPE, "NODATA_value", NC_INT, 1, &HD_dem.NODATA_value);
 
         nc_enddef(ncID);
         /*********  data mode *******/
@@ -205,8 +278,18 @@ int main(int argc, char * argv[])
         {
             nc_put_vara_int(ncID, varID_outlet, start, counts, rdata_outlet);
         }
+        if (GP.FP_VEGTYPE[0] != '\0')
+        {
+            nc_put_vara_int(ncID, varID_VEGTYPE, start, counts, rdata_vegtype);
+            nc_put_vara_int(ncID, varID_VEGFRAC, start, counts, rdata_vegfrac);
+        }
+        if (GP.FP_SOILTYPE[0] != '\0')
+        {
+            nc_put_vara_int(ncID, varID_SOILTYPE, start, counts, rdata_soiltype);
+        }
         
         nc_close(ncID);
+        printf("GEO data from ASCII to NetCDF: done!\n");
     } 
     else if (strcmp(IO, "-O") == 0)
     {
@@ -237,11 +320,12 @@ int main(int argc, char * argv[])
         Export_GEO_data(ncID, "FAC", HD, GP.FP_FAC);
         Export_GEO_data(ncID, "STR", HD, GP.FP_STR);
         Export_GEO_data(ncID, "OUTLET", HD, GP.FP_OUTLET);
+        Export_GEO_data(ncID, "VEGTYPE", HD, GP.FP_VEGTYPE);
+        Export_GEO_data(ncID, "VEGFRAC", HD, GP.FP_VEGFRAC);
+        Export_GEO_data(ncID, "SOILTYPE", HD, GP.FP_SOILTYPE);
         nc_close(ncID);
-
+        printf("GEO data from NetCDF to ASCII: done!\n");
     }
-    
-    
     return 1;
 }
 
