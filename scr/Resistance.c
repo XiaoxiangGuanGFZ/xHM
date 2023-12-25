@@ -78,7 +78,11 @@ double Resist_aero_o(
     Air_ws_zr = WindSpeed_Profile(
         ws_obs_z, zr, Air_ws_obs,
         dg, z0_g);
-
+    if (Air_ws_zr < 0.1)
+    {
+        Air_ws_zr = 0.1;
+    }
+    
     zw = 1.5 * Canopy_h - 0.5 * d;
     Rao = log((zr - d) / z0) / (Air_ws_zr * k * k) *
           (Canopy_h / (na * (zw - d)) *
@@ -97,11 +101,11 @@ double Resist_aero_u(
 )
 {
     /****
-     * calculate aerodynamic resistance for
+     * calculate aerodynamic resistance [h/m] for
      * the soil surface, snow, or understory
      * refer to Storck, 2000
      * */
-
+    
     double za;
     double Air_ws_za;
     double Rau;     // aerodynamic resistance, h/m
@@ -112,6 +116,15 @@ double Resist_aero_u(
         ws_obs_z, za, Air_ws_obs,
         d, z0);
 
+    if (Air_ws_za < 0.1)
+    {
+        /*****
+         * when Air_ws_za equals 0.0, then the 
+         * aerodynamic resistance formula is invalid. 
+         * we just assume the minimum valid wind speed is 0.1 m/s
+        */
+        Air_ws_za = 0.1;   
+    }
     Rau = pow(log((za - d) / z0), 2) / (Air_ws_za * k * k); // unit: s/m
     return Rau / 3600;                                      // unit: h/m
 }
