@@ -15,7 +15,16 @@
  * is required as input for energy balance iteration. The radiation flux is either obtained from 
  * instrumental observation or empirically estimated from other meteorological variables, like 
  * air temperature, relative humidity, atmospheric pressure, sunshine duration and wind speed. 
+ * 
+ * References:
+ * Abramowitz G., L. Pouyanné, and H. Ajami (2012). 
+ *      On the information content of surface meteorology 
+ *      for downward atmospheric long-wave radiation synthesis. 
+ *      Geographical Research Letters 39(5), 
+ *      doi: https://doi.org/10.1029/2011GL050726
+ * 
 */
+
 
 
 /******
@@ -40,6 +49,7 @@
  * 
 */
 #include <math.h>
+#include "Constants.h"
 #include "Radiation_Calc.h"
 
 int NOD(
@@ -48,9 +58,8 @@ int NOD(
     int day
 ){
     /* number of day */
-    /*
-    given a date, derive the number of day,
-    1 for 1th January and 365 (or 366) for 31th December.
+    /* given a date, derive the number of day,
+        1 for 1th January and 365 (or 366) for 31th December.
     */ 
     int NOD;
     static const int days[2][13] = {
@@ -70,10 +79,10 @@ double Radiation_downward_short(
     int year,
     int month,
     int day,
-    double lat,  /* the latitute of the location */ 
-    double n,    /* sunshine duration in a day, hours */ 
+    double lat,         /* the latitute of the location */ 
+    double Air_SSD,     /* sunshine duration in a day, hours */ 
     double as,
-    double bs    /* as and bas: two empirical coefficients, 0.25 and 0.5 by default */
+    double bs           /* as and bas: two empirical coefficients, 0.25 and 0.5 by default */
 ){
     /*****
      *  calculate the received shortwave radiation [(MJ⋅m-2⋅d-1)], 
@@ -104,7 +113,7 @@ double Radiation_downward_short(
 
     R_cs = (as + bs) * R_et;  // clear-sky radiation, non-cloudy
     
-    tau_cloud = as + bs * n / (24/PI * w_s);  // diminishing effect from cloudiness
+    tau_cloud = as + bs * Air_SSD / (24/PI * w_s);  // diminishing effect from cloudiness
     
     return R_cs * tau_cloud; 
 
@@ -141,9 +150,9 @@ double Radiation_short_surface(
 /************ longwave radiation *************/
 
 double Radiation_long_surface(
-    double Tem_air,  // air temperature, Celsius degree
-    double RHU,   // relative humidity, unit: %
-    double FF  // the fractional forest cover, between 0.0 and 1.0
+    double Tem_air,  /* air temperature, Celsius degree */ 
+    double RHU,      /* relative humidity, unit: % */ 
+    double FF        /* the fractional forest cover, between 0.0 and 1.0 */ 
 ){
     /*****
      * calculate the received longwave radiation on the surface
@@ -183,7 +192,7 @@ double Radiation_downward_long(
     double lat,      /* the latitute of the location */ 
     double Tem_air,  /* air temperature, [Celsius degree] */ 
     double RHU,      /* relative humidity, unit: % */ 
-    double n,        /* sunshine duration in a day, hours */ 
+    double Air_SSD,  /* sunshine duration in a day, hours */ 
     double FF        /* the fractional forest cover, between 0.0 and 1.0 */ 
 ){
     /****
@@ -226,7 +235,7 @@ double Radiation_downward_long(
     w_s = acos( - tan(lat * PI / 180) * tan(del));
     N = 24/PI * w_s;
 
-    emissivity_sky = (1 - n / N) + n / N * emissivity_clr;
+    emissivity_sky = (1 - Air_SSD / N) + Air_SSD / N * emissivity_clr;
     emissivity_at = (1 - FF) * emissivity_sky + FF;
     
     Lin = emissivity_at * delta * pow(Tem_air + 273.15, 4);
@@ -234,14 +243,6 @@ double Radiation_downward_long(
 }
 
 
-/**** references:
- * Abramowitz G., L. Pouyanné, and H. Ajami (2012). 
- *      On the information content of surface meteorology 
- *      for downward atmospheric long-wave radiation synthesis. 
- *      Geographical Research Letters 39(5), 
- *      doi: https://doi.org/10.1029/2011GL050726
- * 
-*/
 
 
 
