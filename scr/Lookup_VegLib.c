@@ -173,14 +173,14 @@ void Lookup_VegLib_CELL(
      * 
      * Pparameters obtained: 
      * - Rpc
-     * - rs_min
+     * - rs_min,: [s/m]
      * - CAN_H: canopy height [m]
      * - CAN_RZ: reference height (or wind speed observation height) of canopy [m]
      * 
      * attention: the parameters are constant through seasons
     */
     double BUF1, BUF2;
-    cell_veg->Rpc = 50.0; // same for veg types;
+    cell_veg->Rpc = 30.0; // same for veg types, [W/m2];
     if (CLASS >=1 && CLASS <= 6)
     {
         // canopy (overstory == 1), both overstory and understory
