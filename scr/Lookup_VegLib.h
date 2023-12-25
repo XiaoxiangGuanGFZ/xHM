@@ -44,4 +44,25 @@ void LookUp_veglib(
     double *WIND_H
 );
 
+void Lookup_VegLib_TYPE(
+    ST_VegLib veglib[],
+    int CLASS,
+    double *Rmin,
+    double *CAN_TOP,
+    double *WIND_H
+);
+
+void Lookup_VegLib_CELL(
+    ST_VegLib veglib[],
+    int CLASS,
+    ST_CELL_VEG *cell_veg
+);
+
+void Lookup_VegLib_CELL_MON(
+    ST_VegLib veglib[],
+    int CLASS,
+    int month,
+    ST_CELL_VEG *cell_veg
+);
+
 #endif
