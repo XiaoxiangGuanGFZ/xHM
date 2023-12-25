@@ -13,7 +13,7 @@
 #include "Evaporation_soil.h"
 #include "GEO_ST.h"
 #include "Resistance.h"
-
+#include "Lookup_VegLib.h"
 
 void Import_GPara(
     char FP_GP[],
@@ -74,7 +74,7 @@ void main(int argc, char *argv[])
     nc_inq_varid(ncID_GEO, "VEGFRAC", varID_VEGFRAC);
     nc_get_var_int(ncID_GEO, varID_VEGTYPE, data_VEGTYPE);
     nc_get_var_int(ncID_GEO, varID_VEGFRAC, data_VEGFRAC);
-    
+
     /*******************************************************************************
      *                             read weather data
      */
@@ -94,36 +94,43 @@ void main(int argc, char *argv[])
         exit(0);
     }
 
+    int cell_index_row = 56; 
+    int cell_index_col = 60;
 
-    int step_time = GP.STEP_TIME;
-    /**** radiation parameters *****/
+    ST_VegLib db_veglib[11];
+    Import_veglib(GP.FP_VEGLIB, db_veglib);
+    
     double lat = 26.75;
     ST_CELL_VEG cell_veg;
+    int cell_class;
+    cell_class = *(data_VEGTYPE + cell_index_row * GEO_header.ncols + cell_index_col);
+    cell_veg.CAN_FRAC = *(data_VEGFRAC + cell_index_row * GEO_header.ncols + cell_index_col) / 100;
+    Lookup_VegLib_CELL(db_veglib, cell_class, &cell_veg);
+    
+    /**** radiation parameters *****/
 
-    double as = 0.25;
-    double bs = 0.5;
-    double Frac_canopy = 1.0;
-    double Ref_o = 0.18;
-    double Ref_u = 0.18;
-    double Ref_s = 0.10;
-    double LAI_o = 3.0;
-    double LAI_u = 1.0;
+    // double Frac_canopy = 1.0;
+    // double Ref_o = 0.18;
+    // double Ref_u = 0.18;
+
+    // double LAI_o = 3.0;
+    // double LAI_u = 1.0;
     /**** vegetation parameters ****/
     double ws_obs_z = 10.0;/* the height of wind measurement */
-    int Toggle_Understory = 1;
-    double Canopy_zr = 20; /* reference height of canopy, m */
-    double Canopy_h = 14;  /* height of canopy, m */
-    double d_o = 9.2;      /* displacement height of canopy, m */
-    double z0_o = 0.9;     /* the roughness of canopy, m */
-    double d_u = 0.2;      /* displacement height of understory, m */
-    double z0_u = 0.04;    /* roughness length of understory, m */
 
-    double Rpc_o = 30;
-    double Rpc_u = 30;
-    double rs_min_o = 8.0;
-    double rs_min_u = 1.2;
-    double rs_max_o = 50;
-    double rs_max_u = 50;
+    // int Toggle_Understory = 1;
+    // double Canopy_zr = 20; /* reference height of canopy, m */
+    // double Canopy_h = 14;  /* height of canopy, m */
+    // double d_o = 9.2;      /* displacement height of canopy, m */
+    // double z0_o = 0.9;     /* the roughness of canopy, m */
+    // double d_u = 0.2;      /* displacement height of understory, m */
+    // double z0_u = 0.04;    /* roughness length of understory, m */
+
+    // double Rpc_o = 30;
+    // double Rpc_u = 30;
+    // double rs_min_o = 8.0;
+    // double rs_min_u = 1.2;
+
     double SM = 0.5;      /* average soil moisture content */
     double SM_wp = 0.2;   /* the plant wilting point */
     double SM_free = 0.8; /* the moisture content above which soil conditions do not restrict transpiration. */
@@ -173,8 +180,7 @@ void main(int argc, char *argv[])
             "Prec_net", "Ep", "EI_o", "ET_o", "EI_u", "ET_u", "ET_s");
 
     // int t = 23; // time index
-    int cell_index_row = 56; 
-    int cell_index_col = 60;
+    
     struct tm *ptm;
     /**** weather field ********/
     double cell_WIN;
@@ -201,6 +207,13 @@ void main(int argc, char *argv[])
         year = ptm->tm_year + 1900;
         month = ptm->tm_mon + 1;
         day = ptm->tm_mday;
+        // update the veg parameters 
+        Lookup_VegLib_CELL_MON(
+            db_veglib,
+            cell_class,
+            month,
+            &cell_veg);
+
         // printf("%d-%d-%d\n", day, month, year);
         cell_PRE = (double)*(data_PRE + t * GEO_header.ncols * GEO_header.nrows + GEO_header.ncols * cell_index_row + cell_index_col) / 10;
         cell_PRE = cell_PRE / 1000; // unit: m
@@ -221,16 +234,15 @@ void main(int argc, char *argv[])
 
             as, bs,
             &Rno, &Rno_short, &Rnu, &Rnu_short, &Rns,
+            cell_veg.CAN_FRAC,
+            cell_veg.Albedo_o, cell_veg.Albedo_u, ALBEDO_SOIL,
+            cell_veg.LAI_o, cell_veg.LAI_u,
+            cell_veg.Rpc, cell_veg.rs_min_o, rs_max,
+            cell_veg.Rpc, cell_veg.rs_min_o, rs_max,
 
-            Frac_canopy,
-            Ref_o, Ref_u, Ref_s,
-            LAI_o, LAI_u,
-            Rpc_o, rs_min_o, rs_max_o,
-            Rpc_u, rs_min_u, rs_max_u,
-
-            Canopy_zr, Canopy_h,
-            d_o, z0_o,
-            d_u, z0_u,
+            cell_veg.CAN_RZ, cell_veg.CAN_H,
+            cell_veg.d_o, cell_veg.z0_o,
+            cell_veg.d_u, cell_veg.z0_u,
 
             SM, SM_wp, SM_free, Soil_Fe,
 
@@ -244,8 +256,40 @@ void main(int argc, char *argv[])
             &ET_s,
             &Interception_o,
             &Interception_u,
-            Toggle_Understory,
-            step_time);
+            cell_veg.Understory,
+            GP.STEP_TIME);
+        // ET_CELL(
+        //     year, month, day, lat,
+        //     cell_PRE, cell_TEM_AVG, cell_TEM_MIN, cell_TEM_MAX, cell_RHU, cell_PRS, cell_WIN,
+        //     ws_obs_z, cell_SSD,
+
+        //     as, bs,
+        //     &Rno, &Rno_short, &Rnu, &Rnu_short, &Rns,
+
+        //     Frac_canopy,
+        //     Ref_o, Ref_u, Ref_s,
+        //     LAI_o, LAI_u,
+        //     Rpc_o, rs_min_o, rs_max,
+        //     Rpc_u, rs_min_u, rs_max,
+
+        //     Canopy_zr, Canopy_h,
+        //     d_o, z0_o,
+        //     d_u, z0_u,
+
+        //     SM, SM_wp, SM_free, Soil_Fe,
+
+        //     &Prec_throughfall,
+        //     &Prec_net,
+        //     &Ep,
+        //     &EI_o,
+        //     &ET_o,
+        //     &EI_u,
+        //     &ET_u,
+        //     &ET_s,
+        //     &Interception_o,
+        //     &Interception_u,
+        //     Toggle_Understory,
+        //     step_time);
         fprintf(fp_ET,
                 "%10.2f%8.2f%8.2f%8.2f%8.2f%8.2f%8.2f\n",
                 Prec_net * 1000, Ep * 1000 * GP.STEP_TIME, EI_o * 1000, ET_o * 1000, EI_u * 1000, ET_u * 1000, ET_s * 1000);
@@ -296,6 +340,10 @@ void Import_GPara(
                 else if (strcmp(S1, "FP_WEATHER") == 0)
                 {
                     strcpy(GP->FP_WEATHER, S2);
+                }
+                else if (strcmp(S1, "FP_VEGLIB") == 0)
+                {
+                    strcpy(GP->FP_VEGLIB, S2);
                 }
                 else if (strcmp(S1, "START_YEAR") == 0)
                 {
