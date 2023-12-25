@@ -191,12 +191,12 @@ double WET_part(
 
 /***** evapotranspiration (ET) ********/
 void ET_story(
-    double Air_tem_avg, /*scalar: average air tempeature (℃)*/
-    double Air_tem_min, /*scalar: minimum air temperature (℃)*/
-    double Air_tem_max, /*scalar: maximum air temperature (℃)*/
-    double Air_pres,    /* air pressure, kPa */ 
+    double Air_tem_avg,       /*scalar: average air tempeature (℃)*/
+    double Air_tem_min,       /*scalar: minimum air temperature (℃)*/
+    double Air_tem_max,       /*scalar: maximum air temperature (℃)*/
+    double Air_pres,          /* air pressure, kPa */ 
 
-    double Prec_input,  /* precipitation input to the story, m */
+    double Prec_input,        /* precipitation input to the story, m */
     double *Prec_throughfall, /* free water leaving the story, m */
     double Ep,                /* potential evaporation, m/h */
     double *EI,               /* actual evaporation, m */
@@ -408,7 +408,7 @@ void ET_CELL(
     int year,
     int month,
     int day,
-    double lat, /* the latitute of the location */
+    double lat,         /* the latitute of the location */
 
     double Prec,        /* precipitation (total) within the time step, m */
     double Air_tem_avg, /* air temperature (in degrees Celsius) */
@@ -418,7 +418,7 @@ void ET_CELL(
     double Air_pres,    /* air pressure, kPa */
     double Air_ws_obs,  /* wind speed at the measurement height, m/s */
     double ws_obs_z,    /* the measurement height, m */
-    double n,           /* sunshine duration in a day, hours */
+    double Air_ssd,     /* sunshine duration in a day, hours */
 
     double as,
     double bs,          /* as and bs: two empirical coefficients, 0.25 and 0.5 by default */
@@ -483,11 +483,11 @@ void ET_CELL(
      * 1000 000 / (3600*24) = 11.574
     */
     double Rs; // received shortwave radiation / solar insolation for the overstory canopy
-    Rs = Radiation_downward_short(year, month, day, lat, n, as, bs);
+    Rs = Radiation_downward_short(year, month, day, lat, Air_ssd, as, bs);
     double L_sky; // received longwave radiation for the overstory canopy
     L_sky = Radiation_downward_long(
         year, month, day, lat,
-        Air_tem_avg, Air_rhu, n, 0.0);
+        Air_tem_avg, Air_rhu, Air_ssd, 0.0);
 
     /*****
      * convert the radiation unit:
@@ -532,8 +532,8 @@ void ET_CELL(
     }
     
     double Rp_o, Rp_u;   // visiable radiation in net shortwave radiation
-    Rp_o = VISFRACT * *Rno_short * 11.574;
-    Rp_u = VISFRACT * *Rnu_short * 11.574;
+    Rp_o = VISFRACT * *Rno_short * 1000/3600;  // convert kJ/m2/h to W/m2, the same unit as Rpc
+    Rp_u = VISFRACT * *Rnu_short * 1000/3600;
     double Res_canopy_o; // assume only one vegetation (leaf type) for each cell
     double Res_canopy_u;
     double Res_aero_o;
@@ -560,7 +560,7 @@ void ET_CELL(
         Res_canopy_u = Resist_Stomatal(
             Air_tem_avg, Air_tem_min, Air_tem_max, Air_rhu,
             Rp_u, Rpc_u, rs_min_u, rs_max_u,
-            SM, SM_wp, SM_free) / LAI_o;
+            SM, SM_wp, SM_free) / LAI_u;
         Res_aero_u = Resist_aero_u(
             Air_ws_obs, ws_obs_z,
             d_u, z0_u);

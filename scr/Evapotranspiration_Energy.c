@@ -19,26 +19,26 @@
 
 /*********************************************************
  * VARIABLEs:
- * double Rs            - incident shortwave radiation, [kJ/m2/h]
+ * double Rs            - incident shortwave radiation,                 [kJ/m2/h]
  * double Frac_canopy   - fractional ground cover of the overstory
  *                          0: there is no canopy (overstory)
  *                          (0, 1]
  * double Ref_o         - overstory reflection coefficient
  * double Ref_u         - understory reflection coefficient
  * double Ref_s         - soil/ground reflection coefficient
- * double L_sky         - downward sky longwave radiation flux, [kJ/m2/h]
- * double Lo            - overstory longwave radiation flux
- * double Lu            - upward understory longwave radiation flux
+ * double L_sky         - downward sky longwave radiation flux,         [kJ/m2/h]
+ * double Lo            - overstory longwave radiation flux,            [kJ/m2/h]
+ * double Lu            - upward understory longwave radiation flux,    [kJ/m2/h]
  * double Tau           - fraction of shortwave radiation transmitted by canopy
  * double Tem_o, Tem_u  - temperature of overstory and understory, [Celsius degress]
  * double Tem_s         - soil surface temperature, [Celsius degress]
  *                             only valid when no snowpack
  * 
- * double *Rno          - net radiation for overstory
- * double *Rno_short    - net shortwave radiation for overstory
- * double *Rnu          - net radiation for understory
- * double *Rnu_short    - net shortwave radiation for understory
- * double *Rns          - net radiation for ground surface (soil)
+ * double *Rno          - net radiation for overstory,                  [kJ/m2/h]
+ * double *Rno_short    - net shortwave radiation for overstory,        [kJ/m2/h]
+ * double *Rnu          - net radiation for understory,                 [kJ/m2/h]
+ * double *Rnu_short    - net shortwave radiation for understory,       [kJ/m2/h]
+ * double *Rns          - net radiation for ground surface (soil),      [kJ/m2/h]
  * double LAI_o         - LAI of overstory
  * double LAI_u         - LAI of understory
  * int Toggle_Understory- type of the cell, 1: there is an understory; 0: no understory, only soil/ground
