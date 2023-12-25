@@ -98,7 +98,7 @@ void main(int argc, char *argv[])
     double LAI_o = 3.0;
     double LAI_u = 1.0;
     /**** vegetation parameters ****/
-    double ws_obs_z = 10.0;
+    double ws_obs_z = 10.0;/* the height of wind measurement */
     int Toggle_Understory = 1;
     double Canopy_zr = 20; /* reference height of canopy, m */
     double Canopy_h = 14;  /* height of canopy, m */

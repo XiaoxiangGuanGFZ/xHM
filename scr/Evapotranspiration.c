@@ -262,6 +262,15 @@ void ET_story(
             *EI = Ep * step_time;
             *ET = 0.0; // no transpiration
         }
+        if (*EI < 0.0)
+        {
+            *EI = 0.0;
+        }
+        if (*ET < 0.0)
+        {
+            *ET = 0.0;
+        }
+        
     }
     else
     {
