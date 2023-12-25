@@ -35,14 +35,14 @@ void main(int argc, char *argv[])
     /******************************************************************************
      *                              read GEO info
      */
-    int ncID;
+    int ncID_GEO;
     ST_Header GEO_header;
     nc_open(GP.FP_GEO, NC_NOWRITE, &ncID);
-    nc_get_att_int(ncID, NC_GLOBAL, "ncols", &GEO_header.ncols);
-    nc_get_att_int(ncID, NC_GLOBAL, "nrows", &GEO_header.nrows);
-    nc_get_att_double(ncID, NC_GLOBAL, "xllcorner", &GEO_header.xllcorner);
-    nc_get_att_double(ncID, NC_GLOBAL, "yllcorner", &GEO_header.yllcorner);
-    nc_get_att_double(ncID, NC_GLOBAL, "cellsize", &GEO_header.cellsize);
+    nc_get_att_int(ncID_GEO, NC_GLOBAL, "ncols", &GEO_header.ncols);
+    nc_get_att_int(ncID_GEO, NC_GLOBAL, "nrows", &GEO_header.nrows);
+    nc_get_att_double(ncID_GEO, NC_GLOBAL, "xllcorner", &GEO_header.xllcorner);
+    nc_get_att_double(ncID_GEO, NC_GLOBAL, "yllcorner", &GEO_header.yllcorner);
+    nc_get_att_double(ncID_GEO, NC_GLOBAL, "cellsize", &GEO_header.cellsize);
     printf("ncols: %d\nnrows: %d\nxllcorner: %.12f\nyllcorner: %.12f\ncellsize: %.12f\n",
            GEO_header.ncols, GEO_header.nrows, GEO_header.xllcorner, GEO_header.yllcorner, GEO_header.cellsize);
 
@@ -50,10 +50,12 @@ void main(int argc, char *argv[])
      *                      read gridded precipitation data
      */
     int ncID_PRE;
-    int varID_PRE;
+    int varID_PRE, varID_VEGTYPE, varID_VEGFRAC;
     int dimID_time;
     int time_steps_PRE;
     int *data_PRE;
+    int *data_VEGTYPE;
+    int *data_VEGFRAC;
 
     nc_open(GP.FP_PRE, NC_NOWRITE, &ncID_PRE);
 
@@ -66,6 +68,13 @@ void main(int argc, char *argv[])
     data_PRE = (int *)malloc(sizeof(int) * time_steps_PRE * GEO_header.ncols * GEO_header.nrows);
     nc_get_var_int(ncID_PRE, varID_PRE, data_PRE);
 
+    data_VEGTYPE = (int *)malloc(sizeof(int) * time_steps_PRE * GEO_header.ncols * GEO_header.nrows);
+    data_VEGFRAC = (int *)malloc(sizeof(int) * time_steps_PRE * GEO_header.ncols * GEO_header.nrows);
+    nc_inq_varid(ncID_GEO, "VEGTYPE", varID_VEGTYPE);
+    nc_inq_varid(ncID_GEO, "VEGFRAC", varID_VEGFRAC);
+    nc_get_var_int(ncID_GEO, varID_VEGTYPE, data_VEGTYPE);
+    nc_get_var_int(ncID_GEO, varID_VEGFRAC, data_VEGFRAC);
+    
     /*******************************************************************************
      *                             read weather data
      */
@@ -89,6 +98,8 @@ void main(int argc, char *argv[])
     int step_time = GP.STEP_TIME;
     /**** radiation parameters *****/
     double lat = 26.75;
+    ST_CELL_VEG cell_veg;
+
     double as = 0.25;
     double bs = 0.5;
     double Frac_canopy = 1.0;

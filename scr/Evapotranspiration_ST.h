@@ -28,6 +28,7 @@ typedef struct
 
 typedef struct
 {
+    int CLASS;
     double CAN_FRAC;
     int Understory;
     double Albedo_o;
@@ -43,7 +44,7 @@ typedef struct
     double d_u;
     double z0_o;
     double z0_u;
-}
+} ST_CELL_VEG;
 
 #endif
 
