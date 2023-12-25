@@ -4,7 +4,9 @@
 #include <string.h>
 #include <math.h>
 #include <netcdf.h>
+#include <time.h>
 #include "constants.h"
+#include "Calendar.h"
 #include "Evapotranspiration_ST.h"
 #include "Evapotranspiration.h"
 #include "Evapotranspiration_Energy.h"
@@ -83,55 +85,21 @@ void main(int argc, char *argv[])
         exit(0);
     }
 
-    /********************************************************************************
-     *                       compute the evapotranspiration
-     * */
-    int t = 23; // time index
-    int cell_index_row = 56; 
-    int cell_index_col = 60;
-    double cell_PRE;
-    // for (size_t i = 0; i < 50; i++)
-    // {
-    //     cell_PRE = (double)*(data_PRE + i * GEO_header.ncols * GEO_header.nrows + GEO_header.ncols * cell_index_row + cell_index_col) / 10;
-    //     printf("index %2d: %5.1f\n", i, cell_PRE);
-    // }
 
-    cell_PRE = (double)*(data_PRE + t * GEO_header.ncols * GEO_header.nrows + GEO_header.ncols * cell_index_row + cell_index_col) / 10;
-    cell_PRE = cell_PRE / 1000;  // unit: m
-    /**** weather field ********/
-    double cell_WIN;
-    double cell_SSD;
-    double cell_RHU;
-    double cell_PRS;
-    double cell_TEM_AVG;
-    double cell_TEM_MAX;
-    double cell_TEM_MIN;
-    cell_PRS = (data_weather + t)->PRS;
-    cell_SSD = (data_weather + t)->SSD;
-    cell_RHU = (data_weather + t)->RHU;
-    cell_WIN = (data_weather + t)->WIN;
-    cell_TEM_AVG = (data_weather + t)->TEM_AVG;
-    cell_TEM_MAX = (data_weather + t)->TEM_MAX;
-    cell_TEM_MIN = (data_weather + t)->TEM_MIN;
-    printf("%8s%8s%8s%8s%8s%8s%8s%8s\n", "PRE", "PRS", "SSD", "RHU", "WIN", "TEM_AVG", "TEM_MAX", "TEM_MIN");
-    printf(
-        "%8.2f%8.2f%8.2f%8.2f%8.2f%8.2f%8.2f%8.2f\n", 
-        cell_PRE*1000, cell_PRS, cell_SSD, cell_RHU, cell_WIN, cell_TEM_AVG, cell_TEM_MAX, cell_TEM_MIN
-    );
-    /**** radiation *****/
-    int year = 2006;
-    int month = 8;
-    int day = 15;
+    int step_time = GP.STEP_TIME;
+    /**** radiation parameters *****/
     double lat = 26.75;
     double as = 0.25;
     double bs = 0.5;
-    double Frac_canopy = 0.6;
+    double Frac_canopy = 1.0;
     double Ref_o = 0.18;
     double Ref_u = 0.18;
     double Ref_s = 0.10;
     double LAI_o = 3.0;
     double LAI_u = 1.0;
     /**** vegetation parameters ****/
+    double ws_obs_z = 10.0;
+    int Toggle_Understory = 1;
     double Canopy_zr = 20; /* reference height of canopy, m */
     double Canopy_h = 14;  /* height of canopy, m */
     double d_o = 9.2;      /* displacement height of canopy, m */
@@ -149,10 +117,6 @@ void main(int argc, char *argv[])
     double SM_wp = 0.2;   /* the plant wilting point */
     double SM_free = 0.8; /* the moisture content above which soil conditions do not restrict transpiration. */
     double Soil_Fe = 0.005;
-
-    double ws_obs_z = 10.0;
-    int Toggle_Understory = 1;
-    int step_time = 24;
 
     /******
      * stage/intermediate variables 
@@ -173,49 +137,113 @@ void main(int argc, char *argv[])
     double Interception_o;   /* overstory interception water, m */
     double Interception_u;   /* understory interception water, m */
     
-    Interception_o = 0.002; Interception_u = 0.001;
+    Interception_o = 0.0; Interception_u = 0.0;
+    /********************************************************************************
+     *                       compute the evapotranspiration
+     * */
+    FILE *fp_wea;
+    FILE *fp_ET;
+    if ((fp_wea = fopen("D:/xHM/example_data/ET_weather.txt", "w")) == NULL)
+    {
+        printf("Failed in opening/creating file %s\n", "ET_weather.txt");
+        exit(0);
+    }
+    if ((fp_ET = fopen("D:/xHM/example_data/ET_output.txt", "w")) == NULL)
+    {
+        printf("Failed in opening/creating file %s\n", "ET_output.txt");
+        exit(0);
+    }
+    fprintf(
+        fp_wea, "%8s%8s%8s%8s%8s%8s%8s%8s\n",
+        "PRE", "TEM_AVG", "TEM_MAX", "TEM_MIN", "WIN", "SSD", "RHU", "PRS"
+    );
+    fprintf(fp_ET,
+            "%8s%8s%8s%8s%8s%8s%8s\n",
+            "Prec_net", "Ep", "EI_o", "ET_o", "EI_u", "ET_u", "ET_s");
 
-    ET_CELL(
-        year, month, day, lat,
-        cell_PRE, cell_TEM_AVG, cell_TEM_MIN, cell_TEM_MAX, cell_RHU, cell_PRS, cell_WIN,
-        ws_obs_z, cell_SSD,
+    // int t = 23; // time index
+    int cell_index_row = 56; 
+    int cell_index_col = 60;
+    struct tm *ptm;
+    /**** weather field ********/
+    double cell_WIN;
+    double cell_SSD;
+    double cell_RHU;
+    double cell_PRS;
+    double cell_TEM_AVG;
+    double cell_TEM_MAX;
+    double cell_TEM_MIN;
+    double cell_PRE;
+    int year;
+    int month;
+    int day;
+    for (size_t t = 0; t < 365; t++)
+    {
+        tm_increment(
+            GP.START_YEAR,
+            GP.START_MONTH,
+            GP.START_DAY,
+            GP.START_HOUR,
+            &ptm,
+            GP.STEP_TIME,
+            t);
+        year = ptm->tm_year + 1900;
+        month = ptm->tm_mon + 1;
+        day = ptm->tm_mday;
+        // printf("%d-%d-%d\n", day, month, year);
+        cell_PRE = (double)*(data_PRE + t * GEO_header.ncols * GEO_header.nrows + GEO_header.ncols * cell_index_row + cell_index_col) / 10;
+        cell_PRE = cell_PRE / 1000; // unit: m
+        cell_PRS = (data_weather + t)->PRS;
+        cell_SSD = (data_weather + t)->SSD;
+        cell_RHU = (data_weather + t)->RHU;
+        cell_WIN = (data_weather + t)->WIN;
+        cell_TEM_AVG = (data_weather + t)->TEM_AVG;
+        cell_TEM_MAX = (data_weather + t)->TEM_MAX;
+        cell_TEM_MIN = (data_weather + t)->TEM_MIN;
+        fprintf(
+            fp_wea, "%8.2f%8.2f%8.2f%8.2f%8.1f%8.0f%8.1f%8.1f\n",
+            cell_PRE*1000, cell_TEM_AVG, cell_TEM_MAX, cell_TEM_MIN, cell_WIN, cell_SSD, cell_RHU, cell_PRS);
+        ET_CELL(
+            year, month, day, lat,
+            cell_PRE, cell_TEM_AVG, cell_TEM_MIN, cell_TEM_MAX, cell_RHU, cell_PRS, cell_WIN,
+            ws_obs_z, cell_SSD,
 
-        as, bs,
-        &Rno, &Rno_short, &Rnu, &Rnu_short, &Rns,
+            as, bs,
+            &Rno, &Rno_short, &Rnu, &Rnu_short, &Rns,
 
-        Frac_canopy,
-        Ref_o, Ref_u, Ref_s,
-        LAI_o, LAI_u,
-        Rpc_o, rs_min_o, rs_max_o,
-        Rpc_u, rs_min_u, rs_max_u,
+            Frac_canopy,
+            Ref_o, Ref_u, Ref_s,
+            LAI_o, LAI_u,
+            Rpc_o, rs_min_o, rs_max_o,
+            Rpc_u, rs_min_u, rs_max_u,
 
-        Canopy_zr, Canopy_h,
-        d_o, z0_o,
-        d_u, z0_u,
+            Canopy_zr, Canopy_h,
+            d_o, z0_o,
+            d_u, z0_u,
 
-        SM, SM_wp, SM_free, Soil_Fe,
+            SM, SM_wp, SM_free, Soil_Fe,
 
-        &Prec_throughfall,
-        &Prec_net,
-        &Ep,
-        &EI_o,
-        &ET_o,
-        &EI_u,
-        &ET_u,
-        &ET_s,
-        &Interception_o,
-        &Interception_u,
-        Toggle_Understory,
-        step_time);
+            &Prec_throughfall,
+            &Prec_net,
+            &Ep,
+            &EI_o,
+            &ET_o,
+            &EI_u,
+            &ET_u,
+            &ET_s,
+            &Interception_o,
+            &Interception_u,
+            Toggle_Understory,
+            step_time);
+        fprintf(fp_ET,
+                "%10.2f%8.2f%8.2f%8.2f%8.2f%8.2f%8.2f\n",
+                Prec_net * 1000, Ep * 1000 * GP.STEP_TIME, EI_o * 1000, ET_o * 1000, EI_u * 1000, ET_u * 1000, ET_s * 1000);
+    }
     
-    printf(
-        "%8s%8s%10s%8s%8s%8s%8s%8s%8s\n",
-        "Rno", "Rnu", "Prec_net", "Ep", "EI_o", "ET_o", "EI_u", "ET_u", "ET_s"
-    );
-    printf(
-        "%8.2f%8.2f%10.2f%8.2f%8.2f%8.2f%8.2f%8.2f%8.2f\n",
-        Rno, Rnu, Prec_net*1000, Ep*1000*step_time, EI_o*100, ET_o*100, EI_u*100, ET_u*100, ET_s*100
-    );
+    fclose(fp_wea);
+    fclose(fp_ET);
+    printf("-------------------- ET: done!\n");
+
 }
 
 void Import_GPara(

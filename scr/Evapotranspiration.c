@@ -62,7 +62,7 @@ double PotentialEvaporation(
     double es, ea; // saturated, and actual vapor pressure (kPa)
     
     double gamma;  // psychrometric constant, kPa/℃
-    double ET;
+    double Ep;
 
     es = 0.5 * (e0(Air_tem_max) + e0(Air_tem_min));
     ea = Air_rhu * es / 100;
@@ -71,11 +71,11 @@ double PotentialEvaporation(
         Air_tem_avg, Air_tem_min, Air_tem_max);
     gamma = Const_psychrometric(Air_pres);
     
-    ET = (delta * Radia_net +
+    Ep = (delta * Radia_net +
           Density_air * SpecificHeat_air * (es - ea) / Resist_aero) /
          (lambda_v * (delta + gamma)); // unit: kg/m2/h
-    ET = ET / 1000;  // m/h
-    return ET;
+    Ep = Ep / 1000;  // m/h
+    return Ep;
 }
 
 double Transpiration(
@@ -296,7 +296,7 @@ void ET_iteration(
     double Prec,                /* precipitation (total) within the time step, m */
     double *Prec_throughfall,   /* precipitation throughfall from overstory*/
     double *Prec_net,           /* net precipitation from understory into soil process */
-    double *Ep,
+    double *Ep,                 /* the potential evaporation rate [m/h] */
     double *EI_o,               /* actual evaporation from overstory, m */
     double *ET_o,               /* actual transpiration from overstory, m */
     double *EI_u,               /* actual evaporation from understory, m */
@@ -350,7 +350,6 @@ void ET_iteration(
         *Ep = PotentialEvaporation(
             Air_tem_avg, Air_tem_min, Air_tem_max,
             Air_pres, Air_rhu, Radia_net, Resist_aero_o);
-        printf("Ep: %lf\n", *Ep);
         ET_story(Air_tem_avg, Air_tem_min, Air_tem_max, Air_pres,
                  Prec, Prec_throughfall,
                  *Ep,
@@ -401,6 +400,10 @@ void ET_iteration(
             *Prec_net = 0.0;
         }
     }
+    printf("Ep: %8.2f\n", *Ep * step_time * 1000); // unit:mm 
+    printf("%s:%8.2f %s:%8.2f %s:%8.2f %s:%8.2f %s:%8.2f\n",
+    "EI_o", *EI_o * 1000, "ET_o", *ET_o * 1000, "EI_u", *EI_u * 1000, "ET_u", *ET_u * 1000, "ET_s", *ET_s * 1000
+    );
 }
 
 
@@ -495,7 +498,7 @@ void ET_CELL(
     */
     Rs = Rs * 1000/24;
     L_sky = L_sky * 1000/24;
-
+    printf("Rs: %8.2f\nL_sky: %8.2f\n", Rs, L_sky);
     int Toggle_Overstory = 1;           /* whether there is overstory, yes: 1 */
     if (Frac_canopy < 0.0001)
     {
@@ -516,7 +519,10 @@ void ET_CELL(
         Frac_canopy, Ref_o, Ref_u, Ref_s,
         Tem_o, Tem_u, Tem_s,
         LAI_o, LAI_u, Toggle_Understory);
-
+    printf(
+        "Rno: %8.2f\nRno_short: %8.2f\nRnu: %8.2f\nRnu_short: %8.2f\n",
+        *Rno, *Rno_short, *Rnu, *Rnu_short
+    );
     double R_net;
     if (Toggle_Overstory == 1) 
     {
@@ -530,7 +536,7 @@ void ET_CELL(
     {
         R_net = *Rns;
     }
-    
+    printf("R_net: %8.2f\n", R_net);
     double Rp_o, Rp_u;   // visiable radiation in net shortwave radiation
     Rp_o = VISFRACT * *Rno_short * 1000/3600;  // convert kJ/m2/h to W/m2, the same unit as Rpc
     Rp_u = VISFRACT * *Rnu_short * 1000/3600;
@@ -538,7 +544,7 @@ void ET_CELL(
     double Res_canopy_u;
     double Res_aero_o;
     double Res_aero_u;
-
+    
     if (Toggle_Overstory == 1)
     {
         Res_canopy_o = Resist_Stomatal(
@@ -598,4 +604,5 @@ void ET_CELL(
         Soil_Fe,
         Toggle_Understory, // whether the understory is bare soil, yes: 1
         step_time);
+    
 }

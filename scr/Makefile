@@ -180,6 +180,30 @@ ET/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/build
 .PHONY : ET/fast
 
+Calendar.obj: Calendar.c.obj
+.PHONY : Calendar.obj
+
+# target to build an object file
+Calendar.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Calendar.c.obj
+.PHONY : Calendar.c.obj
+
+Calendar.i: Calendar.c.i
+.PHONY : Calendar.i
+
+# target to preprocess a source file
+Calendar.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Calendar.c.i
+.PHONY : Calendar.c.i
+
+Calendar.s: Calendar.c.s
+.PHONY : Calendar.s
+
+# target to generate assembly for a file
+Calendar.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Calendar.c.s
+.PHONY : Calendar.c.s
+
 Evaporation_soil.obj: Evaporation_soil.c.obj
 .PHONY : Evaporation_soil.obj
 
@@ -628,6 +652,9 @@ help:
 	@echo ... SNOW
 	@echo ... UH
 	@echo ... WEATHER
+	@echo ... Calendar.obj
+	@echo ... Calendar.i
+	@echo ... Calendar.s
 	@echo ... Evaporation_soil.obj
 	@echo ... Evaporation_soil.i
 	@echo ... Evaporation_soil.s
