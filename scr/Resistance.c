@@ -175,14 +175,14 @@ double Resist_Canopy(
 
 double Resist_Stomatal(
     double Air_tem_avg, /* air temperature (in degrees Celsius) */
-    double Air_tem_min, /*scalar: minimum air temperature (℃)*/
-    double Air_tem_max, /*scalar: maximum air temperature (℃)*/
+    double Air_tem_min, /* scalar: minimum air temperature (℃)*/
+    double Air_tem_max, /* scalar: maximum air temperature (℃)*/
     double Air_rhu,     /* relative humidity, % */
 
     double Rp,     /* the visible radiation */
     double Rpc,    /* the light level where rs is twice the rs_min */
-    double rs_min, /* minimum stomatal resistance, [s/cm] */
-    double rs_max, /* maximum (cuticular) resistance, [s/cm] */
+    double rs_min, /* minimum stomatal resistance, [s/m] */
+    double rs_max, /* maximum (cuticular) resistance, [s/m] */
 
     double SM,     /* average soil moisture content */
     double SM_wp,  /* the plant wilting point */
@@ -206,7 +206,7 @@ double Resist_Stomatal(
 
     double rs;
     rs = rs_min * f1 * f2 * f3 * f4;
-    rs = rs / 36; // convert unit from s/cm to h/m
+    rs = rs / 3600; // convert unit from s/m to h/m
     return rs;
 }
 
