@@ -26,6 +26,25 @@ typedef struct
     double TEM_MIN;
 } ST_Weather;
 
+typedef struct
+{
+    double CAN_FRAC;
+    int Understory;
+    double Albedo_o;
+    double Albedo_u;
+    double LAI_o;
+    double LAI_u;
+    double rs_min_o;
+    double rs_min_u;
+    double Rpc;
+    double CAN_H;
+    double CAN_RZ;
+    double d_o;
+    double d_u;
+    double z0_o;
+    double z0_u;
+}
+
 #endif
 
 
