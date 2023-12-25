@@ -1,5 +1,6 @@
 FP_GEO,D:/xHM/example_data/CT_GEO_1km/GEO1km_data.nc
 FP_PRE,D:/xHM/example_data/Weather/weather_Chitan1km.nc
+FP_VEGLIB:D:/xHM/example_data/VegeLib.txt
 FP_WEATHER,D:/xHM/example_data/Weather/weather_daily_2001-2016.csv
 START_YEAR,2001
 START_MONTH,1
