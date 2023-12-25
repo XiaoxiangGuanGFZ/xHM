@@ -3,11 +3,23 @@
 #define Evapotranspiration_ST
 
 #include "constants.h"
+
+// coefficient in terrestrial radiation computation
+#define as 0.25
+#define bs 0.5
+
+// shortwave reflection coefficient of soil/ground
+#define ALBEDO_SOIL 0.159
+
+// rs_max: maximum (cuticular) resistance [50 s/cm = 5000s/m]
+#define rs_max 5000.0
+
 typedef struct 
 {
     char FP_GEO[MAXCHAR];
     char FP_PRE[MAXCHAR];
     char FP_WEATHER[MAXCHAR];
+    char FP_VEGLIB[MAXCHAR];
     int START_YEAR;
     int START_MONTH;
     int START_DAY;
