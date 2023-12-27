@@ -420,6 +420,36 @@ Lookup_VegLib.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Lookup_VegLib.c.s
 .PHONY : Lookup_VegLib.c.s
 
+NC_copy_global_att.obj: NC_copy_global_att.c.obj
+.PHONY : NC_copy_global_att.obj
+
+# target to build an object file
+NC_copy_global_att.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\WEATHER.dir\build.make CMakeFiles/WEATHER.dir/NC_copy_global_att.c.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\UH.dir\build.make CMakeFiles/UH.dir/NC_copy_global_att.c.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/NC_copy_global_att.c.obj
+.PHONY : NC_copy_global_att.c.obj
+
+NC_copy_global_att.i: NC_copy_global_att.c.i
+.PHONY : NC_copy_global_att.i
+
+# target to preprocess a source file
+NC_copy_global_att.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\WEATHER.dir\build.make CMakeFiles/WEATHER.dir/NC_copy_global_att.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\UH.dir\build.make CMakeFiles/UH.dir/NC_copy_global_att.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/NC_copy_global_att.c.i
+.PHONY : NC_copy_global_att.c.i
+
+NC_copy_global_att.s: NC_copy_global_att.c.s
+.PHONY : NC_copy_global_att.s
+
+# target to generate assembly for a file
+NC_copy_global_att.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\WEATHER.dir\build.make CMakeFiles/WEATHER.dir/NC_copy_global_att.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\UH.dir\build.make CMakeFiles/UH.dir/NC_copy_global_att.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/NC_copy_global_att.c.s
+.PHONY : NC_copy_global_att.c.s
+
 Radiation_Calc.obj: Radiation_Calc.c.obj
 .PHONY : Radiation_Calc.obj
 
@@ -706,6 +736,9 @@ help:
 	@echo ... Lookup_VegLib.obj
 	@echo ... Lookup_VegLib.i
 	@echo ... Lookup_VegLib.s
+	@echo ... NC_copy_global_att.obj
+	@echo ... NC_copy_global_att.i
+	@echo ... NC_copy_global_att.s
 	@echo ... Radiation_Calc.obj
 	@echo ... Radiation_Calc.i
 	@echo ... Radiation_Calc.s

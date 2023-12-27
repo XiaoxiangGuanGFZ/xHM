@@ -26,7 +26,7 @@ set(GEO
 set(WEATHER
     Weather2NC.c
     Weather2NC_main.c
-    NC_copy_global_att.h
+    NC_copy_global_att.c
 )
 
 set(UH
