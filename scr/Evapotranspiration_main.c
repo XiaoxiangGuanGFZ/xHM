@@ -37,7 +37,7 @@ void main(int argc, char *argv[])
      */
     int ncID_GEO;
     ST_Header GEO_header;
-    nc_open(GP.FP_GEO, NC_NOWRITE, &ncID);
+    nc_open(GP.FP_GEO, NC_NOWRITE, &ncID_GEO);
     nc_get_att_int(ncID_GEO, NC_GLOBAL, "ncols", &GEO_header.ncols);
     nc_get_att_int(ncID_GEO, NC_GLOBAL, "nrows", &GEO_header.nrows);
     nc_get_att_double(ncID_GEO, NC_GLOBAL, "xllcorner", &GEO_header.xllcorner);
@@ -70,8 +70,8 @@ void main(int argc, char *argv[])
 
     data_VEGTYPE = (int *)malloc(sizeof(int) * time_steps_PRE * GEO_header.ncols * GEO_header.nrows);
     data_VEGFRAC = (int *)malloc(sizeof(int) * time_steps_PRE * GEO_header.ncols * GEO_header.nrows);
-    nc_inq_varid(ncID_GEO, "VEGTYPE", varID_VEGTYPE);
-    nc_inq_varid(ncID_GEO, "VEGFRAC", varID_VEGFRAC);
+    nc_inq_varid(ncID_GEO, "VEGTYPE", &varID_VEGTYPE);
+    nc_inq_varid(ncID_GEO, "VEGFRAC", &varID_VEGFRAC);
     nc_get_var_int(ncID_GEO, varID_VEGTYPE, data_VEGTYPE);
     nc_get_var_int(ncID_GEO, varID_VEGFRAC, data_VEGFRAC);
 
@@ -231,14 +231,12 @@ void main(int argc, char *argv[])
             year, month, day, lat,
             cell_PRE, cell_TEM_AVG, cell_TEM_MIN, cell_TEM_MAX, cell_RHU, cell_PRS, cell_WIN,
             ws_obs_z, cell_SSD,
-
-            as, bs,
             &Rno, &Rno_short, &Rnu, &Rnu_short, &Rns,
             cell_veg.CAN_FRAC,
             cell_veg.Albedo_o, cell_veg.Albedo_u, ALBEDO_SOIL,
             cell_veg.LAI_o, cell_veg.LAI_u,
-            cell_veg.Rpc, cell_veg.rs_min_o, rs_max,
-            cell_veg.Rpc, cell_veg.rs_min_o, rs_max,
+            cell_veg.Rpc, cell_veg.rs_min_o, RS_MAX,
+            cell_veg.Rpc, cell_veg.rs_min_o, RS_MAX,
 
             cell_veg.CAN_RZ, cell_veg.CAN_H,
             cell_veg.d_o, cell_veg.z0_o,
