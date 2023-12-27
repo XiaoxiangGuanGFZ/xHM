@@ -46,7 +46,7 @@ void Import_veglib(
     FILE *fp;
     if((fp = fopen(FP, "r")) == NULL)
     {
-        printf("cannot open file %s\n", FP);
+        printf("cannot open VegLib file %s\n", FP);
         exit(0);
     }
     char row[MAXCHAR];
@@ -289,65 +289,65 @@ void Lookup_VegLib_CELL_MON(
     }
 }
 
-void main()
-{
-    char FP[] = "D:/xHM/example_data/VegeLib.txt";
-    ST_VegLib veglib[11];
-    Import_veglib(
-        FP,
-        veglib);
-    printf("1-ID: %d\n", veglib[0].ID);
-    printf("1-Rmin: %.3f\n", veglib[0].Rmin);
+// void main()
+// {
+//     char FP[] = "D:/xHM/example_data/VegeLib.txt";
+//     ST_VegLib veglib[11];
+//     Import_veglib(
+//         FP,
+//         veglib);
+//     printf("1-ID: %d\n", veglib[0].ID);
+//     printf("1-Rmin: %.3f\n", veglib[0].Rmin);
 
-    printf("11-LAI: %.3f\n", *((veglib + 10)->LAI + 2));
+//     printf("11-LAI: %.3f\n", *((veglib + 10)->LAI + 2));
 
-    int ID = 5;
-    int month = 1;
-    // int Overstory;
-    // double Rarc, Rmin, LAI, Roughness, Displacement, Albedo, SAI, CAN_TOP, CAN_BOTT, WIND_H;
-    // LookUp_veglib(
-    //     veglib, ID, month,
-    //     &Overstory, &Rarc, &Rmin,
-    //     &LAI, &Roughness, &Displacement, &Albedo,
-    //     &SAI, &CAN_TOP, &CAN_BOTT, &WIND_H);
-    int CLASS=0;
-    ST_CELL_VEG cell_veg;
-    Lookup_VegLib_CELL(veglib, CLASS, &cell_veg);
+//     int ID = 5;
+//     int month = 1;
+//     // int Overstory;
+//     // double Rarc, Rmin, LAI, Roughness, Displacement, Albedo, SAI, CAN_TOP, CAN_BOTT, WIND_H;
+//     // LookUp_veglib(
+//     //     veglib, ID, month,
+//     //     &Overstory, &Rarc, &Rmin,
+//     //     &LAI, &Roughness, &Displacement, &Albedo,
+//     //     &SAI, &CAN_TOP, &CAN_BOTT, &WIND_H);
+//     int CLASS=0;
+//     ST_CELL_VEG cell_veg;
+//     Lookup_VegLib_CELL(veglib, CLASS, &cell_veg);
     
-    Lookup_VegLib_CELL_MON(
-        veglib,
-        CLASS,
-        month,
-        &cell_veg);
+//     Lookup_VegLib_CELL_MON(
+//         veglib,
+//         CLASS,
+//         month,
+//         &cell_veg);
     
-    printf(
-        "%10s%10s%10s%10s%10s%10s\n",
-        "CLASS", "month", "Understory", 
-        "CAN_TOP", "WIND_H", "Rpc"
-    );
-    printf(
-        "%10d%10d%10d%10.3f%10.3f%10.3f\n",
-        CLASS, month, cell_veg.Understory, 
-        cell_veg.CAN_H, cell_veg.CAN_RZ, cell_veg.Rpc
-    );
+//     printf(
+//         "%10s%10s%10s%10s%10s%10s\n",
+//         "CLASS", "month", "Understory", 
+//         "CAN_TOP", "WIND_H", "Rpc"
+//     );
+//     printf(
+//         "%10d%10d%10d%10.3f%10.3f%10.3f\n",
+//         CLASS, month, cell_veg.Understory, 
+//         cell_veg.CAN_H, cell_veg.CAN_RZ, cell_veg.Rpc
+//     );
 
-    printf(
-        "Overstory:\n%10s%10s%10s%10s%10s\n",
-        "LAI", "Albedo", "disp", "rough", "Rsmin"
-    );
-    printf(
-        "%10.3f%10.3f%10.3f%10.3f%10.3f\n",
-        cell_veg.LAI_o, cell_veg.Albedo_o, cell_veg.d_o, 
-        cell_veg.z0_o, cell_veg.rs_min_o
-    );
+//     printf(
+//         "Overstory:\n%10s%10s%10s%10s%10s\n",
+//         "LAI", "Albedo", "disp", "rough", "Rsmin"
+//     );
+//     printf(
+//         "%10.3f%10.3f%10.3f%10.3f%10.3f\n",
+//         cell_veg.LAI_o, cell_veg.Albedo_o, cell_veg.d_o, 
+//         cell_veg.z0_o, cell_veg.rs_min_o
+//     );
 
-    printf(
-        "Understory:\n%10s%10s%10s%10s%10s\n",
-        "LAI", "Albedo", "disp", "rough", "Rsmin"
-    );
-    printf(
-        "%10.3f%10.3f%10.3f%10.3f%10.3f\n",
-        cell_veg.LAI_u, cell_veg.Albedo_u, cell_veg.d_u, 
-        cell_veg.z0_u, cell_veg.rs_min_u
-    );
-}
+//     printf(
+//         "Understory:\n%10s%10s%10s%10s%10s\n",
+//         "LAI", "Albedo", "disp", "rough", "Rsmin"
+//     );
+//     printf(
+//         "%10.3f%10.3f%10.3f%10.3f%10.3f\n",
+//         cell_veg.LAI_u, cell_veg.Albedo_u, cell_veg.d_u, 
+//         cell_veg.z0_u, cell_veg.rs_min_u
+//     );
+// }
