@@ -24,8 +24,9 @@
  * 
 */
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <netcdf.h>
-
 #include "NC_copy_global_att.h"
 
 int copy_global_attributes(
