@@ -129,8 +129,7 @@ int main(int argc, char * argv[]) {
                 (TS_Meteo+i)->date.m,
                 (TS_Meteo+i)->date.d,
                 p_gp->LAT,  // the latitute of the location
-                (TS_Meteo+i)->SUNDUR,   // sunshine duration in a day, hours
-                0.25, 0.5
+                (TS_Meteo+i)->SUNDUR   // sunshine duration in a day, hours
             );
             (TS_Meteo+i)->R_short = Radiation_short_surface(
                 (TS_Meteo+i)->R_sky, p_gp->ALBEDO_CANOPY,  p_gp->LAI, p_gp->ALBEDO_SNOW 

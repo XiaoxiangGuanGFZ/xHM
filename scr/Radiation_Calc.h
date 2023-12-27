@@ -14,9 +14,7 @@ double Radiation_downward_short(
     int month,
     int day,
     double lat,         /* the latitute of the location */ 
-    double Air_SSD,     /* sunshine duration in a day, hours */ 
-    double as,          /* two parameters, 0.25 and 0.5 by default */
-    double bs    
+    double Air_SSD      /* sunshine duration in a day, hours */ 
 );
 
 

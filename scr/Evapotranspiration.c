@@ -31,6 +31,7 @@
 #include <math.h>
 #include "Constants.h"
 #include "Evapotranspiration.h"
+#include "Evapotranspiration_ST.h"
 #include "Evapotranspiration_Energy.h"
 #include "Evaporation_soil.h"
 #include "Radiation_Calc.h"
@@ -432,8 +433,6 @@ void ET_CELL(
     double ws_obs_z,    /* the measurement height, m */
     double Air_ssd,     /* sunshine duration in a day, hours */
 
-    double as,
-    double bs,          /* as and bs: two empirical coefficients, 0.25 and 0.5 by default */
     double *Rno,        /* net radiation for the overstory */
     double *Rno_short,  /* net shortwave radiation for the overstory */
     double *Rnu,        /* net radiation for the understory */
@@ -495,7 +494,7 @@ void ET_CELL(
      * 1000 000 / (3600*24) = 11.574
     */
     double Rs; // received shortwave radiation / solar insolation for the overstory canopy
-    Rs = Radiation_downward_short(year, month, day, lat, Air_ssd, as, bs);
+    Rs = Radiation_downward_short(year, month, day, lat, Air_ssd);
     double L_sky; // received longwave radiation for the overstory canopy
     L_sky = Radiation_downward_long(
         year, month, day, lat,

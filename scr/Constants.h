@@ -14,6 +14,15 @@
 #define CONSTANTS
 
 #define VISFRACT 0.5 /* part of shortwave that is in the visible */
+// coefficient in terrestrial radiation computation
+#define as 0.25
+#define bs 0.5
+
+// shortwave reflection coefficient of soil/ground
+#define ALBEDO_SOIL 0.159
+
+// rs_max: maximum (cuticular) resistance [50 s/cm = 5000s/m]
+#define RS_MAX 5000.0
 
 #define g 9.80  // acceleration of gravity, 9.8 m/s2
 #define Density_water 1000   // density of (liquid) water, 1000 kg/m3

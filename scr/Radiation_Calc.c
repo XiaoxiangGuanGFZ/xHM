@@ -80,9 +80,7 @@ double Radiation_downward_short(
     int month,
     int day,
     double lat,         /* the latitute of the location */ 
-    double Air_SSD,     /* sunshine duration in a day, hours */ 
-    double as,
-    double bs           /* as and bas: two empirical coefficients, 0.25 and 0.5 by default */
+    double Air_SSD      /* sunshine duration in a day, hours */ 
 ){
     /*****
      *  calculate the received shortwave radiation [(MJ⋅m-2⋅d-1)], 

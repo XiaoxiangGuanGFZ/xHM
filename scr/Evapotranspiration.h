@@ -122,9 +122,7 @@ void ET_CELL(
     double Air_ws_obs,  /* wind speed at the measurement height, m/s */
     double ws_obs_z,    /* the measurement height, m */
     double Air_ssd,     /* sunshine duration in a day, hours */
-
-    double as,
-    double bs,          /* as and bs: two empirical coefficients, 0.25 and 0.5 by default */
+    
     double *Rno,        /* net radiation for the overstory */
     double *Rno_short,  /* net shortwave radiation for the overstory */
     double *Rnu,        /* net radiation for the understory */
