@@ -396,6 +396,30 @@ GEO_para.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/GEO_para.c.s
 .PHONY : GEO_para.c.s
 
+Lookup_VegLib.obj: Lookup_VegLib.c.obj
+.PHONY : Lookup_VegLib.obj
+
+# target to build an object file
+Lookup_VegLib.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Lookup_VegLib.c.obj
+.PHONY : Lookup_VegLib.c.obj
+
+Lookup_VegLib.i: Lookup_VegLib.c.i
+.PHONY : Lookup_VegLib.i
+
+# target to preprocess a source file
+Lookup_VegLib.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Lookup_VegLib.c.i
+.PHONY : Lookup_VegLib.c.i
+
+Lookup_VegLib.s: Lookup_VegLib.c.s
+.PHONY : Lookup_VegLib.s
+
+# target to generate assembly for a file
+Lookup_VegLib.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Lookup_VegLib.c.s
+.PHONY : Lookup_VegLib.c.s
+
 Radiation_Calc.obj: Radiation_Calc.c.obj
 .PHONY : Radiation_Calc.obj
 
@@ -679,6 +703,9 @@ help:
 	@echo ... GEO_para.obj
 	@echo ... GEO_para.i
 	@echo ... GEO_para.s
+	@echo ... Lookup_VegLib.obj
+	@echo ... Lookup_VegLib.i
+	@echo ... Lookup_VegLib.s
 	@echo ... Radiation_Calc.obj
 	@echo ... Radiation_Calc.i
 	@echo ... Radiation_Calc.s

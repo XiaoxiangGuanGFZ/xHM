@@ -41,6 +41,7 @@ set(ET
     Radiation_Calc.c
     Resistance.c
     Calendar.c
+    Lookup_VegLib.c
 )
 
 
