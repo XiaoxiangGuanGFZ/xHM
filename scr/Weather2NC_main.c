@@ -5,11 +5,10 @@
 #include <math.h>
 #include "Weather2NC_ST.h"
 #include "Weather2NC.h"
-
+#include "NC_copy_global_att.h"
 #include "GEO_ST.h"
+#include "Constants.h"
 
-#define MAXrows 10000
-#define ERR(e) {printf("Error: %s\n", nc_strerror(e)); return e;}
 
 double inv_distance(
     double lon1,
@@ -17,7 +16,6 @@ double inv_distance(
     double lat1,
     double lat2
 );
-int copy_global_attributes(int input_ncid, int output_ncid);
 
 void main(int argc, char * argv[]){
     ST_weather_para GP;
@@ -195,44 +193,3 @@ double inv_distance(
     return idis;
 }
 
-int copy_global_attributes(int input_ncid, int output_ncid) {
-    int status, num_atts, i;
-    char attname[NC_MAX_NAME + 1];
-    nc_type xtype;
-    size_t attlen;
-    void *attvalue;
-
-    // Get the number of attributes for NC_GLOBAL
-    if ((status = nc_inq_natts(input_ncid, &num_atts)) != NC_NOERR) ERR(status);
-
-    // Loop through each attribute
-    for (i = 0; i < num_atts; i++) {
-        // Get attribute information
-        if ((status = nc_inq_attname(input_ncid, NC_GLOBAL, i, attname)) != NC_NOERR) ERR(status);
-        if ((status = nc_inq_att(input_ncid, NC_GLOBAL, attname, &xtype, &attlen)) != NC_NOERR) ERR(status);
-
-        // Allocate memory for attribute value
-        attvalue = malloc(attlen);
-        if (attvalue == NULL) {
-            fprintf(stderr, "Memory allocation error\n");
-            return NC_ENOMEM;
-        }
-
-        // Read attribute value
-        if ((status = nc_get_att(input_ncid, NC_GLOBAL, attname, attvalue)) != NC_NOERR) {
-            free(attvalue);
-            ERR(status);
-        }
-
-        // Write attribute to the output file
-        if ((status = nc_put_att(output_ncid, NC_GLOBAL, attname, xtype, attlen, attvalue)) != NC_NOERR) {
-            free(attvalue);
-            ERR(status);
-        }
-
-        // Free allocated memory
-        free(attvalue);
-    }
-
-    return NC_NOERR;
-}

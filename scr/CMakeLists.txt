@@ -26,11 +26,13 @@ set(GEO
 set(WEATHER
     Weather2NC.c
     Weather2NC_main.c
+    NC_copy_global_att.h
 )
 
 set(UH
     Route_UH.c
     Route_UH_main.c
+    NC_copy_global_att.c
 )
 
 set(ET
@@ -42,6 +44,7 @@ set(ET
     Resistance.c
     Calendar.c
     Lookup_VegLib.c
+    NC_copy_global_att.c
 )
 
 

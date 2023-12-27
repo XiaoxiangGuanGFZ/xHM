@@ -25,9 +25,13 @@
 */
 
 #include <netcdf.h>
+
 #include "NC_copy_global_att.h"
 
-int copy_global_attributes(int input_ncid, int output_ncid) {
+int copy_global_attributes(
+    int input_ncid, 
+    int output_ncid
+) {
     int status, num_atts, i;
     char attname[NC_MAX_NAME + 1];
     nc_type xtype;
