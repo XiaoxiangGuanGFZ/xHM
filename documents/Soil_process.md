@@ -154,7 +154,7 @@ $$
 $$
 
 where:
-- $m$: the pore size distribution index
+- $m$: the pore size distribution index, the same as aforementioned $b$
 - $\phi$: the soil porosity
 - $\theta_r$: residual soil moisture content
 - $\theta_s$: the saturated moisture content, taken equal to $\phi$
