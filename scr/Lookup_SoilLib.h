@@ -1,7 +1,7 @@
 
 #ifndef Lookup_VegLib
 #define Lookup_VegLib
-#include "Constants.h"
+
 typedef struct 
 {
     int Code;                /* texture code */
@@ -35,6 +35,16 @@ typedef struct
     double S_OC;             /* Subsoil Organic Carbon (%) */
 } ST_SoilID;
 
+typedef struct 
+{
+    int ID;
+    int T_USDA_TEX_CLASS;
+    int S_USDA_TEX_CLASS;
+    ST_SoilLib *Topsoil; 
+    ST_SoilLib *Subsoil;
+} ST_SOIL_LIB_CELL;
+
+
 void Import_soillib(
     char FP[],
     ST_SoilLib soillib[]
@@ -49,6 +59,13 @@ void Lookup_Soil_ID(
     int ID,
     int *T_USDA_TEX_CLASS,
     int *S_USDA_TEX_CLASS,
+    ST_SoilID soilID[]
+);
+
+void Lookup_Soil_CELL(
+    int ID,
+    ST_SOIL_LIB_CELL *soil_cell_para, 
+    ST_SoilLib soillib[],
     ST_SoilID soilID[]
 );
 
