@@ -247,7 +247,7 @@ $$
 where:
 - $K_{oi,j,k}$: the saturated hydraulic conductivity at the soil surface in cell $i,j$ in the $k$ idrection
 - $D_{i,j}$: the soil thickness at cell $i,j$
-- $n_{i,j}$: the local power law exponent
+- $n_{i,j}$: the local power law exponent $n = 2 \cdot b + 3$, $b$ is the pore-size distribution parameter in Brooks and Corey (1964) formula
 
 By substituting, yields:
 

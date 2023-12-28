@@ -304,8 +304,7 @@ $$
 where:
 - $\theta$: the average soil moisture content
 - $\theta_{wp}$: is the plant wilting point
-- $\theta^*$: the moisture content above which soil conditions do not
-restrict transpiration
+- $\theta^*$: the moisture content (field capacity) above which soil conditions do not restrict transpiration
 
 ## 4. Net radiation
 ### 4.1 overstory
