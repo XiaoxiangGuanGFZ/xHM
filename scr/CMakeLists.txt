@@ -17,12 +17,14 @@ set(SNOW_module
     SnowEnergy.c
     Radiation_Calc.c
 )
+
 set(GEO
     GEO_main.c
     GEO2NC.c
     GEO2ASCII.c
     GEO_para.c
 )
+
 set(WEATHER
     Weather2NC.c
     Weather2NC_main.c
