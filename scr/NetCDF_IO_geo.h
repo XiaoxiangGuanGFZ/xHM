@@ -7,12 +7,16 @@ void Write2NC(
     char varNAME[],
     char att_unit[],
     char att_longname[],
+    double scale_factor,
     char FP_GEO[],
     char FP_output[],
-    double **rdata,
-    time_t start_time,
+    int **rdata,
     int step_time,
-    int ts_length
+    int ts_length,
+    int START_YEAR,
+    int START_MONTH,
+    int START_DAY,
+    int START_HOUR
 );
 
 #endif
