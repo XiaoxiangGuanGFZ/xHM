@@ -450,6 +450,30 @@ NC_copy_global_att.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/NC_copy_global_att.c.s
 .PHONY : NC_copy_global_att.c.s
 
+NetCDF_IO_geo.obj: NetCDF_IO_geo.c.obj
+.PHONY : NetCDF_IO_geo.obj
+
+# target to build an object file
+NetCDF_IO_geo.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\WEATHER.dir\build.make CMakeFiles/WEATHER.dir/NetCDF_IO_geo.c.obj
+.PHONY : NetCDF_IO_geo.c.obj
+
+NetCDF_IO_geo.i: NetCDF_IO_geo.c.i
+.PHONY : NetCDF_IO_geo.i
+
+# target to preprocess a source file
+NetCDF_IO_geo.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\WEATHER.dir\build.make CMakeFiles/WEATHER.dir/NetCDF_IO_geo.c.i
+.PHONY : NetCDF_IO_geo.c.i
+
+NetCDF_IO_geo.s: NetCDF_IO_geo.c.s
+.PHONY : NetCDF_IO_geo.s
+
+# target to generate assembly for a file
+NetCDF_IO_geo.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\WEATHER.dir\build.make CMakeFiles/WEATHER.dir/NetCDF_IO_geo.c.s
+.PHONY : NetCDF_IO_geo.c.s
+
 Radiation_Calc.obj: Radiation_Calc.c.obj
 .PHONY : Radiation_Calc.obj
 
@@ -739,6 +763,9 @@ help:
 	@echo ... NC_copy_global_att.obj
 	@echo ... NC_copy_global_att.i
 	@echo ... NC_copy_global_att.s
+	@echo ... NetCDF_IO_geo.obj
+	@echo ... NetCDF_IO_geo.i
+	@echo ... NetCDF_IO_geo.s
 	@echo ... Radiation_Calc.obj
 	@echo ... Radiation_Calc.i
 	@echo ... Radiation_Calc.s

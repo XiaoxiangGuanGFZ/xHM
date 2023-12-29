@@ -13,7 +13,7 @@ void Import_weather_para(
     FILE *fp;
     if ((fp = fopen(FP, "r")) == NULL)
     {
-        printf("cannot open %s file\n", FP);
+        printf("cannot open file %s\n", FP);
         exit(0);
     }
     int i;
@@ -38,25 +38,25 @@ void Import_weather_para(
                 {
                     printf("%s,%s\n", S1, S2);
                 }
-                if (strcmp(S1, "FP_PRE") == 0)
+                if (strcmp(S1, "FP_DATA") == 0)
                 {
-                    strcpy(GP->FP_PRE, S2);
+                    strcpy(GP->FP_DATA, S2);
                 }
                 else if (strcmp(S1, "FP_COOR") == 0)
                 {
                     strcpy(GP->FP_COOR, S2);
                 }
-                else if (strcmp(S1, "FP_WEATHER") == 0)
-                {
-                    strcpy(GP->FP_WEATHER, S2);
-                }
                 else if (strcmp(S1, "FP_GEO") == 0)
                 {
                     strcpy(GP->FP_GEO, S2);
                 } 
-                else if (strcmp(S1, "FP_WEA_OUT") == 0)
+                else if (strcmp(S1, "FP_OUT") == 0)
                 {
-                    strcpy(GP->FP_WEA_OUT, S2);
+                    strcpy(GP->FP_OUT, S2);
+                }
+                else if (strcmp(S1, "VARNAME") == 0)
+                {
+                    strcpy(GP->VARNAME, S2);
                 }
                 else if (strcmp(S1, "START_YEAR") == 0)
                 {
@@ -74,9 +74,9 @@ void Import_weather_para(
                 {
                     GP->START_HOUR = atoi(S2);
                 } 
-                else if (strcmp(S1, "STEP") == 0)
+                else if (strcmp(S1, "STEP_TIME") == 0)
                 {
-                    GP->STEP = atoi(S2);
+                    GP->STEP_TIME = atoi(S2);
                 } 
                 else if (strcmp(S1, "SITES") == 0)
                 {
@@ -100,7 +100,7 @@ void Import_COOR(
     FILE *fp;
     if ((fp = fopen(FP_COOR, "r")) == NULL)
     {
-        printf("cannot open %s file\n", FP_COOR);
+        printf("cannot open file %s\n", FP_COOR);
         exit(0);
     }
     int i, j;

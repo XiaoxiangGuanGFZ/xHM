@@ -1,22 +1,20 @@
 #ifndef WEATHER2NC_ST
 #define WEATHER2NC_ST
 
-#ifndef MAXCHAR
-#define MAXCHAR 10000
-#endif
+#include "Constants.h"
 
 typedef struct
 {
-    char FP_PRE[MAXCHAR];
+    char FP_DATA[MAXCHAR];
     char FP_COOR[MAXCHAR];
-    char FP_WEATHER[MAXCHAR];
     char FP_GEO[MAXCHAR];
-    char FP_WEA_OUT[MAXCHAR];
+    char FP_OUT[MAXCHAR];
+    char VARNAME[MAXCHAR];
     int START_YEAR;
     int START_MONTH;
     int START_DAY;
     int START_HOUR;
-    int STEP;
+    int STEP_TIME;
     int SITES;
 } ST_weather_para;
 

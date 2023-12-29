@@ -29,6 +29,7 @@ set(WEATHER
     Weather2NC.c
     Weather2NC_main.c
     NC_copy_global_att.c
+    NetCDF_IO_geo.c
 )
 
 set(UH

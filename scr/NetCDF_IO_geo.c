@@ -45,12 +45,16 @@ void Write2NC(
     char varNAME[],
     char att_unit[],
     char att_longname[],
+    double scale_factor,
     char FP_GEO[],
     char FP_output[],
-    double **rdata,
-    time_t start_time,
+    int **rdata,
     int step_time,
-    int ts_length
+    int ts_length,
+    int START_YEAR,
+    int START_MONTH,
+    int START_DAY,
+    int START_HOUR
 )
 {
     int status_nc;
@@ -58,7 +62,7 @@ void Write2NC(
     status_nc = nc_open(FP_GEO, NC_NOWRITE, &ncID_GEO);
     if (status_nc != NC_NOERR)
     {
-        printf("error in opening file%s: %s\n", FP_GEO, nc_strerror(status));
+        printf("error in opening file%s: %s\n", FP_GEO, nc_strerror(status_nc));
         exit(-1);
     }
     ST_Header HD;
@@ -69,13 +73,18 @@ void Write2NC(
     nc_get_att_double(ncID_GEO, NC_GLOBAL, "xllcorner", &HD.xllcorner);
     nc_get_att_double(ncID_GEO, NC_GLOBAL, "yllcorner", &HD.yllcorner);
     nc_get_att_double(ncID_GEO, NC_GLOBAL, "cellsize", &HD.cellsize);
-    int varID_lon, varID_lat;
+    int varID_lon, varID_lat, varID_DEM;
     double *data_lon;
     double *data_lat;
     int *data_DEM;
     data_lon = (double *)malloc(sizeof(double) * HD.ncols);
     data_lat = (double *)malloc(sizeof(double) * HD.nrows);
     data_DEM = (int *)malloc(sizeof(int) * HD.nrows * HD.ncols);
+
+    nc_inq_varid(ncID_GEO, "DEM", &varID_DEM);
+    nc_get_att_int(ncID_GEO, varID_DEM, "NODATA_value", &HD.NODATA_value);
+    nc_get_var_int(ncID_GEO, varID_DEM, data_DEM);
+
     nc_inq_varid(ncID_GEO, "lon", &varID_lon);
     nc_get_var_double(ncID_GEO, varID_lon, data_lon);
 
@@ -88,12 +97,11 @@ void Write2NC(
     status_nc = nc_create(FP_output, NC_CLOBBER, &ncID_out);
     if (status_nc != NC_NOERR)
     {
-        printf("error in opening file%s: %s\n", FP_output, nc_strerror(status));
+        printf("error in opening file%s: %s\n", FP_output, nc_strerror(status_nc));
         exit(-1);
     }
-    int varID_out;
+    int varID_out, varID_ts;
     int dimID_lon, dimID_lat, dimID_time;
-    int varID_ts;
     nc_def_dim(ncID_out, "time", NC_UNLIMITED, &dimID_time);
     nc_def_dim(ncID_out, "lon", HD.ncols, &dimID_lon);
     nc_def_dim(ncID_out, "lat", HD.nrows, &dimID_lat);
@@ -104,15 +112,15 @@ void Write2NC(
     dims[2] = dimID_lon;
     nc_def_var(ncID_out, "lon", NC_DOUBLE, 1, &dimID_lon, &varID_lon);
     nc_def_var(ncID_out, "lat", NC_DOUBLE, 1, &dimID_lat, &varID_lat);
-    nc_def_var(ncID_out, "time", NC_int, 1, &dimID_time, &varID_ts);
-    // nc_def_var(ncID_weather, "time", NC_INT, 1, &dimID_time, &varID_time);
+    nc_def_var(ncID_out, "time", NC_INT, 1, &dimID_time, &varID_ts); // long int (64-byte)
+    
     nc_def_var(ncID_out, varNAME, NC_INT, 3, dims, &varID_out);
     nc_put_att_text(ncID_out, varID_out, "Units", 20L, att_unit);
     nc_put_att_text(ncID_out, varID_out, "long_name", 40L, att_longname);
-    double NODATA;
-    NODATA = (double) HD.NODATA_value;    
-    nc_put_att_int(ncID_out, varID_out, "NODATA_value", NC_INT, 1, &NODATA);
-    nc_put_att_int(ncID_out, varID_ts, "time step:hours", NC_INT, 1, &step_time);
+    nc_put_att_double(ncID_out, varID_out, "scale_factor", NC_DOUBLE, 1, &scale_factor);
+    nc_put_att_int(ncID_out, varID_out, "NODATA_value", NC_INT, 1, &HD.NODATA_value);
+    nc_put_att_int(ncID_out, varID_out, "STEP_TIME(hours)", NC_INT, 1, &step_time);
+    nc_put_att_int(ncID_out, varID_out, "counts", NC_INT, 1, &ts_length);
 
     copy_global_attributes(ncID_GEO, ncID_out);
     nc_enddef(ncID_out);
@@ -123,46 +131,59 @@ void Write2NC(
     nc_put_var_double(ncID_out, varID_lat, data_lat);
     
     // the ourput variable: 3D
-    size_t index[3] = {0,0,0};
-    for (size_t i = 0; i < HD.nrows; i++)
+    
+    int out_start[3] = {0,0,0};
+    int out_count[3];
+    out_count[0] = ts_length; 
+    out_count[1] = HD.nrows;
+    out_count[2] = HD.ncols;
+    status_nc = nc_put_vara_int(ncID_out, varID_out, out_start, out_count, *rdata);
+    if (status_nc != NC_NOERR)
     {
-        index[1] = i;
-        for (size_t j = 0; j < HD.ncols; j++)
-        {
-            index[2] = j;
-            if (*(data_DEM + i * HD.ncols + j) == HD.NODATA_value)
-            {
-                for (size_t t = 0; t < ts_length; t++)
-                {
-                    index[0] = t;
-                    nc_put_var1_double(
-                        ncID_out, varID_out, index, &NODATA
-                    );
-                }
-            } else {
-                for (size_t t = 0; t < ts_length; t++)
-                {
-                    index[0] = t;
-                    nc_put_var1_double(
-                        ncID_out, varID_out, index, 
-                        (*rdata + t * HD.ncols * HD.nrows + i * HD.ncols + j)
-                    );
-                }
-            }
-        }
+        printf("Error writing variable data: %s\n", nc_strerror(status_nc));
+        exit(-1);
     }
 
+    // size_t index[3] = {0,0,0};
+    // for (size_t i = 0; i < HD.nrows; i++)
+    // {
+    //     index[1] = i;
+    //     for (size_t j = 0; j < HD.ncols; j++)
+    //     {
+    //         index[2] = j;
+    //         for (size_t t = 0; t < ts_length; t++)
+    //         {
+    //             index[0] = t;
+    //             nc_put_var1_int(
+    //                 ncID_out, varID_out, index,
+    //                 (*rdata + t * HD.ncols * HD.nrows + i * HD.ncols + j));
+    //         }
+    //     }
+    // }
+
     // the time variable in NetCDF
+    time_t start_time;
+    struct tm tm_start;
+    tm_start.tm_hour = START_HOUR + 1;
+    tm_start.tm_min = 0;
+    tm_start.tm_sec = 0;
+    tm_start.tm_mday = START_DAY;
+    tm_start.tm_mon = START_MONTH - 1;
+    tm_start.tm_year = START_YEAR - 1900;
+    // Daylight Saving Time not in effect;Specify UTC time zone
+    tm_start.tm_isdst = 0; 
+    start_time = mktime(&tm_start);
+
     time_t *data_time;
     data_time = (time_t *)malloc(sizeof(time_t) * ts_length);
     for (size_t i = 0; i < ts_length; i++)
     {
-        *(data_time + i) = start_time + 3600 * step_time;
+        *(data_time + i) = start_time + 3600 * step_time * i;
     }
     int start = 0;
-    status_nc = nc_put_vara_int(ncID_out, varID_ts, &start, &ts_length, data_time);
+    status_nc = nc_put_vara_long(ncID_out, varID_ts, &start, &ts_length, data_time);
     handle_error(status_nc);
-
+    
     nc_close(ncID_GEO);
     nc_close(ncID_out);
 }
