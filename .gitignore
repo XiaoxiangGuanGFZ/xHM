@@ -55,6 +55,9 @@ dkms.conf
 references/
 output/
 
+# net data files
+*.nc
+
 #--- cmake 
 /scr/CMakeFiles/
 /scr/CMakeCache.txt
