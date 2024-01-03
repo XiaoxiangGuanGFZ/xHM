@@ -11,7 +11,8 @@
  * FUNCTIONS:    
  *               Soil_Desorption()
  * COMMENTS:
- * 
+ * the soil (unstaturated) hydraulic conductivity is derived 
+ * from Brooks and Corey 1966.
  * 
  */
 
@@ -21,7 +22,7 @@
  * double Soil_Moisture          - moisture (water content) in the soil layer
  * double Soil_Porosity          - soil porosity
  * double Soil_Conduct_Sat       - soil vertical saturated hydraulic conductivity, [m/h]
- * double Soil_PoreSize_index    - the pore size distribution index
+ * double Soil_PoreSize_index    - depending on pore size distribution, 1/b 
  * int step_time                 - time step, [h] 
  * double Soil_Bubbling_pres     - soil bubbling pressure, [m]
  * double Soil_desorption        - water desorption from soil layer, [m]
