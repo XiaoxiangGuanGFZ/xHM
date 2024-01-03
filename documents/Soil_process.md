@@ -179,7 +179,7 @@ $$
     }{
         3(1+3m)(1+4m)
     }]^{1/2} \cdot
-    [\frac{\theta}{\phi}]^{1/2m+2}
+    [\frac{\theta}{\phi}]^{1/(2m)+2}
 $$
 
 The desorption volume ($F_e$) is obtained by 
