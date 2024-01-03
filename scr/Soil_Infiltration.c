@@ -11,7 +11,8 @@
  * FUNCTIONS:    
  * 
  * COMMENTS:
- * 
+ * the soil (unstaturated) hydraulic conductivity is derived 
+ * from Brooks and Corey 1966.
  * 
  * REFERENCES:
  * Entekhabi, D., and P.S. Eagleson, Land surface hydrology parameterization for 
