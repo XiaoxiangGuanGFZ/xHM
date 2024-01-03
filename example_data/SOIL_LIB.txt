@@ -1,14 +1,14 @@
-#Code	Texture	Wilting point (%Vol)	Field capacity (%Vol)	Saturation (%Vol)	Residual content (%Vol)	Available water (cm/cm)	Sat.Hydraulic Cond.(mm/hr)	Matric Bulk Density(g/cm3)	soil porosity (%Vol)	pore size distribution parameter (b)	air-entry pressure head (cm)	Bubbling pressure (cm)
-1	heavy clay	29.9	42	48.8	9	0.12	0.78	1.36	48.2	11.4	40.5	46.8
-2	silty clay	27.8	41.6	53.2	10.9	0.14	3.81	1.24	49.2	10.4	49	32.4
-3	clay	29.9	42	48.8	9	0.12	0.78	1.36	48.2	11.4	40.5	46.8
-4	silty clay loam	21	37.9	51	4	0.17	5.93	1.3	47.7	7.75	35.6	61.7
-5	clay loam	21.3	35	47.2	7.5	0.14	4.56	1.4	47.6	8.52	63	26.3
-6	silt	6.3	31.6	48.2	1.5	0.25	18.95	1.37	52	7.8	63.8	75.9
-7	silt loam	13.7	32.1	48.2	1.5	0.18	12.19	1.37	48.5	5.3	78.6	75.9
-8	sandy clay	26	37.1	44	5.6	0.11	0.84	1.48	42.6	10.4	15.3	9.8
-9	loam	12.6	26.7	45.8	2.7	0.14	18.6	1.44	45.1	5.39	47.8	35.5
-10	sandy clay loam	18.3	28.3	43.2	6.8	0.1	7.84	1.51	42	7.12	29.9	13.5
-11	sandy loam	8.1	17.9	45	4.1	0.1	50.34	1.46	43.5	4.9	15.3	14.1
-12	loamy sand	5.7	12.1	45.7	3.5	0.06	91.26	1.44	41	4.38	9	3.6
-13	sand	5	9.4	46.3	2	0.04	114.05	1.42	39.5	4.05	12.1	6.9
+#Code	Texture	Wilting point (%Vol)	Field capacity (%Vol)	Saturation (%Vol)	Residual content (%Vol)	Available water (cm/cm)	Sat.Hydraulic Cond.(m/hr)	Matric Bulk Density(g/cm3)	soil porosity (%Vol)	pore size distribution parameter,b	air-entry pressure head (m)	Bubbling pressure (m)
+1	heavy clay	29.9	42	48.8	9	0.12	0.00078	1.36	48.2	11.4	0.405	0.468
+2	silty clay	27.8	41.6	53.2	10.9	0.14	0.00381	1.24	49.2	10.4	0.49	0.324
+3	clay	29.9	42	48.8	9	0.12	0.00078	1.36	48.2	11.4	0.405	0.468
+4	silty clay loam	21	37.9	51	4	0.17	0.00593	1.3	47.7	7.75	0.356	0.617
+5	clay loam	21.3	35	47.2	7.5	0.14	0.00456	1.4	47.6	8.52	0.63	0.263
+6	silt	6.3	31.6	48.2	1.5	0.25	0.01895	1.37	52	7.8	0.638	0.759
+7	silt loam	13.7	32.1	48.2	1.5	0.18	0.01219	1.37	48.5	5.3	0.786	0.759
+8	sandy clay	26	37.1	44	5.6	0.11	0.00084	1.48	42.6	10.4	0.153	0.098
+9	loam	12.6	26.7	45.8	2.7	0.14	0.0186	1.44	45.1	5.39	0.478	0.355
+10	sandy clay loam	18.3	28.3	43.2	6.8	0.1	0.00784	1.51	42	7.12	0.299	0.135
+11	sandy loam	8.1	17.9	45	4.1	0.1	0.05034	1.46	43.5	4.9	0.153	0.141
+12	loamy sand	5.7	12.1	45.7	3.5	0.06	0.09126	1.44	41	4.38	0.09	0.036
+13	sand	5	9.4	46.3	2	0.04	0.11405	1.42	39.5	4.05	0.121	0.069
