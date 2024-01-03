@@ -164,7 +164,7 @@ void Lookup_Soil_CELL(
     */
     int T_USDA_TEX_CLASS, S_USDA_TEX_CLASS;
     Lookup_Soil_ID(ID, &T_USDA_TEX_CLASS, &S_USDA_TEX_CLASS, &(*soilID));
-    printf("T_CLASS: %d\nS_CLASS: %d\n", T_USDA_TEX_CLASS, S_USDA_TEX_CLASS);
+    //printf("T_CLASS: %d\nS_CLASS: %d\n", T_USDA_TEX_CLASS, S_USDA_TEX_CLASS);
     soil_cell_para->ID = ID;
     soil_cell_para->S_USDA_TEX_CLASS = S_USDA_TEX_CLASS;
     soil_cell_para->T_USDA_TEX_CLASS = T_USDA_TEX_CLASS;
@@ -173,54 +173,54 @@ void Lookup_Soil_CELL(
 }
 
 
-void main()
-{
-    char FP_SOILLIB[] = "D:/xHM/example_data/SOIL_LIB.txt";
-    ST_SoilLib soillib[13];
-    Import_soillib(FP_SOILLIB, soillib);
-    printf("%10s%20s%10s%10s%10s\n",
-        "Code", "Texture", "Residual", "Porosity", "Bubbling"
-    );
-    for (size_t i = 0; i < 13; i++)
-    {
-        printf("%10d%20s%10.1f%10.1f%10.1f\n",
-            (soillib + i)->Code,
-            (soillib + i)->Texture,
-            (soillib + i)->Residual,
-            (soillib + i)->Porosity,
-            (soillib + i)->Bubbling
-        );
-    }
+// void main()
+// {
+//     char FP_SOILLIB[] = "D:/xHM/example_data/SOIL_LIB.txt";
+//     ST_SoilLib soillib[13];
+//     Import_soillib(FP_SOILLIB, soillib);
+//     printf("%10s%20s%10s%10s%10s\n",
+//         "Code", "Texture", "Residual", "Porosity", "Bubbling"
+//     );
+//     for (size_t i = 0; i < 13; i++)
+//     {
+//         printf("%10d%20s%10.1f%10.1f%10.1f\n",
+//             (soillib + i)->Code,
+//             (soillib + i)->Texture,
+//             (soillib + i)->Residual,
+//             (soillib + i)->Porosity,
+//             (soillib + i)->Bubbling
+//         );
+//     }
     
-    char FP_SOILID[] = "D:/xHM/example_data/SOIL_HWSD_ID.txt";
-    ST_SoilID soilID[1000];
-    Import_soil_HWSD_ID(FP_SOILID, soilID);
-    printf("%10s%10s%10s%10s%10s\n",
-        "ID", "T_SAND", "T_SILT", "T_CLAY", "T_USDA_TEX_CLASS"
-    );
-    for (size_t i = 0; i < 5; i++)
-    {
-        printf("%10d%10d%10d%10d%10d\n",
-            (soilID + i)->ID,
-            (soilID + i)->T_SAND,
-            (soilID + i)->T_SILT,
-            (soilID + i)->T_CLAY,
-            (soilID + i)->T_USDA_TEX_CLASS
-        );
-    }
-    // ----- 
-    int ID;
-    ID = 11010;
-    ST_SOIL_LIB_CELL soil_cell_para;
-    printf("ID: %d\n", ID);
-    Lookup_Soil_CELL(ID, &soil_cell_para, soillib, soilID);
-    printf("%10s%20s%10s%10s%10s\n",
-        "Code", "Texture", "Residual", "Porosity", "Bubbling"
-    );
-    printf("%10d%20s%10.1f%10.1f%10.1f\n",
-           (soil_cell_para.Topsoil)->Code,
-           (soil_cell_para.Topsoil)->Texture,
-           (soil_cell_para.Topsoil)->Residual,
-           (soil_cell_para.Topsoil)->Porosity,
-           (soil_cell_para.Topsoil)->Bubbling);
-}
+//     char FP_SOILID[] = "D:/xHM/example_data/SOIL_HWSD_ID.txt";
+//     ST_SoilID soilID[1000];
+//     Import_soil_HWSD_ID(FP_SOILID, soilID);
+//     printf("%10s%10s%10s%10s%10s\n",
+//         "ID", "T_SAND", "T_SILT", "T_CLAY", "T_USDA_TEX_CLASS"
+//     );
+//     for (size_t i = 0; i < 5; i++)
+//     {
+//         printf("%10d%10d%10d%10d%10d\n",
+//             (soilID + i)->ID,
+//             (soilID + i)->T_SAND,
+//             (soilID + i)->T_SILT,
+//             (soilID + i)->T_CLAY,
+//             (soilID + i)->T_USDA_TEX_CLASS
+//         );
+//     }
+//     // ----- 
+//     int ID;
+//     ID = 11010;
+//     ST_SOIL_LIB_CELL soil_cell_para;
+//     printf("ID: %d\n", ID);
+//     Lookup_Soil_CELL(ID, &soil_cell_para, soillib, soilID);
+//     printf("%10s%20s%10s%10s%10s\n",
+//         "Code", "Texture", "Residual", "Porosity", "Bubbling"
+//     );
+//     printf("%10d%20s%10.1f%10.1f%10.1f\n",
+//            (soil_cell_para.Topsoil)->Code,
+//            (soil_cell_para.Topsoil)->Texture,
+//            (soil_cell_para.Topsoil)->Residual,
+//            (soil_cell_para.Topsoil)->Porosity,
+//            (soil_cell_para.Topsoil)->Bubbling);
+// }
