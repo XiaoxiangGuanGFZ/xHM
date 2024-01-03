@@ -14,18 +14,8 @@
  * the soil (unstaturated) hydraulic conductivity is derived 
  * from Brooks and Corey 1966.
  * 
- */
-
-
-/****************************************************************************
- * VARIABLEs:
- * double Soil_Moisture          - moisture (water content) in the soil layer
- * double Soil_Porosity          - soil porosity
- * double Soil_Conduct_Sat       - soil vertical saturated hydraulic conductivity, [m/h]
- * double Soil_PoreSize_index    - depending on pore size distribution, 1/b 
- * int step_time                 - time step, [h] 
- * double Soil_Bubbling_pres     - soil bubbling pressure, [m]
- * double Soil_desorption        - water desorption from soil layer, [m]
+ * During calculation / iteration, the soil moisture 
+ * is (should be) less than the porosity (unstaturated status). 
  * 
  * REFERENCEs:
  * Entekhabi, D., and P.S. Eagleson, Land surface hydrology 
@@ -33,6 +23,20 @@
  *      models: Inclusion of subgrid scale spatial variability 
  *      and screening with a simple climate model, Rep. 325, 
  *      Ralph M. Parsons Lab., 195 pp., Mass. Inst. of Technol., Cambridge, 1989.
+ * 
+ */
+
+
+/****************************************************************************
+ * VARIABLEs:
+ * double Soil_Moisture          - moisture (water content) in the soil layer, [FRAC]
+ * double Soil_Porosity          - soil porosity, [FRAC, 0.0 - 1.0]
+ * double Soil_Conduct_Sat       - soil vertical saturated hydraulic conductivity, [m/h]
+ * double Soil_PoreSize_index    - depending on pore size distribution, 1/b 
+ * int step_time                 - time step, [h] 
+ * double Soil_Bubbling_pres     - soil bubbling pressure, [m]
+ * double Soil_desorption        - water desorption from (upper) soil layer, [m]
+ * 
  * 
  * 
 ******************************************************************************/

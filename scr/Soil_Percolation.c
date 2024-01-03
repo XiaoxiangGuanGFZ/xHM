@@ -13,28 +13,31 @@
  * COMMENTS:
  * two-layer soil conceptualization: upper layer and lower layer.
  * 
+ * During calculation / iteration, the soil moisture 
+ * is (should be) less than the porosity (unstaturated status). 
+ * 
+ * REFERENCEs:
+ * Brooks, R. H., and A. T. Corey, 
+ *      Hydraulic properties of porous media, Hydrol. 
+ *      Pap., 3, Colo. State Univ., Fort Collins, 1964.
  * 
  */
 
 
 /******************************************************************************
  * VARIABLEs:
- * double Soil_Moisture          - moisture (water content) in the soil layer
- * double Percolation_in         - water content percolated into this soil layer
- * double Percolation_out        - water content percolated from this soil layer
+ * double Soil_Moisture          - moisture (water content) in the soil layer, [FRAC]
+ * double Percolation_in         - water content percolated into this soil layer, [m]
+ * double Percolation_out        - water content percolated from this soil layer, [m]
  * double Soil_layer_thickness   - soil layer thickness, [m]
- * double Soil_Porosity          - soil porosity
- * double Soil_Residual          - residual soil moisture content
+ * double Soil_Porosity          - soil porosity, [FRAC, 0-1.0]
+ * double Soil_Residual          - residual soil moisture content, [FRAC, 0-1.0]
  * double Soil_Conduct_Sat       - soil vertical saturated hydraulic conductivity, [m/h]
- * double Soil_PoreSize_index    - the pore size distribution index
+ * double Soil_PoreSize_index    - the pore size distribution index, [dimensionless]
  * int step_time                 - time step, [h] 
  * double Soil_Conduct           - soil vertical unsaturated hydraulic conductivity, [m/h]
  * 
  * 
- * REFERENCEs:
- * Brooks, R. H., and A. T. Corey, 
- *      Hydraulic properties of porous media, Hydrol. 
- *      Pap., 3, Colo. State Univ., Fort Collins, 1964.
  * 
  * 
 ******************************************************************************/
