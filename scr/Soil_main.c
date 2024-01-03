@@ -47,8 +47,8 @@ void main(
     /*****************************************/
     CELL_SOIL_VAR cell_soil;
     int STEP_TIME = 24;
-    double Water_input = 0.0002; // m/h; 0.0048m in total; 
-    cell_soil.SM_Upper = 0.2;  // the soil moisture is not allowed to exceed the soil porosity
+    double Water_input = 0.0002; // m/h; 0.0048m in total;
+    cell_soil.SM_Upper = 0.2;    // the soil moisture is not allowed to exceed the soil porosity
     cell_soil.SW_Infiltration = Soil_Infiltration(
         Water_input, cell_soil.SM_Upper,
         (soil_cell_para.Topsoil)->Porosity / 100,
@@ -58,6 +58,16 @@ void main(
         STEP_TIME);
     printf("Infiltration [m]: %.5f\n", cell_soil.SW_Infiltration);
     cell_soil.SW_SR_Infil = Water_input * STEP_TIME - cell_soil.SW_Infiltration;
+
+    double Soil_Dep;
+    Soil_Dep = Soil_Desorption(
+        cell_soil.SM_Upper,
+        (soil_cell_para.Topsoil)->SatHydrauCond,
+        1 / (soil_cell_para.Topsoil)->PoreSizeDisP,
+        (soil_cell_para.Topsoil)->Porosity / 100,
+        (soil_cell_para.Topsoil)->Bubbling,
+        STEP_TIME);
+    printf("Desorption upper [m]: %.5f\n", Soil_Dep);
 
     double SThick_upper = 0.2; // m
     cell_soil.SW_Percolation_Upper = Percolation(
@@ -70,16 +80,7 @@ void main(
         1 / (soil_cell_para.Topsoil)->PoreSizeDisP,
         STEP_TIME);
     printf("Percolation upper [m]: %.5f\n", cell_soil.SW_Percolation_Upper);
-
-    double Soil_Dep;
-    Soil_Dep = Soil_Desorption(
-        cell_soil.SM_Upper,
-        (soil_cell_para.Topsoil)->SatHydrauCond,
-        1 / (soil_cell_para.Topsoil)->PoreSizeDisP,
-        (soil_cell_para.Topsoil)->Porosity / 100,
-        (soil_cell_para.Topsoil)->Bubbling,
-        STEP_TIME);
-    printf("Desorption upper [m]: %.5f\n", Soil_Dep);
+    
 }
 
 
