@@ -169,7 +169,7 @@ where: $\theta_j^* = \theta_j^t + P_{j-1}/d_j$.
 
 
 ### 2.2 Desorption
-Soil water evaporation from the upper soil layer $E_s$ is given as a function of the potential evaporation demand at the soil surface $E_{ps}$ and the $_e$, the desorption volume. 
+Soil water evaporation from the upper soil layer $E_s$ is given as a function of the potential evaporation demand at the soil surface $E_{ps}$ and the $S_e$, the desorption volume. 
 
 The sorptivity (the rate at which the soil loses moisture) is calculated using the method presented by Entekhabi and Eagleson [1989]:
 
