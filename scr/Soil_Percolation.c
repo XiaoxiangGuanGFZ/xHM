@@ -84,10 +84,17 @@ double Soil_Hydro_Conductivity(
      *  [Brooks and Corey, 1964]
     */
     double Soil_Conduct;
-    Soil_Conduct = Soil_Conduct_Sat * pow(
-        (Soil_Moisture - Soil_Residual) / (Soil_Porosity - Soil_Residual),
-        (2 / Soil_PoreSize_index + 3)
-    );
+    if (Soil_Moisture < 1.0)
+    {
+        Soil_Conduct = Soil_Conduct_Sat * pow(
+                                              (Soil_Moisture - Soil_Residual) / (Soil_Porosity - Soil_Residual),
+                                              (2 / Soil_PoreSize_index + 3));
+    }
+    else
+    {
+        Soil_Conduct = Soil_Conduct_Sat;
+    }
+
     return Soil_Conduct;
 }
 
