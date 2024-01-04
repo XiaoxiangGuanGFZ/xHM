@@ -30,6 +30,33 @@ typedef struct
 } CELL_SOIL_VAR;
 
 
+typedef struct 
+{
+    short Rs;
+    short L_sky;
+    short Rno;
+    short Rnu;
+
+    short Ep;
+    short EI_o;
+    short ET_o;
+    short ET_u;
+    short ET_u;
+    short Es;
+
+    short Interception_o;
+    short Interception_u;
+    short SM_Upper;
+    short SM_Lower;
+    short SW_Run_Infil;
+    short SW_Run_Satur;
+    short SW_Infiltration;
+    short SW_Percolation_Upper;
+    short SW_Percolation_Lower;
+
+} OUT_NAME_LIST;
+
+
 #endif
 
 

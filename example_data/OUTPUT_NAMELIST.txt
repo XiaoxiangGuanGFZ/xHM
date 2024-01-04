@@ -1,0 +1,63 @@
+# --------- radiation variables ------------------------
+# received downward shortwave radiation (the cloudiness effect is considered), [kJ/m2/h]
+Rs,1
+
+# received downward longwave radiation, [kJ/m2/h]
+L_sky,1
+
+# canopy (overstory) received net radiation, [kJ/m2/h]
+Rno,1
+
+# net radiation for understory, [kJ/m2/h]
+Rnu,1
+
+# --------- variables in evapotranspiration ------------
+
+# potential evapotranspiration, [mm]
+Ep,1
+
+# evaporation from overstory, [mm]
+EI_o,1
+
+# transpiration from overstory, [mm]
+ET_o,1
+
+# evaporation from understory, [mm]
+EI_u,1
+
+# transpiration from understory, [mm]
+ET_u,1
+
+# soil evaporation, [mm]
+Es,1
+
+# canopy (overstory) intercepted water, [mm]
+Interception_o,1
+
+# understory intercepted water, [mm]
+Interception_u,1
+
+
+# --------- variables in soil water movement ------------
+# soil moisture from upper soil layer, [fraction]
+SM_Upper,1
+
+# soil moisture from lower soil layer, [fraction]
+SM_Lower,1
+
+# percolation water from upper soil layer, [mm]
+SW_Percolation_Upper,1
+
+# percolation water from lower soil layer, [mm]
+SW_Percolation_Lower,1
+
+# infiltration from ground surface into upper soil layer, [mm]
+SW_Infiltration,1
+
+# surface runoff generated from excess-infiltration, [mm]
+SW_Run_Infil,1
+
+# surface runoff from soil layer saturation, [mm]
+SW_Run_Satur,1
+
+# --------- variables in routing ------------------------------
