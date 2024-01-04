@@ -26,6 +26,7 @@
  * double step_space             - grid cell size, [m]
  * double *Cell_q                - pointer to an array of outflow from the cell to 8 adjacent cells,
  * double *Qout                  - total outflow from the cell
+ * double b                      - pore size distribution parameter in Brooks and Corey 1964 formula
  * double n                      - the local power law exponent
  * double *F                     - pointer to an array of outflow fractions to 8 directions
  * 
@@ -76,10 +77,12 @@ void Soil_Satu_Outflow(
     double *Qout,
     double Soil_Conduct_Sat,
     double Soil_Thickness,
-    double n,
+    double b,
     double step_space
 )
 {
+    double n;
+    n = 2 * b +3;
     double slope[8];
     double gamma[8];
     double gamma_sum = 0.0;
