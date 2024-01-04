@@ -32,6 +32,9 @@ typedef struct
 
 typedef struct 
 {
+    /******
+     * see the explanation and units in OUTPUT_NAMELIST.txt
+    */
     short Rs;
     short L_sky;
     short Rno;
@@ -39,8 +42,8 @@ typedef struct
 
     short Ep;
     short EI_o;
+    short EI_u;
     short ET_o;
-    short ET_u;
     short ET_u;
     short Es;
 
