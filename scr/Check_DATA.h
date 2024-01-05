@@ -10,7 +10,9 @@ void Check_weather(
     int ncID_WIN, 
     int ncID_TEM_AVG, 
     int ncID_TEM_MAX, 
-    int ncID_TEM_MIN
+    int ncID_TEM_MIN,
+    time_t START_TIME,
+    time_t END_TIME
 );
 
 #endif
