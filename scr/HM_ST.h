@@ -15,6 +15,7 @@
 
 #ifndef HM_ST
 #define HM_ST
+#include "Constants.h"
 
 typedef struct 
 {
@@ -58,6 +59,31 @@ typedef struct
     short SW_Percolation_Lower;
 
 } OUT_NAME_LIST;
+
+typedef struct 
+{
+    char FP_PRE[MAXCHAR];
+    char FP_PRS[MAXCHAR];
+    char FP_RHU[MAXCHAR];
+    char FP_WIN[MAXCHAR];
+    char FP_SSD[MAXCHAR];
+    char FP_TEM_AVG[MAXCHAR];
+    char FP_TEM_MAX[MAXCHAR];
+    char FP_TEM_MIN[MAXCHAR];
+    char FP_GEO[MAXCHAR];
+    char FP_VEGLIB[MAXCHAR];
+    char FP_SOILLIB[MAXCHAR];
+    char FP_SOIL_HWSD_ID[MAXCHAR];
+    int START_YEAR;
+    int START_MONTH;
+    int START_DAY;
+    int START_HOUR;
+    int STEP_TIME;
+
+    char PATH_OUT[MAXCHAR];
+    char FP_OUTNAMELIST[MAXCHAR];
+} GLOBAL_PARA;
+
 
 
 #endif
