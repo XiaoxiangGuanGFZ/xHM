@@ -5,11 +5,11 @@
  * ORG:          Section Hydrology, GFZ
  * E-MAIL:       guan@gfz-potsdam.de
  * ORIG-DATE:    Dec-2023
- * DESCRIPTION:   
+ * DESCRIPTION:
  * DESCRIP-END.
- * 
+ *
  * COMMENTS:
- * 
+ *
  *
  */
 
@@ -44,17 +44,17 @@ typedef struct
     double Interception_u;   /* understory interception water, [m] */
 } CELL_VAR_ET;
 
-typedef struct 
+typedef struct
 {
     /* variables in soil water movement */
-    double SM_Upper;                /* soil moisture: upper soil layer, FRAC */
-    double SM_Lower;                /* soil moisture: lower soil layer, FRAC */
-    double SW_Infiltration;         /* water infiltration from ground surface, [m] */
-    double SW_Percolation_Upper;    /* water percolation from upper soil layer, [m] */
-    double SW_Percolation_Lower;    /* water percolation from lower soil layer, [m] */
-    double SW_SR_Infil;             /* surface runoff from excess-infiltration, [m] */
-    double SW_SR_Satur;             /* surface runoff from saturation, [m] */
-    
+    double SM_Upper;             /* soil moisture: upper soil layer, FRAC */
+    double SM_Lower;             /* soil moisture: lower soil layer, FRAC */
+    double SW_Infiltration;      /* water infiltration from ground surface, [m] */
+    double SW_Percolation_Upper; /* water percolation from upper soil layer, [m] */
+    double SW_Percolation_Lower; /* water percolation from lower soil layer, [m] */
+    double SW_SR_Infil;          /* surface runoff from excess-infiltration, [m] */
+    double SW_SR_Satur;          /* surface runoff from saturation, [m] */
+
 } CELL_SOIL_VAR;
 
 typedef struct
@@ -88,7 +88,7 @@ typedef struct
 
 } OUT_NAME_LIST;
 
-typedef struct 
+typedef struct
 {
     char FP_PRE[MAXCHAR];
     char FP_PRS[MAXCHAR];
@@ -107,13 +107,12 @@ typedef struct
     int START_DAY;
     int START_HOUR;
     int STEP_TIME;
-
+    int END_YEAR;
+    int END_MONTH;
+    int END_DAY;
+    int END_HOUR;
     char PATH_OUT[MAXCHAR];
     char FP_OUTNAMELIST[MAXCHAR];
 } GLOBAL_PARA;
 
-
-
 #endif
-
-

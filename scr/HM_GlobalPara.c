@@ -123,6 +123,22 @@ void Import_GlobalPara(
                 {
                     global_para->START_HOUR = atoi(S2);
                 }
+                else if (strcmp(S1, "END_YEAR") == 0)
+                {
+                    global_para->END_YEAR = atoi(S2);
+                }
+                else if (strcmp(S1, "END_MONTH") == 0)
+                {
+                    global_para->END_MONTH = atoi(S2);
+                }
+                else if (strcmp(S1, "END_DAY") == 0)
+                {
+                    global_para->END_DAY = atoi(S2);
+                }
+                else if (strcmp(S1, "END_HOUR") == 0)
+                {
+                    global_para->END_HOUR = atoi(S2);
+                }
                 else if (strcmp(S1, "STEP_TIME") == 0)
                 {
                     global_para->STEP_TIME = atoi(S2);
@@ -160,10 +176,10 @@ void Initialize_GlobalPara(
     strcpy(global_para->FP_OUTNAMELIST, "\0");
     strcpy(global_para->PATH_OUT, "\0");
 
-    global_para->START_DAY = 1;
-    global_para->START_HOUR = 0;
-    global_para->START_MONTH = 1;
-    global_para->START_YEAR = 1900;
+    global_para->START_DAY = 1; global_para->END_DAY = 1;
+    global_para->START_HOUR = 0; global_para->END_HOUR = 0;
+    global_para->START_MONTH = 1; global_para->END_MONTH = 1;
+    global_para->START_YEAR = 1900; global_para->END_YEAR = 1900;
     global_para->STEP_TIME = 24;
 
 }
