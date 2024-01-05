@@ -21,6 +21,10 @@ START_YEAR,2001
 START_MONTH,1
 START_DAY,1
 START_HOUR,0
+END_YEAR,2009
+END_MONTH,12
+END_DAY,31
+END_HOUR,23
 STEP_TIME,24 # hours
 
 # ---------- output variables ---------------------
