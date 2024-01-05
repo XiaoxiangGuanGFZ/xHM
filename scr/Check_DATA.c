@@ -7,7 +7,7 @@
  * E-MAIL:       guan@gfz-potsdam.de
  * ORIG-DATE:    Jan-2024
  * DESCRIPTION:  the investigated attributes: ncols, nrows, cellsize_m, STEP_TIME
- * 
+ *               and the model simulation period
  * DESCRIP-END.
  * FUNCTIONS:    Check_weather()
  * 
@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <netcdf.h>
+
 #include "Check_Data.h"
 
 void Check_weather(
@@ -126,17 +127,17 @@ void Check_weather(
 
     // starting time 
     int dimID_time;
-    time_t t_PRE, t_PRS, t_SSD, t_RHU, t_WIN, t_TEM_AVG, t_TEM_MAX, t_TEM_MIN;
+    long t_PRE, t_PRS, t_SSD, t_RHU, t_WIN, t_TEM_AVG, t_TEM_MAX, t_TEM_MIN;
     int time_steps_PRE, time_steps_PRS, time_steps_RHU, time_steps_SSD, time_steps_WIN, time_steps_TEM_AVG, time_steps_TEM_MAX, time_steps_TEM_MIN;
     size_t index = 0;
-    nc_inq_varid(ncID_PRE, "time", &varID); nc_get_var1_long(ncID_PRE, varID, index, &t_PRE); nc_inq_dimlen(ncID_PRE, varID, &time_steps_PRE);
-    nc_inq_varid(ncID_PRS, "time", &varID); nc_get_var1_long(ncID_PRS, varID, index, &t_PRS); nc_inq_dimlen(ncID_PRS, varID, &time_steps_PRS);
-    nc_inq_varid(ncID_SSD, "time", &varID); nc_get_var1_long(ncID_SSD, varID, index, &t_SSD); nc_inq_dimlen(ncID_SSD, varID, &time_steps_SSD);
-    nc_inq_varid(ncID_RHU, "time", &varID); nc_get_var1_long(ncID_RHU, varID, index, &t_RHU); nc_inq_dimlen(ncID_RHU, varID, &time_steps_RHU);
-    nc_inq_varid(ncID_WIN, "time", &varID); nc_get_var1_long(ncID_WIN, varID, index, &t_WIN); nc_inq_dimlen(ncID_WIN, varID, &time_steps_WIN);
-    nc_inq_varid(ncID_TEM_AVG, "time", &varID); nc_get_var1_long(ncID_TEM_AVG, varID, index, &t_TEM_AVG); nc_inq_dimlen(ncID_TEM_AVG, varID, &time_steps_TEM_AVG);
-    nc_inq_varid(ncID_TEM_MAX, "time", &varID); nc_get_var1_long(ncID_TEM_MAX, varID, index, &t_TEM_MAX); nc_inq_dimlen(ncID_TEM_MAX, varID, &time_steps_TEM_MAX);
-    nc_inq_varid(ncID_TEM_MIN, "time", &varID); nc_get_var1_long(ncID_TEM_MIN, varID, index, &t_TEM_MIN); nc_inq_dimlen(ncID_TEM_MIN, varID, &time_steps_TEM_MIN);
+    nc_inq_varid(ncID_PRE, "time", &varID); nc_get_var1_long(ncID_PRE, varID, &index, &t_PRE); nc_inq_dimlen(ncID_PRE, varID, &time_steps_PRE);
+    nc_inq_varid(ncID_PRS, "time", &varID); nc_get_var1_long(ncID_PRS, varID, &index, &t_PRS); nc_inq_dimlen(ncID_PRS, varID, &time_steps_PRS);
+    nc_inq_varid(ncID_SSD, "time", &varID); nc_get_var1_long(ncID_SSD, varID, &index, &t_SSD); nc_inq_dimlen(ncID_SSD, varID, &time_steps_SSD);
+    nc_inq_varid(ncID_RHU, "time", &varID); nc_get_var1_long(ncID_RHU, varID, &index, &t_RHU); nc_inq_dimlen(ncID_RHU, varID, &time_steps_RHU);
+    nc_inq_varid(ncID_WIN, "time", &varID); nc_get_var1_long(ncID_WIN, varID, &index, &t_WIN); nc_inq_dimlen(ncID_WIN, varID, &time_steps_WIN);
+    nc_inq_varid(ncID_TEM_AVG, "time", &varID); nc_get_var1_long(ncID_TEM_AVG, varID, &index, &t_TEM_AVG); nc_inq_dimlen(ncID_TEM_AVG, varID, &time_steps_TEM_AVG);
+    nc_inq_varid(ncID_TEM_MAX, "time", &varID); nc_get_var1_long(ncID_TEM_MAX, varID, &index, &t_TEM_MAX); nc_inq_dimlen(ncID_TEM_MAX, varID, &time_steps_TEM_MAX);
+    nc_inq_varid(ncID_TEM_MIN, "time", &varID); nc_get_var1_long(ncID_TEM_MIN, varID, &index, &t_TEM_MIN); nc_inq_dimlen(ncID_TEM_MIN, varID, &time_steps_TEM_MIN);
 
     if (!(START_TIME >= t_PRE && START_TIME <= (t_PRE + time_steps_PRE) &&
           END_TIME >= t_PRE && END_TIME <= (t_PRE + time_steps_PRE)))
@@ -194,3 +195,9 @@ void Check_weather(
         exit(-2);
     }
 }
+
+// int main(int argc, char const *argv[])
+// {
+//     /* code */
+//     return 0;
+// }
