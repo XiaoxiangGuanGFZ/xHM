@@ -74,15 +74,15 @@ int copy_global_attributes(
     return NC_NOERR;
 }
 
-void handle_error(int status)
+void handle_error(int status, char NC_FP[])
 {
     /*****************************
      * error handling function for 
-     * netcdf data reading and writing
+     * netcdf data reading or writing
     */
     if (status != NC_NOERR)
     {
-        fprintf(stderr, "%s\n", nc_strerror(status));
+        fprintf(stderr, "error in handling NetCDF file %s: %s\n", NC_FP, nc_strerror(status));
         exit(-1);
     }
 }

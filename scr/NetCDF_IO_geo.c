@@ -182,7 +182,7 @@ void Write2NC(
     }
     int start = 0;
     status_nc = nc_put_vara_long(ncID_out, varID_ts, &start, &ts_length, data_time);
-    handle_error(status_nc);
+    handle_error(status_nc, FP_output);
     
     nc_close(ncID_GEO);
     nc_close(ncID_out);

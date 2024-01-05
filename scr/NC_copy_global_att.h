@@ -8,7 +8,7 @@
 
 int copy_global_attributes(int input_ncid, int output_ncid);
 
-void handle_error(int status);
+void handle_error(int status, char NC_FP[]);
 
 #endif
 

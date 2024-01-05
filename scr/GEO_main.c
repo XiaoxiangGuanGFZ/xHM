@@ -8,8 +8,7 @@
 #include "GEO2NC.h"
 #include "GEO_para.h"
 #include "GEO2ASCII.h"
-
-void handle_error(int status);
+#include "NC_copy_global_att.h"
 
 int main(int argc, char * argv[])
 {
@@ -163,7 +162,7 @@ int main(int argc, char * argv[])
         int old_fill_mode;
 
         IO_status = nc_create(GP.FP_GEONC, NC_CLOBBER, &ncID);
-        handle_error(IO_status);
+        handle_error(IO_status, GP.FP_GEONC);
         /**** define mode ****/ 
         nc_set_fill(ncID, NC_FILL, &old_fill_mode);
         nc_def_dim(ncID, "lon", HD_dem.ncols, &dimID_lon);
@@ -300,7 +299,7 @@ int main(int argc, char * argv[])
         int status_nc;
         
         status_nc = nc_open(GP.FP_GEONC, NC_NOWRITE, &ncID);
-        handle_error(status_nc);
+        handle_error(status_nc, GP.FP_GEONC);
 
         /****** attributes ******/
         ST_Header HD;
@@ -329,15 +328,3 @@ int main(int argc, char * argv[])
     return 1;
 }
 
-void handle_error(int status)
-{
-    /*****************************
-     * error handling function for 
-     * netcdf data reading and writing
-    */
-    if (status != NC_NOERR)
-    {
-        fprintf(stderr, "%s\n", nc_strerror(status));
-        exit(-1);
-    }
-}
