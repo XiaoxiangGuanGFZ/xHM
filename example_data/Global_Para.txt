@@ -1,0 +1,29 @@
+# --------- weather data file path ----------------
+
+FP_PRE,D:/xHM/example_data/Weather/PRE.nc
+FP_PRS,D:/xHM/example_data/Weather/PRS.nc
+FP_RHU,D:/xHM/example_data/Weather/RHU.nc
+FP_SSD,D:/xHM/example_data/Weather/SSD.nc
+FP_WIN,D:/xHM/example_data/Weather/WIN.nc
+FP_TEM_AVG,D:/xHM/example_data/Weather/TEM_AVG.nc
+FP_TEM_MAX,D:/xHM/example_data/Weather/TEM_MAX.nc
+FP_TEM_MIN,D:/xHM/example_data/Weather/TEM_MIN.nc
+
+# ---------- GEO, soil and vegetation lib ---------
+FP_GEO,D:/xHM/example_data/CT_GEO_1km/GEO1km_data.nc
+FP_VEGLIB,D:/xHM/example_data/VegeLib.txt
+FP_SOILLIB,D:/xHM/example_data/SOIL_LIB.txt
+FP_SOIL_HWSD_ID,D:/xHM/example_data/SOIL_HWSD_ID.txt
+
+# ---------- model setup --------------------------
+
+START_YEAR,2001
+START_MONTH,1
+START_DAY,1
+START_HOUR,0
+STEP_TIME,24 # hours
+
+# ---------- output variables ---------------------
+PATH_OUT,D:/xHM/output/
+FP_OUTNAMELIST,D:/xHM/example_data/OUTPUT_NAMELIST.txt
+
