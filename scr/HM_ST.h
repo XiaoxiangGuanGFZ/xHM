@@ -17,9 +17,36 @@
 #define HM_ST
 #include "Constants.h"
 
+typedef struct
+{
+    /* variables related to radiation */
+    double Rs;        /* received shortwave radiation, [kJ/m2/h] */
+    double L_sky;     /* received longwave radiation, [kJ/m2/h] */
+    double Rno;       /* net radiation for the overstory, [kJ/m2/h] */
+    double Rno_short; /* net shortwave radiation for the overstory, [kJ/m2/h] */
+    double Rnu;       /* net radiation for the understory, [kJ/m2/h] */
+    double Rnu_short; /* net shortwave radiation for the understory, [kJ/m2/h] */
+    double Rns;       /* net radiation for ground/soil, [kJ/m2/h] */
+} CELL_VAR_RADIA;
+
+typedef struct
+{
+    /* variables in evapotranspiration processes */
+    double Prec_throughfall; /* precipitation throughfall from overstory, [m] */
+    double Prec_net;         /* net precipitation from understory into soil process, [m] */
+    double Ep;               /* potential evapotranspiration, [m] */
+    double EI_o;             /* actual evaporation, [m] */
+    double ET_o;             /* actual transpiration, [m] */
+    double EI_u;             /* actual evaporation, [m] */
+    double ET_u;             /* actual transpiration, [m] */
+    double ET_s;             /* soil evaporation, [m] */
+    double Interception_o;   /* overstory interception water, [m] */
+    double Interception_u;   /* understory interception water, [m] */
+} CELL_VAR_ET;
+
 typedef struct 
 {
-    /* data */
+    /* variables in soil water movement */
     double SM_Upper;                /* soil moisture: upper soil layer, FRAC */
     double SM_Lower;                /* soil moisture: lower soil layer, FRAC */
     double SW_Infiltration;         /* water infiltration from ground surface, [m] */
@@ -30,12 +57,13 @@ typedef struct
     
 } CELL_SOIL_VAR;
 
-
-typedef struct 
+typedef struct
 {
     /******
      * see the explanation and units in OUTPUT_NAMELIST.txt
-    */
+     * 1: yes, export the variable values into a separate nc file
+     * default: 0
+     */
     short Rs;
     short L_sky;
     short Rno;
