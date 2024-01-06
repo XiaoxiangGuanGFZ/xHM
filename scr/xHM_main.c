@@ -30,21 +30,26 @@
 #include "Calendar.h"
 #include "HM_ST.h"
 #include "HM_GlobalPara.h"
+#include "OutNamelist.h"
 #include "NC_copy_global_att.h"
 #include "Check_Data.h"
-#include "Initial_VAR.h"
 #include "Evapotranspiration_ST.h"
 #include "Evapotranspiration.h"
 #include "Evapotranspiration_Energy.h"
 #include "Evaporation_soil.h"
+#include "Soil_Desorption.h"
 #include "GEO_ST.h"
 #include "Resistance.h"
 #include "Lookup_VegLib.h"
 #include "Lookup_SoilLib.h"
 #include "Initial_VAR.h"
+#include "NetCDF_IO_geo.h"
 
+void malloc_error(
+    int *data
+);
 
-void main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     /******************************************************************************
      *                        read global parameter file
@@ -52,7 +57,12 @@ void main(int argc, char *argv[])
     GLOBAL_PARA GP;
     Initialize_GlobalPara(&GP);
     Import_GlobalPara(*(++argv), &GP);
-
+    double ws_obs_z = 10.0;/* the height of wind measurement */
+    char WS_OUT[MAXCHAR];
+    strcpy(WS_OUT, GP.PATH_OUT);
+    OUT_NAME_LIST outnl;
+    Initialize_Outnamelist(&outnl);
+    Import_Outnamelist(GP.FP_OUTNAMELIST, &outnl);
     /*****************************************************************************
      *                          model simulation period
      ******************************************************************************/
@@ -74,7 +84,8 @@ void main(int argc, char *argv[])
         exit(-2);
     }
     
-    time_steps_run = (end_time - start_time) / (3600 * GP.STEP_TIME);
+    time_steps_run = (end_time - start_time) / (3600 * GP.STEP_TIME) + 1;
+    printf("time_steps_run: %d\n", time_steps_run);
     /******************************************************************************
      *                              read GEO info
      ******************************************************************************/
@@ -87,6 +98,9 @@ void main(int argc, char *argv[])
     nc_get_att_double(ncID_GEO, NC_GLOBAL, "xllcorner", &GEO_header.xllcorner);
     nc_get_att_double(ncID_GEO, NC_GLOBAL, "yllcorner", &GEO_header.yllcorner);
     nc_get_att_double(ncID_GEO, NC_GLOBAL, "cellsize", &GEO_header.cellsize);
+    int cell_counts_total;
+    cell_counts_total = GEO_header.ncols * GEO_header.nrows;
+    printf("cell_counts_total: %d\n", cell_counts_total);
     printf("ncols: %d\nnrows: %d\nxllcorner: %.12f\nyllcorner: %.12f\ncellsize: %.12f\n",
            GEO_header.ncols, GEO_header.nrows, GEO_header.xllcorner, GEO_header.yllcorner, GEO_header.cellsize);
     
@@ -97,9 +111,9 @@ void main(int argc, char *argv[])
     double *data_lon;
     double *data_lat;
 
-    data_VEGTYPE = (int *)malloc(sizeof(int) * GEO_header.ncols * GEO_header.nrows);
-    data_VEGFRAC = (int *)malloc(sizeof(int) * GEO_header.ncols * GEO_header.nrows);
-    data_SOILTYPE = (int *)malloc(sizeof(int) * GEO_header.ncols * GEO_header.nrows);
+    data_VEGTYPE = (int *)malloc(sizeof(int) * cell_counts_total);
+    data_VEGFRAC = (int *)malloc(sizeof(int) * cell_counts_total);
+    data_SOILTYPE = (int *)malloc(sizeof(int) * cell_counts_total);
     data_lat = (double *)malloc(sizeof(double) * GEO_header.nrows);
     data_lon = (double *)malloc(sizeof(double) * GEO_header.ncols);
 
@@ -123,17 +137,15 @@ void main(int argc, char *argv[])
 
     // import the soil property library abd HWSD IDs
     ST_SoilLib soillib[13];
-    Import_soillib(FP_SOILLIB, soillib);
+    Import_soillib(GP.FP_SOILLIB, soillib);
     ST_SoilID soilID[1000];
-    Import_soil_HWSD_ID(FP_SOILID, soilID);
+    Import_soil_HWSD_ID(GP.FP_SOIL_HWSD_ID, soilID);
     
     /******************************************************************************
      *                      read gridded weather data
      ******************************************************************************/
     int ncID_PRE, ncID_PRS, ncID_RHU, ncID_SSD, ncID_WIN, ncID_TEM_AVG, ncID_TEM_MAX, ncID_TEM_MIN;
     int varID_PRE, varID_PRS, varID_RHU, varID_SSD, varID_WIN, varID_TEM_AVG, varID_TEM_MAX, varID_TEM_MIN;
-    int dimID_time;
-    int time_steps_PRE, time_steps_PRS, time_steps_RHU, time_steps_SSD, time_steps_WIN, time_steps_TEM_AVG, time_steps_TEM_MAX, time_steps_TEM_MIN;
     int *data_PRE;
     int *data_PRS;
     int *data_SSD;
@@ -152,25 +164,43 @@ void main(int argc, char *argv[])
     status_nc = nc_open(GP.FP_TEM_MAX, NC_NOWRITE, &ncID_TEM_MAX); handle_error(status_nc, GP.FP_TEM_MAX);
     status_nc = nc_open(GP.FP_TEM_MIN, NC_NOWRITE, &ncID_TEM_MIN); handle_error(status_nc, GP.FP_TEM_MIN);
     /* check the weather datasets: compatibility, consistency */
-    Check_weather(ncID_PRE, ncID_PRS, ncID_RHU, ncID_SSD, ncID_WIN, ncID_TEM_AVG, ncID_TEM_MAX, ncID_TEM_MIN, start_time, end_time);
+    Check_weather(ncID_PRE, ncID_PRS, ncID_RHU, ncID_SSD, ncID_WIN, ncID_TEM_AVG, ncID_TEM_MAX, ncID_TEM_MIN, start_time, end_time, GP.STEP_TIME);
 
     int dimID_time;
+    int varID_time;
     // the starting time of the variable series
     long t_PRE, t_PRS, t_SSD, t_RHU, t_WIN, t_TEM_AVG, t_TEM_MAX, t_TEM_MIN;
     // the length (steps) of the variable series
     int time_steps_PRE, time_steps_PRS, time_steps_RHU, time_steps_SSD, time_steps_WIN, time_steps_TEM_AVG, time_steps_TEM_MAX, time_steps_TEM_MIN;
     
     size_t index = 0;
-    nc_inq_varid(ncID_PRE, "time", &dimID_time); nc_get_var1_long(ncID_PRE, dimID_time, &index, &t_PRE); nc_inq_dimlen(ncID_PRE, dimID_time, &time_steps_PRE);
-    nc_inq_varid(ncID_PRS, "time", &dimID_time); nc_get_var1_long(ncID_PRS, dimID_time, &index, &t_PRS); nc_inq_dimlen(ncID_PRS, dimID_time, &time_steps_PRS);
-    nc_inq_varid(ncID_SSD, "time", &dimID_time); nc_get_var1_long(ncID_SSD, dimID_time, &index, &t_SSD); nc_inq_dimlen(ncID_SSD, dimID_time, &time_steps_SSD);
-    nc_inq_varid(ncID_RHU, "time", &dimID_time); nc_get_var1_long(ncID_RHU, dimID_time, &index, &t_RHU); nc_inq_dimlen(ncID_RHU, dimID_time, &time_steps_RHU);
-    nc_inq_varid(ncID_WIN, "time", &dimID_time); nc_get_var1_long(ncID_WIN, dimID_time, &index, &t_WIN); nc_inq_dimlen(ncID_WIN, dimID_time, &time_steps_WIN);
-    nc_inq_varid(ncID_TEM_AVG, "time", &dimID_time); nc_get_var1_long(ncID_TEM_AVG, dimID_time, &index, &t_TEM_AVG); nc_inq_dimlen(ncID_TEM_AVG, dimID_time, &time_steps_TEM_AVG);
-    nc_inq_varid(ncID_TEM_MAX, "time", &dimID_time); nc_get_var1_long(ncID_TEM_MAX, dimID_time, &index, &t_TEM_MAX); nc_inq_dimlen(ncID_TEM_MAX, dimID_time, &time_steps_TEM_MAX);
-    nc_inq_varid(ncID_TEM_MIN, "time", &dimID_time); nc_get_var1_long(ncID_TEM_MIN, dimID_time, &index, &t_TEM_MIN); nc_inq_dimlen(ncID_TEM_MIN, dimID_time, &time_steps_TEM_MIN);
 
-    printf("length of PRE observation: %d\n", time_steps_PRE);
+    nc_inq_varid(ncID_PRE, "time", &varID_time); nc_get_var1_long(ncID_PRE, varID_time, &index, &t_PRE); 
+    nc_inq_dimid(ncID_PRE, "time", &dimID_time); nc_inq_dimlen(ncID_PRE, dimID_time, &time_steps_PRE);
+
+    nc_inq_varid(ncID_PRS, "time", &varID_time); nc_get_var1_long(ncID_PRS, varID_time, &index, &t_PRS);
+    nc_inq_dimid(ncID_PRS, "time", &dimID_time); nc_inq_dimlen(ncID_PRS, dimID_time, &time_steps_PRS);
+
+    nc_inq_varid(ncID_SSD, "time", &varID_time); nc_get_var1_long(ncID_SSD, varID_time, &index, &t_SSD);
+    nc_inq_dimid(ncID_SSD, "time", &dimID_time); nc_inq_dimlen(ncID_SSD, dimID_time, &time_steps_SSD);
+
+    nc_inq_varid(ncID_RHU, "time", &varID_time); nc_get_var1_long(ncID_RHU, varID_time, &index, &t_RHU);
+    nc_inq_dimid(ncID_RHU, "time", &dimID_time); nc_inq_dimlen(ncID_RHU, dimID_time, &time_steps_RHU);
+
+    nc_inq_varid(ncID_WIN, "time", &varID_time); nc_get_var1_long(ncID_WIN, varID_time, &index, &t_WIN);
+    nc_inq_dimid(ncID_WIN, "time", &dimID_time); nc_inq_dimlen(ncID_WIN, dimID_time, &time_steps_WIN);
+
+    nc_inq_varid(ncID_TEM_AVG, "time", &varID_time); nc_get_var1_long(ncID_TEM_AVG, varID_time, &index, &t_TEM_AVG);
+    nc_inq_dimid(ncID_TEM_AVG, "time", &dimID_time); nc_inq_dimlen(ncID_TEM_AVG, dimID_time, &time_steps_TEM_AVG);
+
+    nc_inq_varid(ncID_TEM_MAX, "time", &varID_time); nc_get_var1_long(ncID_TEM_MAX, varID_time, &index, &t_TEM_MAX);
+    nc_inq_dimid(ncID_TEM_MAX, "time", &dimID_time); nc_inq_dimlen(ncID_TEM_MAX, dimID_time, &time_steps_TEM_MAX);
+
+    nc_inq_varid(ncID_TEM_MIN, "time", &varID_time); nc_get_var1_long(ncID_TEM_MIN, varID_time, &index, &t_TEM_MIN); 
+    nc_inq_dimid(ncID_TEM_MIN, "time", &dimID_time); nc_inq_dimlen(ncID_TEM_MIN, dimID_time, &time_steps_TEM_MIN);
+
+    // printf("length of PRE observation: %d\n", time_steps_PRE);
+    printf("length of TEM_AVG observation: %d\n", time_steps_TEM_AVG);
 
     status_nc = nc_inq_varid(ncID_PRE, "PRE", &varID_PRE); handle_error(status_nc, GP.FP_PRE);
     status_nc = nc_inq_varid(ncID_PRS, "PRS", &varID_PRS); handle_error(status_nc, GP.FP_PRS);
@@ -180,29 +210,34 @@ void main(int argc, char *argv[])
     status_nc = nc_inq_varid(ncID_TEM_AVG, "TEM_AVG", &varID_TEM_AVG); handle_error(status_nc, GP.FP_TEM_AVG);
     status_nc = nc_inq_varid(ncID_TEM_MAX, "TEM_MAX", &varID_TEM_MAX); handle_error(status_nc, GP.FP_TEM_MAX);
     status_nc = nc_inq_varid(ncID_TEM_MIN, "TEM_MIN", &varID_TEM_MIN); handle_error(status_nc, GP.FP_TEM_MIN);
-
-    data_PRE = (int *)malloc(sizeof(int) * time_steps_PRE * GEO_header.ncols * GEO_header.nrows);
-    data_PRS = (int *)malloc(sizeof(int) * time_steps_PRS * GEO_header.ncols * GEO_header.nrows);
-    data_SSD = (int *)malloc(sizeof(int) * time_steps_SSD * GEO_header.ncols * GEO_header.nrows);
-    data_RHU = (int *)malloc(sizeof(int) * time_steps_RHU * GEO_header.ncols * GEO_header.nrows);
-    data_WIN = (int *)malloc(sizeof(int) * time_steps_WIN * GEO_header.ncols * GEO_header.nrows);
-    data_TEM_AVG = (int *)malloc(sizeof(int) * time_steps_TEM_AVG * GEO_header.ncols * GEO_header.nrows);
-    data_TEM_MAX = (int *)malloc(sizeof(int) * time_steps_TEM_MAX * GEO_header.ncols * GEO_header.nrows);
-    data_TEM_MIN = (int *)malloc(sizeof(int) * time_steps_TEM_MIN * GEO_header.ncols * GEO_header.nrows);
-
+    printf("malloc for weather data\n");
+    printf("size of weather data in total: %.2f GB\n", 
+    (float) sizeof(int) * time_steps_PRE * cell_counts_total * 8 / 1024 / 1024 / 1024
+    );
+    data_PRE = (int *)malloc(sizeof(int) * time_steps_PRE * cell_counts_total); malloc_error(data_PRE);
+    data_PRS = (int *)malloc(sizeof(int) * time_steps_PRS * cell_counts_total); malloc_error(data_PRS);
+    data_SSD = (int *)malloc(sizeof(int) * time_steps_SSD * cell_counts_total); malloc_error(data_SSD);
+    data_RHU = (int *)malloc(sizeof(int) * time_steps_RHU * cell_counts_total); malloc_error(data_RHU);
+    data_WIN = (int *)malloc(sizeof(int) * time_steps_WIN * cell_counts_total); malloc_error(data_WIN);
+    printf("TEM_AVG\n");
+    data_TEM_AVG = (int *)malloc(sizeof(int) * time_steps_TEM_AVG * cell_counts_total); malloc_error(data_TEM_AVG);
+    printf("TEM_MAX\n");
+    data_TEM_MAX = (int *)malloc(sizeof(int) * time_steps_TEM_MAX * cell_counts_total); malloc_error(data_TEM_MAX);
+    printf("TEM_MIN\n");
+    data_TEM_MIN = (int *)malloc(sizeof(int) * time_steps_TEM_MIN * cell_counts_total); malloc_error(data_TEM_MIN);
+    printf("import weather data\n");
     status_nc = nc_get_var_int(ncID_PRE, varID_PRE, data_PRE); handle_error(status_nc, GP.FP_PRE);
-    status_nc = nc_get_var_int(ncID_PRS, varID_PRS, data_PRS); handle_error(status_nc, GP.FP_PRS);
-    status_nc = nc_get_var_int(ncID_SSD, varID_SSD, data_SSD); handle_error(status_nc, GP.FP_SSD);
-    status_nc = nc_get_var_int(ncID_RHU, varID_RHU, data_RHU); handle_error(status_nc, GP.FP_RHU);
+    // status_nc = nc_get_var_int(ncID_PRS, varID_PRS, data_PRS); handle_error(status_nc, GP.FP_PRS);
+    // status_nc = nc_get_var_int(ncID_SSD, varID_SSD, data_SSD); handle_error(status_nc, GP.FP_SSD);
+    // status_nc = nc_get_var_int(ncID_RHU, varID_RHU, data_RHU); handle_error(status_nc, GP.FP_RHU);
     status_nc = nc_get_var_int(ncID_WIN, varID_WIN, data_WIN); handle_error(status_nc, GP.FP_WIN);
     status_nc = nc_get_var_int(ncID_TEM_AVG, varID_TEM_AVG, data_TEM_AVG); handle_error(status_nc, GP.FP_TEM_AVG);
     status_nc = nc_get_var_int(ncID_TEM_MAX, varID_TEM_MAX, data_TEM_MAX); handle_error(status_nc, GP.FP_TEM_MAX);
     status_nc = nc_get_var_int(ncID_TEM_MIN, varID_TEM_MIN, data_TEM_MIN); handle_error(status_nc, GP.FP_TEM_MIN);
-
     /***********************************************************************************
      *                          set model running period
      ************************************************************************************/
-    int t=0;
+    int t = 0;
     int t_offset_PRE, t_offset_PRS, t_offset_SSD, t_offset_RHU, t_offset_WIN;
     int t_offset_TEM_AVG, t_offset_TEM_MAX, t_offset_TEM_MIN;
     t_offset_PRE = (t_PRE - start_time) / (GP.STEP_TIME * 3600);
@@ -213,7 +248,6 @@ void main(int argc, char *argv[])
     t_offset_TEM_AVG = (t_TEM_AVG - start_time) / (GP.STEP_TIME * 3600);
     t_offset_TEM_MAX = (t_TEM_MAX - start_time) / (GP.STEP_TIME * 3600);
     t_offset_TEM_MIN = (t_TEM_MIN - start_time) / (GP.STEP_TIME * 3600);
-
     time_t run_time;
     run_time = start_time;
     int index_PRE, index_PRS, index_SSD, index_RHU, index_WIN, index_TEM_AVG, index_TEM_MAX, index_TEM_MIN;
@@ -224,13 +258,13 @@ void main(int argc, char *argv[])
      *              define and initialize the intermediate variables
      ***********************************************************************************/
     CELL_VAR_RADIA *data_RADIA;
-    data_RADIA = (CELL_VAR_RADIA *)malloc(sizeof(CELL_VAR_RADIA) * GEO_header.ncols * GEO_header.nrows);
+    data_RADIA = (CELL_VAR_RADIA *)malloc(sizeof(CELL_VAR_RADIA) * cell_counts_total);
     
     CELL_VAR_ET *data_ET;
-    data_ET = (CELL_VAR_ET *)malloc(sizeof(CELL_VAR_ET) * GEO_header.ncols * GEO_header.nrows);
+    data_ET = (CELL_VAR_ET *)malloc(sizeof(CELL_VAR_ET) * cell_counts_total);
 
     CELL_VAR_SOIL *data_SOIL;
-    data_SOIL = (CELL_VAR_SOIL *)malloc(sizeof(CELL_VAR_SOIL) * GEO_header.ncols * GEO_header.nrows);
+    data_SOIL = (CELL_VAR_SOIL *)malloc(sizeof(CELL_VAR_SOIL) * cell_counts_total);
 
     for (size_t i = 0; i < GEO_header.nrows; i++)
     {
@@ -242,11 +276,20 @@ void main(int argc, char *argv[])
             Initialize_SOIL(data_SOIL + index_geo);
         }
     }
-    
+
+    /***********************************************************************************
+     *              define the ourput variables (results) from simulation
+     ***********************************************************************************/
+    char FP_OUT_VAR[MAXCHAR]="";
+    int *out_Rs;
+    malloc_Outnamelist(
+        outnl, cell_counts_total, time_steps_run,
+        &out_Rs);
+
     /***********************************************************************************
      *                       define the iteration variables
      ***********************************************************************************/
-    
+
     double cell_PRE;
     double cell_WIN;
     double cell_SSD;
@@ -264,47 +307,111 @@ void main(int argc, char *argv[])
     int year;
     int month;
     int day;
-    struct tm tm_run;
-
+    struct tm *tm_run;
+    double Soil_Fe = 0.0;
+    /***********************************************************************************
+     *                       dxHM model iteration
+     ***********************************************************************************/
     while (run_time <= end_time)
     {
-        &tm_run = gmtime(&run_time);
-        year = tm_run.tm_year + 1900;
-        month = tm_run.tm_mon + 1;
-        day = tm_run.tm_mday;
+        tm_run = gmtime(&run_time);
+        year = tm_run->tm_year + 1900;
+        month = tm_run->tm_mon + 1;
+        day = tm_run->tm_mday;
         for (size_t i = 0; i < GEO_header.nrows; i++)
         {
             for (size_t j = 0; j < GEO_header.ncols; j++)
             {
                 index_geo = i * GEO_header.ncols + j;
-                index_run = t * GEO_header.ncols * GEO_header.nrows + i * GEO_header.ncols + j;
-                index_PRE = (t + t_offset_PRE) * GEO_header.ncols * GEO_header.nrows + i * GEO_header.ncols + j;
-                index_PRS = (t + t_offset_PRS) * GEO_header.ncols * GEO_header.nrows + i * GEO_header.ncols + j;
-                index_SSD = (t + t_offset_SSD) * GEO_header.ncols * GEO_header.nrows + i * GEO_header.ncols + j;
-                index_RHU = (t + t_offset_RHU) * GEO_header.ncols * GEO_header.nrows + i * GEO_header.ncols + j;
-                index_WIN = (t + t_offset_WIN) * GEO_header.ncols * GEO_header.nrows + i * GEO_header.ncols + j;
-                index_TEM_AVG = (t + t_offset_TEM_AVG) * GEO_header.ncols * GEO_header.nrows + i * GEO_header.ncols + j;
-                index_TEM_MAX = (t + t_offset_TEM_MAX) * GEO_header.ncols * GEO_header.nrows + i * GEO_header.ncols + j;
-                index_TEM_MIN = (t + t_offset_TEM_MIN) * GEO_header.ncols * GEO_header.nrows + i * GEO_header.ncols + j;
-                /**************** parameter preparation *****************/
-                cell_lat = *(data_lat + index_geo);
-                cell_class = *(data_VEGTYPE + index_geo);
-                cell_SOIL_ID = *(data_SOILTYPE + index_geo);
-                cell_veg.CAN_FRAC = *(data_VEGFRAC + index_geo) / 100;
-                Lookup_VegLib_CELL(veglib, cell_VEG_class, &cell_veg);
-                Lookup_VegLib_CELL_MON(veglib, cell_VEG_class, month, &cell_veg);
-                Lookup_Soil_CELL(cell_SOIL_ID, &cell_soil, soillib, soilID);
-                /************************ evapotranspiration ****************** */
+                if (*(data_SOILTYPE + index_geo) != GEO_header.NODATA_value)
+                {
+                    /********************** indexing **************************/
+                    index_run = t * cell_counts_total + i * GEO_header.ncols + j;
+                    index_PRE = (t + t_offset_PRE) * cell_counts_total + index_geo;
+                    index_PRS = (t + t_offset_PRS) * cell_counts_total + index_geo;
+                    index_SSD = (t + t_offset_SSD) * cell_counts_total + index_geo;
+                    index_RHU = (t + t_offset_RHU) * cell_counts_total + index_geo;
+                    index_WIN = (t + t_offset_WIN) * cell_counts_total + index_geo;
+                    index_TEM_AVG = (t + t_offset_TEM_AVG) * cell_counts_total + index_geo;
+                    index_TEM_MAX = (t + t_offset_TEM_MAX) * cell_counts_total + index_geo;
+                    index_TEM_MIN = (t + t_offset_TEM_MIN) * cell_counts_total + index_geo;
+                    /************** weather forcing for cell ******************/
+                    cell_PRE = *(data_PRE + index_PRE);
+                    cell_PRS = *(data_PRS + index_PRS);
+                    cell_SSD = *(data_SSD + index_SSD);
+                    cell_RHU = *(data_RHU + index_RHU);
+                    cell_WIN = *(data_WIN + index_WIN);
+                    cell_TEM_AVG = *(data_TEM_AVG + index_TEM_AVG);
+                    cell_TEM_MAX = *(data_TEM_MAX + index_TEM_MAX);
+                    cell_TEM_MIN = *(data_TEM_MIN + index_TEM_MIN);
+                    /**************** parameter preparation *****************/
+                    cell_lat = *(data_lat + index_geo);
+                    cell_VEG_class = *(data_VEGTYPE + index_geo);
+                    cell_SOIL_ID = *(data_SOILTYPE + index_geo);
+                    cell_veg.CAN_FRAC = *(data_VEGFRAC + index_geo) / 100;
+                    Lookup_VegLib_CELL(veglib, cell_VEG_class, &cell_veg);
+                    Lookup_VegLib_CELL_MON(veglib, cell_VEG_class, month, &cell_veg);
+                    Lookup_Soil_CELL(cell_SOIL_ID, &cell_soil, soillib, soilID);
+                    /******************* evapotranspiration *******************/
+                    Soil_Fe = Soil_Desorption(
+                        (data_SOIL + index_geo)->SM_Upper,
+                        cell_soil.Topsoil->SatHydrauCond,
+                        (1.0 / cell_soil.Topsoil->PoreSizeDisP),
+                        (cell_soil.Topsoil->Porosity / 100.0),
+                        cell_soil.Topsoil->Bubbling,
+                        GP.STEP_TIME);
+                    ET_CELL(
+                        year, month, day, cell_lat,
+                        cell_PRE, cell_TEM_AVG, cell_TEM_MIN, cell_TEM_MAX, cell_RHU, cell_PRS, cell_WIN,
+                        ws_obs_z, cell_SSD,
+                        &((data_RADIA + index_geo)->Rs),
+                        &((data_RADIA + index_geo)->L_sky),
+                        &((data_RADIA + index_geo)->Rno),
+                        &((data_RADIA + index_geo)->Rno_short),
+                        &((data_RADIA + index_geo)->Rnu),
+                        &((data_RADIA + index_geo)->Rnu_short),
+                        &((data_RADIA + index_geo)->Rns),
+                        cell_veg.CAN_FRAC,
+                        cell_veg.Albedo_o, cell_veg.Albedo_u, ALBEDO_SOIL,
+                        cell_veg.LAI_o, cell_veg.LAI_u,
+                        cell_veg.Rpc, cell_veg.rs_min_o, RS_MAX,
+                        cell_veg.Rpc, cell_veg.rs_min_o, RS_MAX,
 
-                /**************** unsaturated soil zone water movement *****************/
+                        cell_veg.CAN_RZ, cell_veg.CAN_H,
+                        cell_veg.d_o, cell_veg.z0_o,
+                        cell_veg.d_u, cell_veg.z0_u,
+                        (data_SOIL + index_geo)->SM_Upper,
+                        cell_soil.Topsoil->WiltingPoint / 100,
+                        cell_soil.Topsoil->FieldCapacity / 100,
+                        Soil_Fe,
+                        &((data_ET + index_geo)->Prec_throughfall),
+                        &((data_ET + index_geo)->Prec_net),
+                        &((data_ET + index_geo)->Ep),
+                        &((data_ET + index_geo)->EI_o),
+                        &((data_ET + index_geo)->ET_o),
+                        &((data_ET + index_geo)->EI_u),
+                        &((data_ET + index_geo)->ET_u),
+                        &((data_ET + index_geo)->ET_s),
+                        &((data_ET + index_geo)->Interception_o),
+                        &((data_ET + index_geo)->Interception_u),
+                        cell_veg.Understory,
+                        GP.STEP_TIME);
 
-                /**************** water movement in saturated soil zone *****************/
+                    /**************** unsaturated soil zone water movement *****************/
 
-                /************************ surface runoff routing **********************/
+                    /**************** water movement in saturated soil zone *****************/
 
-                /********************* river channel flow routing ****************/
+                    /************************ surface runoff routing **********************/
 
-                /************************* save variables *************************/
+                    /********************* river channel flow routing ****************/
+
+                    /************************* save variables *************************/
+                    if (outnl.Rs == 1)
+                    {
+                        *(out_Rs + index_run) = (int) ((data_RADIA + index_geo)->Rs * 10000);
+                    }
+                    
+                }
             }
         }
         
@@ -315,114 +422,35 @@ void main(int argc, char *argv[])
     /***************************************************************************************************
      *                               export the variables
      ****************************************************************************************************/
-    
-
-    /**** radiation parameters *****/
-
-    /**** vegetation parameters ****/
-    double ws_obs_z = 10.0;/* the height of wind measurement */
-
-    double SM = 0.5;      /* average soil moisture content */
-    double SM_wp = 0.2;   /* the plant wilting point */
-    double SM_free = 0.8; /* the moisture content above which soil conditions do not restrict transpiration. */
-    double Soil_Fe = 0.005;
-
-    /******
-     * stage/intermediate variables 
-    */
-    double Rno;       /* net radiation for the overstory */
-    double Rno_short; /* net shortwave radiation for the overstory */
-    double Rnu;       /* net radiation for the understory */
-    double Rnu_short; /* net shortwave radiation for the understory */
-    double Rns;       /* net radiation for ground/soil */
-    double Prec_throughfall; /* precipitation throughfall from overstory*/
-    double Prec_net;         /* net precipitation from understory into soil process */
-    double Ep;
-    double EI_o;             /* actual evaporation, m */
-    double ET_o;             /* actual transpiration, m */
-    double EI_u;             /* actual evaporation, m */
-    double ET_u;             /* actual transpiration, m */
-    double ET_s;             /* soil evaporation, m */
-    double Interception_o;   /* overstory interception water, m */
-    double Interception_u;   /* understory interception water, m */
-    
-    Interception_o = 0.0; Interception_u = 0.0;
-    
-
-    struct tm *ptm;
-    
-    for (size_t t = 0; t < 365; t++)
+    if (outnl.Rs == 1)
     {
-        tm_increment(
-            GP.START_YEAR,
-            GP.START_MONTH,
-            GP.START_DAY,
-            GP.START_HOUR,
-            &ptm,
-            GP.STEP_TIME,
-            t);
-        year = ptm->tm_year + 1900;
-        month = ptm->tm_mon + 1;
-        day = ptm->tm_mday;
-        // update the veg parameters 
-        Lookup_VegLib_CELL_MON(
-            db_veglib,
-            cell_class,
-            month,
-            &cell_veg);
-
-        // printf("%d-%d-%d\n", day, month, year);
-        cell_PRE = (double)*(data_PRE + t * GEO_header.ncols * GEO_header.nrows + GEO_header.ncols * cell_index_row + cell_index_col) / 10;
-        cell_PRE = cell_PRE / 1000; // unit: m
-        cell_PRS = (data_weather + t)->PRS;
-        cell_SSD = (data_weather + t)->SSD;
-        cell_RHU = (data_weather + t)->RHU;
-        cell_WIN = (data_weather + t)->WIN;
-        cell_TEM_AVG = (data_weather + t)->TEM_AVG;
-        cell_TEM_MAX = (data_weather + t)->TEM_MAX;
-        cell_TEM_MIN = (data_weather + t)->TEM_MIN;
-        fprintf(
-            fp_wea, "%8.2f%8.2f%8.2f%8.2f%8.1f%8.0f%8.1f%8.1f\n",
-            cell_PRE*1000, cell_TEM_AVG, cell_TEM_MAX, cell_TEM_MIN, cell_WIN, cell_SSD, cell_RHU, cell_PRS);
-        ET_CELL(
-            year, month, day, cell_lat,
-            cell_PRE, cell_TEM_AVG, cell_TEM_MIN, cell_TEM_MAX, cell_RHU, cell_PRS, cell_WIN,
-            ws_obs_z, cell_SSD,
-            &Rno, &Rno_short, &Rnu, &Rnu_short, &Rns,
-            cell_veg.CAN_FRAC,
-            cell_veg.Albedo_o, cell_veg.Albedo_u, ALBEDO_SOIL,
-            cell_veg.LAI_o, cell_veg.LAI_u,
-            cell_veg.Rpc, cell_veg.rs_min_o, RS_MAX,
-            cell_veg.Rpc, cell_veg.rs_min_o, RS_MAX,
-
-            cell_veg.CAN_RZ, cell_veg.CAN_H,
-            cell_veg.d_o, cell_veg.z0_o,
-            cell_veg.d_u, cell_veg.z0_u,
-
-            SM, SM_wp, SM_free, Soil_Fe,
-
-            &Prec_throughfall,
-            &Prec_net,
-            &Ep,
-            &EI_o,
-            &ET_o,
-            &EI_u,
-            &ET_u,
-            &ET_s,
-            &Interception_o,
-            &Interception_u,
-            cell_veg.Understory,
-            GP.STEP_TIME);
-        fprintf(fp_ET,
-                "%10.2f%8.2f%8.2f%8.2f%8.2f%8.2f%8.2f\n",
-                Prec_net * 1000, Ep * 1000 * GP.STEP_TIME, EI_o * 1000, ET_o * 1000, EI_u * 1000, ET_u * 1000, ET_s * 1000);
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, WS_OUT), "Rs.nc");
+        Write2NC("Rs", "kJ/m2/h", "shortwave radiation",
+                 0.1, GP.FP_GEO, FP_OUT_VAR, &out_Rs,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
     }
+    
 
+    /***************************************************************************************************
+     *                               finalize the program
+     ****************************************************************************************************/
     nc_close(ncID_PRE); nc_close(ncID_PRS); nc_close(ncID_SSD); nc_close(ncID_RHU); 
     nc_close(ncID_WIN); nc_close(ncID_TEM_AVG); nc_close(ncID_TEM_MAX); nc_close(ncID_TEM_MIN);
     nc_close(ncID_GEO); 
-    printf("-------------------- ET: done!\n");
-
+    printf("-------------------- xHM modelling: done!\n");
+    return 1;
 }
 
 
+void malloc_error(
+    int *data
+)
+{
+    if (data == NULL)
+    {
+        printf("memory allocation failed!\n");
+        exit(-3);
+    }
+    
+}
