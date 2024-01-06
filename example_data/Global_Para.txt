@@ -1,16 +1,16 @@
 # --------- weather data file path ----------------
 
-FP_PRE,D:/xHM/example_data/Weather/PRE.nc
-FP_PRS,D:/xHM/example_data/Weather/PRS.nc
-FP_RHU,D:/xHM/example_data/Weather/RHU.nc
-FP_SSD,D:/xHM/example_data/Weather/SSD.nc
-FP_WIN,D:/xHM/example_data/Weather/WIN.nc
-FP_TEM_AVG,D:/xHM/example_data/Weather/TEM_AVG.nc
-FP_TEM_MAX,D:/xHM/example_data/Weather/TEM_MAX.nc
-FP_TEM_MIN,D:/xHM/example_data/Weather/TEM_MIN.nc
+FP_PRE,D:/xHM/example_data/JN_GEO_1km/Weather/PRE.nc
+FP_PRS,D:/xHM/example_data/JN_GEO_1km/Weather/PRS.nc
+FP_RHU,D:/xHM/example_data/JN_GEO_1km/Weather/RHU.nc
+FP_SSD,D:/xHM/example_data/JN_GEO_1km/Weather/SSD.nc
+FP_WIN,D:/xHM/example_data/JN_GEO_1km/Weather/WIN.nc
+FP_TEM_AVG,D:/xHM/example_data/JN_GEO_1km/Weather/TEM_AVG.nc
+FP_TEM_MAX,D:/xHM/example_data/JN_GEO_1km/Weather/TEM_MAX.nc
+FP_TEM_MIN,D:/xHM/example_data/JN_GEO_1km/Weather/TEM_MIN.nc
 
 # ---------- GEO, soil and vegetation lib ---------
-FP_GEO,D:/xHM/example_data/CT_GEO_1km/GEO1km_data.nc
+FP_GEO,D:/xHM/example_data/JN_GEO_1km/GEO_data.nc
 FP_VEGLIB,D:/xHM/example_data/VegeLib.txt
 FP_SOILLIB,D:/xHM/example_data/SOIL_LIB.txt
 FP_SOIL_HWSD_ID,D:/xHM/example_data/SOIL_HWSD_ID.txt
