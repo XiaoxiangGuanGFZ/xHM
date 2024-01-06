@@ -11,7 +11,7 @@ void Initialize_ET(
     CELL_VAR_ET *st);
 
 void Initialize_SOIL(
-    CELL_SOIL_VAR *st);
+    CELL_VAR_SOIL *st);
 
 
 #endif

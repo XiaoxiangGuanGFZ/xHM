@@ -55,7 +55,7 @@ typedef struct
     double SW_SR_Infil;          /* surface runoff from excess-infiltration, [m] */
     double SW_SR_Satur;          /* surface runoff from saturation, [m] */
 
-} CELL_SOIL_VAR;
+} CELL_VAR_SOIL;
 
 typedef struct
 {

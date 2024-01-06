@@ -45,7 +45,7 @@ void main(
            (soil_cell_para.Topsoil)->Bubbling);
 
     /*****************************************/
-    CELL_SOIL_VAR cell_soil;
+    CELL_VAR_SOIL cell_soil;
     int STEP_TIME = 24;
     double Water_input = 0.0002; // m/h; 0.0048m in total;
     cell_soil.SM_Upper = 0.2;    // the soil moisture is not allowed to exceed the soil porosity

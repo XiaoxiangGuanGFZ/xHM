@@ -45,7 +45,7 @@ void Initialize_ET(
 }
 
 void Initialize_SOIL(
-    CELL_SOIL_VAR *st)
+    CELL_VAR_SOIL *st)
 {
     for (size_t i = 0; i < sizeof(st) / sizeof(double); i++)
     {
