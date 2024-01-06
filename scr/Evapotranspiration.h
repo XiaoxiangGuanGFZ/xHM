@@ -122,7 +122,8 @@ void ET_CELL(
     double Air_ws_obs,  /* wind speed at the measurement height, m/s */
     double ws_obs_z,    /* the measurement height, m */
     double Air_ssd,     /* sunshine duration in a day, hours */
-    
+    double *Rs,         /* received shortwave radiation for the overstory canopy */
+    double *L_sky,      /* received longwave radiation for the overstory canopy */
     double *Rno,        /* net radiation for the overstory */
     double *Rno_short,  /* net shortwave radiation for the overstory */
     double *Rnu,        /* net radiation for the understory */

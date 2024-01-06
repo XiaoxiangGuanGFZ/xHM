@@ -432,7 +432,8 @@ void ET_CELL(
     double Air_ws_obs,  /* wind speed at the measurement height, m/s */
     double ws_obs_z,    /* the measurement height, m */
     double Air_ssd,     /* sunshine duration in a day, hours */
-
+    double *Rs,         /* received shortwave radiation for the overstory canopy */
+    double *L_sky,      /* received longwave radiation for the overstory canopy */
     double *Rno,        /* net radiation for the overstory */
     double *Rno_short,  /* net shortwave radiation for the overstory */
     double *Rnu,        /* net radiation for the understory */
@@ -464,7 +465,7 @@ void ET_CELL(
 
     double *Prec_throughfall, /* precipitation throughfall from overstory*/
     double *Prec_net,         /* net precipitation from understory into soil process */
-    double *Ep,
+    double *Ep,               /* the potential evaporation rate [m/h] */
     double *EI_o,             /* actual evaporation, m */
     double *ET_o,             /* actual transpiration, m */
     double *EI_u,             /* actual evaporation, m */
@@ -493,10 +494,8 @@ void ET_CELL(
      * [MJ/m2/d] = 1000 000 / (3600*24) W/m2, as J/s = W 
      * 1000 000 / (3600*24) = 11.574
     */
-    double Rs; // received shortwave radiation / solar insolation for the overstory canopy
-    Rs = Radiation_downward_short(year, month, day, lat, Air_ssd);
-    double L_sky; // received longwave radiation for the overstory canopy
-    L_sky = Radiation_downward_long(
+    *Rs = Radiation_downward_short(year, month, day, lat, Air_ssd);
+    *L_sky = Radiation_downward_long(
         year, month, day, lat,
         Air_tem_avg, Air_rhu, Air_ssd, 0.0);
 
@@ -504,8 +503,8 @@ void ET_CELL(
      * convert the radiation unit:
      * from [MJ/m2/d] to [kJ/m2/h] 
     */
-    Rs = Rs * 1000/24;
-    L_sky = L_sky * 1000/24;
+    *Rs = *Rs * 1000/24;
+    *L_sky = *L_sky * 1000/24;
     printf("Rs: %8.2f\nL_sky: %8.2f\n", Rs, L_sky);
     int Toggle_Overstory = 1;           /* whether there is overstory, yes: 1 */
     if (Frac_canopy < 0.0001)
@@ -522,7 +521,7 @@ void ET_CELL(
     Tem_u = Air_tem_avg;
 
     Radiation_net(
-        Rs, L_sky,
+        *Rs, *L_sky,
         Rno, Rno_short, Rnu, Rnu_short, Rns,
         Frac_canopy, Ref_o, Ref_u, Ref_s,
         Tem_o, Tem_u, Tem_s,
