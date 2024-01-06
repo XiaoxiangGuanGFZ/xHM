@@ -15,5 +15,9 @@ void Check_weather(
     time_t END_TIME
 );
 
+void Check_GEO(
+    ncID_GEO
+);
+
 #endif
 

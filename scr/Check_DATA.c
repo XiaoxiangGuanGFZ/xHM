@@ -19,7 +19,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <netcdf.h>
-
+#include "NC_copy_global_att.h"
 #include "Check_Data.h"
 
 void Check_weather(
@@ -35,6 +35,19 @@ void Check_weather(
     time_t END_TIME
 )
 {
+    /************* check the variables  **************/
+    int status_nc;
+    int varID;
+    status_nc = nc_inq_varid(ncID_PRE, "PRE", &varID); handle_error(status_nc, "PRE"); 
+    status_nc = nc_inq_varid(ncID_PRS, "PRS", &varID); handle_error(status_nc, "PRS"); 
+    status_nc = nc_inq_varid(ncID_RHU, "RHU", &varID); handle_error(status_nc, "RHU"); 
+    status_nc = nc_inq_varid(ncID_SSD, "SSD", &varID); handle_error(status_nc, "SSD"); 
+    status_nc = nc_inq_varid(ncID_WIN, "WIN", &varID); handle_error(status_nc, "WIN"); 
+    status_nc = nc_inq_varid(ncID_TEM_AVG, "TEM_AVG", &varID); handle_error(status_nc, "TEM_AVG"); 
+    status_nc = nc_inq_varid(ncID_TEM_MAX, "TEM_MAX", &varID); handle_error(status_nc, "TEM_MAX"); 
+    status_nc = nc_inq_varid(ncID_TEM_MIN, "TEM_MIN", &varID); handle_error(status_nc, "TEM_MIN"); 
+
+    /*************** check the attribute values ************/ 
     int attV_PRE, attV_PRS, attV_SSD, attV_RHU, attV_WIN, attV_TEM_AVG, attV_TEM_MAX, attV_TEM_MIN;
     // global attribute: ncols
     nc_get_att_int(ncID_PRE, NC_GLOBAL, "ncols", &attV_PRE);
@@ -125,7 +138,7 @@ void Check_weather(
         exit(-2);
     }
 
-    // starting time 
+    /***************** model running period *****************/ 
     int dimID_time;
     long t_PRE, t_PRS, t_SSD, t_RHU, t_WIN, t_TEM_AVG, t_TEM_MAX, t_TEM_MIN;
     int time_steps_PRE, time_steps_PRS, time_steps_RHU, time_steps_SSD, time_steps_WIN, time_steps_TEM_AVG, time_steps_TEM_MAX, time_steps_TEM_MIN;
@@ -196,6 +209,21 @@ void Check_weather(
     }
 }
 
+void Check_GEO(
+    ncID_GEO
+)
+{
+    int status_nc;
+    int varID;
+    status_nc = nc_inq_varid(ncID_GEO, "DEM", &varID); handle_error(status_nc, "GEO.nc: DEM"); 
+    status_nc = nc_inq_varid(ncID_GEO, "FDR", &varID); handle_error(status_nc, "GEO.nc: FDR"); 
+    status_nc = nc_inq_varid(ncID_GEO, "FAC", &varID); handle_error(status_nc, "GEO.nc: FAC"); 
+    status_nc = nc_inq_varid(ncID_GEO, "STR", &varID); handle_error(status_nc, "GEO.nc: STR"); 
+    status_nc = nc_inq_varid(ncID_GEO, "OUTLET", &varID); handle_error(status_nc, "GEO.nc: OUTLET"); 
+    status_nc = nc_inq_varid(ncID_GEO, "VEGTYPE", &varID); handle_error(status_nc, "GEO.nc: VEGTYPE"); 
+    status_nc = nc_inq_varid(ncID_GEO, "VEGFRAC", &varID); handle_error(status_nc, "GEO.nc: VEGFRAC"); 
+    status_nc = nc_inq_varid(ncID_GEO, "SOILTYPE", &varID); handle_error(status_nc, "GEO.nc: SOILTYPE"); 
+}
 // int main(int argc, char const *argv[])
 // {
 //     /* code */
