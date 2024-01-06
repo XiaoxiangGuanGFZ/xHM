@@ -1,5 +1,5 @@
 /*
- * SUMMARY:      Lookup_SoilLib.c.c
+ * SUMMARY:      Lookup_SoilLib.c
  * USAGE:        look up the soil properties from soil_lib
  * AUTHOR:       Xiaoxiang Guan
  * ORG:          Section Hydrology, GFZ
