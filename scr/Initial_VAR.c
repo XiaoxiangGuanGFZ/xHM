@@ -52,4 +52,6 @@ void Initialize_SOIL(
         double *currentMember = ((double *)st) + i;
         *currentMember = 0.0;
     }
+    st->SM_Lower = 0.2;
+    st->SM_Upper = 0.2;
 }
