@@ -139,6 +139,12 @@ void Check_weather(
     }
 
     /***************** model running period *****************/ 
+    if (START_TIME > END_TIME)
+    {
+        printf("Error: invalid start time or end time for the model running. Please check the global parameter file!\n");
+        exit(-2);
+    }
+    
     int dimID_time;
     long t_PRE, t_PRS, t_SSD, t_RHU, t_WIN, t_TEM_AVG, t_TEM_MAX, t_TEM_MIN;
     int time_steps_PRE, time_steps_PRS, time_steps_RHU, time_steps_SSD, time_steps_WIN, time_steps_TEM_AVG, time_steps_TEM_MAX, time_steps_TEM_MIN;
