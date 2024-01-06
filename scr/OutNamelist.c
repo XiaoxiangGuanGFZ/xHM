@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "HM_ST.h"
 #include "Constants.h"
+#include "HM_ST.h"
 #include "OutNamelist.h"
 
 void Import_Outnamelist(
@@ -134,6 +134,20 @@ void Initialize_Outnamelist(
         short *currentMember = ((short*)outnl) + i;
         *currentMember = 0;
     }
+}
+
+void malloc_Outnamelist(
+    OUT_NAME_LIST outnl,
+    int cell_counts_total,
+    int time_steps_run,
+    int **out_Rs
+)
+{
+    if (outnl.Rs == 1)
+    {
+        *out_Rs = (int *)malloc(sizeof(int) * time_steps_run * cell_counts_total);
+    }
+    
 }
 
 

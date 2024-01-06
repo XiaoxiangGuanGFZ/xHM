@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <netcdf.h>
+
 #include "NC_copy_global_att.h"
 #include "Check_Data.h"
 
@@ -32,7 +33,8 @@ void Check_weather(
     int ncID_TEM_MAX, 
     int ncID_TEM_MIN,
     time_t START_TIME,
-    time_t END_TIME
+    time_t END_TIME,
+    int STEP_TIME
 )
 {
     /************* check the variables  **************/
@@ -114,7 +116,6 @@ void Check_weather(
         exit(-2);
     }
     // STEP_TIME
-    int varID;
     int attID;
     nc_inq_varid(ncID_PRE, "PRE", &varID); nc_get_att_int(ncID_PRE, varID, "STEP_TIME", &attV_PRE);
     nc_inq_varid(ncID_PRS, "PRS", &varID); nc_get_att_int(ncID_PRS, varID, "STEP_TIME", &attV_PRS);
@@ -149,66 +150,85 @@ void Check_weather(
     long t_PRE, t_PRS, t_SSD, t_RHU, t_WIN, t_TEM_AVG, t_TEM_MAX, t_TEM_MIN;
     int time_steps_PRE, time_steps_PRS, time_steps_RHU, time_steps_SSD, time_steps_WIN, time_steps_TEM_AVG, time_steps_TEM_MAX, time_steps_TEM_MIN;
     size_t index = 0;
-    nc_inq_varid(ncID_PRE, "time", &varID); nc_get_var1_long(ncID_PRE, varID, &index, &t_PRE); nc_inq_dimlen(ncID_PRE, varID, &time_steps_PRE);
-    nc_inq_varid(ncID_PRS, "time", &varID); nc_get_var1_long(ncID_PRS, varID, &index, &t_PRS); nc_inq_dimlen(ncID_PRS, varID, &time_steps_PRS);
-    nc_inq_varid(ncID_SSD, "time", &varID); nc_get_var1_long(ncID_SSD, varID, &index, &t_SSD); nc_inq_dimlen(ncID_SSD, varID, &time_steps_SSD);
-    nc_inq_varid(ncID_RHU, "time", &varID); nc_get_var1_long(ncID_RHU, varID, &index, &t_RHU); nc_inq_dimlen(ncID_RHU, varID, &time_steps_RHU);
-    nc_inq_varid(ncID_WIN, "time", &varID); nc_get_var1_long(ncID_WIN, varID, &index, &t_WIN); nc_inq_dimlen(ncID_WIN, varID, &time_steps_WIN);
-    nc_inq_varid(ncID_TEM_AVG, "time", &varID); nc_get_var1_long(ncID_TEM_AVG, varID, &index, &t_TEM_AVG); nc_inq_dimlen(ncID_TEM_AVG, varID, &time_steps_TEM_AVG);
-    nc_inq_varid(ncID_TEM_MAX, "time", &varID); nc_get_var1_long(ncID_TEM_MAX, varID, &index, &t_TEM_MAX); nc_inq_dimlen(ncID_TEM_MAX, varID, &time_steps_TEM_MAX);
-    nc_inq_varid(ncID_TEM_MIN, "time", &varID); nc_get_var1_long(ncID_TEM_MIN, varID, &index, &t_TEM_MIN); nc_inq_dimlen(ncID_TEM_MIN, varID, &time_steps_TEM_MIN);
+    int t_unit_s;
+    t_unit_s = STEP_TIME * 3600;
+    nc_inq_varid(ncID_PRE, "time", &varID); nc_get_var1_long(ncID_PRE, varID, &index, &t_PRE); 
+    nc_inq_dimid(ncID_PRE, "time", &dimID_time); nc_inq_dimlen(ncID_PRE, dimID_time, &time_steps_PRE);
 
-    if (!(START_TIME >= t_PRE && START_TIME <= (t_PRE + time_steps_PRE) &&
-          END_TIME >= t_PRE && END_TIME <= (t_PRE + time_steps_PRE)))
+    nc_inq_varid(ncID_PRS, "time", &varID); nc_get_var1_long(ncID_PRS, varID, &index, &t_PRS);
+    nc_inq_dimid(ncID_PRS, "time", &dimID_time); nc_inq_dimlen(ncID_PRS, dimID_time, &time_steps_PRS);
+
+    nc_inq_varid(ncID_SSD, "time", &varID); nc_get_var1_long(ncID_SSD, varID, &index, &t_SSD);
+    nc_inq_dimid(ncID_SSD, "time", &dimID_time); nc_inq_dimlen(ncID_SSD, dimID_time, &time_steps_SSD);
+
+    nc_inq_varid(ncID_RHU, "time", &varID); nc_get_var1_long(ncID_RHU, varID, &index, &t_RHU);
+    nc_inq_dimid(ncID_RHU, "time", &dimID_time); nc_inq_dimlen(ncID_RHU, dimID_time, &time_steps_RHU);
+
+    nc_inq_varid(ncID_WIN, "time", &varID); nc_get_var1_long(ncID_WIN, varID, &index, &t_WIN);
+    nc_inq_dimid(ncID_WIN, "time", &dimID_time); nc_inq_dimlen(ncID_WIN, dimID_time, &time_steps_WIN);
+
+    nc_inq_varid(ncID_TEM_AVG, "time", &varID); nc_get_var1_long(ncID_TEM_AVG, varID, &index, &t_TEM_AVG);
+    nc_inq_dimid(ncID_TEM_AVG, "time", &dimID_time); nc_inq_dimlen(ncID_TEM_AVG, dimID_time, &time_steps_TEM_AVG);
+
+    nc_inq_varid(ncID_TEM_MAX, "time", &varID); nc_get_var1_long(ncID_TEM_MAX, varID, &index, &t_TEM_MAX);
+    nc_inq_dimid(ncID_TEM_MAX, "time", &dimID_time); nc_inq_dimlen(ncID_TEM_MAX, dimID_time, &time_steps_TEM_MAX);
+
+    nc_inq_varid(ncID_TEM_MIN, "time", &varID); nc_get_var1_long(ncID_TEM_MIN, varID, &index, &t_TEM_MIN); 
+    nc_inq_dimid(ncID_TEM_MIN, "time", &dimID_time); nc_inq_dimlen(ncID_TEM_MIN, dimID_time, &time_steps_TEM_MIN);
+    // printf("time_steps_PRE: %d\n", time_steps_PRE);
+    // printf("START_TIME: %ld\nEND_TIME: %ld\n", START_TIME, END_TIME);
+    // printf("For PRE:\nSTART_TIME: %ld\n", t_PRE);
+    if (!(START_TIME >= t_PRE && START_TIME <= (t_PRE + time_steps_PRE * t_unit_s) &&
+          END_TIME >= t_PRE && END_TIME <= (t_PRE + time_steps_PRE * t_unit_s)))
     {
         printf("Error: no overlapping period between the running period and PRE data! \n");
         exit(-2);
     }
 
-    if (!(START_TIME >= t_PRS && START_TIME <= (t_PRS + time_steps_PRS) &&
-          END_TIME >= t_PRS && END_TIME <= (t_PRS + time_steps_PRS)))
+    if (!(START_TIME >= t_PRS && START_TIME <= (t_PRS + time_steps_PRS * t_unit_s) &&
+          END_TIME >= t_PRS && END_TIME <= (t_PRS + time_steps_PRS * t_unit_s)))
     {
         printf("Error: no overlapping period between the running period and PRS data! \n");
         exit(-2);
     }
 
-    if (!(START_TIME >= t_SSD && START_TIME <= (t_SSD + time_steps_SSD) &&
-          END_TIME >= t_SSD && END_TIME <= (t_SSD + time_steps_SSD)))
+    if (!(START_TIME >= t_SSD && START_TIME <= (t_SSD + time_steps_SSD * t_unit_s) &&
+          END_TIME >= t_SSD && END_TIME <= (t_SSD + time_steps_SSD * t_unit_s)))
     {
         printf("Error: no overlapping period between the running period and SSD data! \n");
         exit(-2);
     }
 
-    if (!(START_TIME >= t_RHU && START_TIME <= (t_RHU + time_steps_RHU) &&
-          END_TIME >= t_RHU && END_TIME <= (t_RHU + time_steps_RHU)))
+    if (!(START_TIME >= t_RHU && START_TIME <= (t_RHU + time_steps_RHU * t_unit_s) &&
+          END_TIME >= t_RHU && END_TIME <= (t_RHU + time_steps_RHU * t_unit_s)))
     {
         printf("Error: no overlapping period between the running period and RHU data! \n");
         exit(-2);
     }
 
-    if (!(START_TIME >= t_WIN && START_TIME <= (t_WIN + time_steps_WIN) &&
-          END_TIME >= t_WIN && END_TIME <= (t_WIN + time_steps_WIN)))
+    if (!(START_TIME >= t_WIN && START_TIME <= (t_WIN + time_steps_WIN * t_unit_s) &&
+          END_TIME >= t_WIN && END_TIME <= (t_WIN + time_steps_WIN * t_unit_s)))
     {
         printf("Error: no overlapping period between the running period and WIN data! \n");
         exit(-2);
     }
 
-    if (!(START_TIME >= t_TEM_AVG && START_TIME <= (t_TEM_AVG + time_steps_TEM_AVG) &&
-          END_TIME >= t_TEM_AVG && END_TIME <= (t_TEM_AVG + time_steps_TEM_AVG)))
+    if (!(START_TIME >= t_TEM_AVG && START_TIME <= (t_TEM_AVG + time_steps_TEM_AVG * t_unit_s) &&
+          END_TIME >= t_TEM_AVG && END_TIME <= (t_TEM_AVG + time_steps_TEM_AVG * t_unit_s)))
     {
         printf("Error: no overlapping period between the running period and TEM_AVG data! \n");
         exit(-2);
     }
 
-    if (!(START_TIME >= t_TEM_MAX && START_TIME <= (t_TEM_MAX + time_steps_WIN) &&
-          END_TIME >= t_TEM_MAX && END_TIME <= (t_TEM_MAX + time_steps_WIN)))
+    if (!(START_TIME >= t_TEM_MAX && START_TIME <= (t_TEM_MAX + time_steps_WIN * t_unit_s) &&
+          END_TIME >= t_TEM_MAX && END_TIME <= (t_TEM_MAX + time_steps_WIN * t_unit_s)))
     {
         printf("Error: no overlapping period between the running period and TEM_MAX data! \n");
         exit(-2);
     }
 
-    if (!(START_TIME >= t_TEM_MIN && START_TIME <= (t_TEM_MIN + time_steps_TEM_MIN) &&
-          END_TIME >= t_TEM_MIN && END_TIME <= (t_TEM_MIN + time_steps_TEM_MIN)))
+    if (!(START_TIME >= t_TEM_MIN && START_TIME <= (t_TEM_MIN + time_steps_TEM_MIN * t_unit_s) &&
+          END_TIME >= t_TEM_MIN && END_TIME <= (t_TEM_MIN + time_steps_TEM_MIN * t_unit_s)))
     {
         printf("Error: no overlapping period between the running period and TEM_MIN data! \n");
         exit(-2);
@@ -216,7 +236,7 @@ void Check_weather(
 }
 
 void Check_GEO(
-    ncID_GEO
+    int ncID_GEO
 )
 {
     int status_nc;

@@ -12,11 +12,12 @@ void Check_weather(
     int ncID_TEM_MAX, 
     int ncID_TEM_MIN,
     time_t START_TIME,
-    time_t END_TIME
+    time_t END_TIME,
+    int STEP_TIME
 );
 
 void Check_GEO(
-    ncID_GEO
+    int ncID_GEO
 );
 
 #endif
