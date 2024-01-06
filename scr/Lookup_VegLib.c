@@ -226,7 +226,7 @@ void Lookup_VegLib_CELL(
     }
     else
     {
-        printf("Recognized Vegetation type. Program failled\n");
+        printf("Unrecognized vegetation type. Program failled\n");
         exit(0);
     }
         
@@ -284,7 +284,7 @@ void Lookup_VegLib_CELL_MON(
     }
     else
     {
-        printf("Recognized Vegetation type. Program failled\n");
+        printf("Unrecognized Vegetation type. Program failled\n");
         exit(0);
     }
 }
