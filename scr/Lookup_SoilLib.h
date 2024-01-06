@@ -1,6 +1,6 @@
 
-#ifndef Lookup_VegLib
-#define Lookup_VegLib
+#ifndef LOOKUP_SOILLIB
+#define LOOKUP_SOILLIB
 
 typedef struct 
 {
