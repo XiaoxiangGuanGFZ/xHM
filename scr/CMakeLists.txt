@@ -23,6 +23,7 @@ set(GEO
     GEO2NC.c
     GEO2ASCII.c
     GEO_para.c
+    NC_copy_global_att.c
 )
 
 set(WEATHER
@@ -50,6 +51,25 @@ set(ET
     NC_copy_global_att.c
 )
 
+set(xHM
+    Evaporation_soil.c
+    Evapotranspiration.c
+	Evapotranspiration_Energy.c
+	xHM_main.c
+    Radiation_Calc.c
+    Resistance.c
+    Calendar.c
+    Soil_Desorption.c
+    NC_copy_global_att.c
+    HM_GlobalPara.c
+    OutNamelist.c
+    Check_Data.c
+    Initial_VAR.c
+    Lookup_VegLib.c
+    Lookup_SoilLib.c
+    NetCDF_IO_geo.c
+)
+
 
 project(xHM)  # Set your project name here
 
@@ -64,15 +84,16 @@ add_executable(SNOW ${SNOW_module})
 add_executable(GEO ${GEO})
 add_executable(WEATHER ${WEATHER})
 add_executable(UH ${UH})
-add_executable(ET ${ET})
+# add_executable(ET ${ET})
+add_executable(xHM ${xHM})
 
 
 # Link NetCDF libraries
 target_link_libraries(GEO PRIVATE netcdf)
 target_link_libraries(WEATHER PRIVATE netcdf)
 target_link_libraries(UH PRIVATE netcdf)
-target_link_libraries(ET PRIVATE netcdf)
-
+# target_link_libraries(ET PRIVATE netcdf)
+target_link_libraries(xHM PRIVATE netcdf)
 
 ## cmake -G "MinGW Makefiles" .
 ## mingw32-make

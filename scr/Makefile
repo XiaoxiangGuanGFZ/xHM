@@ -168,24 +168,24 @@ UH/fast:
 .PHONY : UH/fast
 
 #=============================================================================
-# Target rules for targets named ET
+# Target rules for targets named xHM
 
 # Build rule for target.
-ET: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 ET
-.PHONY : ET
+xHM: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 xHM
+.PHONY : xHM
 
 # fast build rule for target.
-ET/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/build
-.PHONY : ET/fast
+xHM/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/build
+.PHONY : xHM/fast
 
 Calendar.obj: Calendar.c.obj
 .PHONY : Calendar.obj
 
 # target to build an object file
 Calendar.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Calendar.c.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Calendar.c.obj
 .PHONY : Calendar.c.obj
 
 Calendar.i: Calendar.c.i
@@ -193,7 +193,7 @@ Calendar.i: Calendar.c.i
 
 # target to preprocess a source file
 Calendar.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Calendar.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Calendar.c.i
 .PHONY : Calendar.c.i
 
 Calendar.s: Calendar.c.s
@@ -201,15 +201,39 @@ Calendar.s: Calendar.c.s
 
 # target to generate assembly for a file
 Calendar.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Calendar.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Calendar.c.s
 .PHONY : Calendar.c.s
+
+Check_Data.obj: Check_Data.c.obj
+.PHONY : Check_Data.obj
+
+# target to build an object file
+Check_Data.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Check_Data.c.obj
+.PHONY : Check_Data.c.obj
+
+Check_Data.i: Check_Data.c.i
+.PHONY : Check_Data.i
+
+# target to preprocess a source file
+Check_Data.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Check_Data.c.i
+.PHONY : Check_Data.c.i
+
+Check_Data.s: Check_Data.c.s
+.PHONY : Check_Data.s
+
+# target to generate assembly for a file
+Check_Data.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Check_Data.c.s
+.PHONY : Check_Data.c.s
 
 Evaporation_soil.obj: Evaporation_soil.c.obj
 .PHONY : Evaporation_soil.obj
 
 # target to build an object file
 Evaporation_soil.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Evaporation_soil.c.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Evaporation_soil.c.obj
 .PHONY : Evaporation_soil.c.obj
 
 Evaporation_soil.i: Evaporation_soil.c.i
@@ -217,7 +241,7 @@ Evaporation_soil.i: Evaporation_soil.c.i
 
 # target to preprocess a source file
 Evaporation_soil.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Evaporation_soil.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Evaporation_soil.c.i
 .PHONY : Evaporation_soil.c.i
 
 Evaporation_soil.s: Evaporation_soil.c.s
@@ -225,7 +249,7 @@ Evaporation_soil.s: Evaporation_soil.c.s
 
 # target to generate assembly for a file
 Evaporation_soil.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Evaporation_soil.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Evaporation_soil.c.s
 .PHONY : Evaporation_soil.c.s
 
 Evapotranspiration.obj: Evapotranspiration.c.obj
@@ -233,7 +257,7 @@ Evapotranspiration.obj: Evapotranspiration.c.obj
 
 # target to build an object file
 Evapotranspiration.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Evapotranspiration.c.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Evapotranspiration.c.obj
 .PHONY : Evapotranspiration.c.obj
 
 Evapotranspiration.i: Evapotranspiration.c.i
@@ -241,7 +265,7 @@ Evapotranspiration.i: Evapotranspiration.c.i
 
 # target to preprocess a source file
 Evapotranspiration.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Evapotranspiration.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Evapotranspiration.c.i
 .PHONY : Evapotranspiration.c.i
 
 Evapotranspiration.s: Evapotranspiration.c.s
@@ -249,7 +273,7 @@ Evapotranspiration.s: Evapotranspiration.c.s
 
 # target to generate assembly for a file
 Evapotranspiration.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Evapotranspiration.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Evapotranspiration.c.s
 .PHONY : Evapotranspiration.c.s
 
 Evapotranspiration_Energy.obj: Evapotranspiration_Energy.c.obj
@@ -257,7 +281,7 @@ Evapotranspiration_Energy.obj: Evapotranspiration_Energy.c.obj
 
 # target to build an object file
 Evapotranspiration_Energy.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Evapotranspiration_Energy.c.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Evapotranspiration_Energy.c.obj
 .PHONY : Evapotranspiration_Energy.c.obj
 
 Evapotranspiration_Energy.i: Evapotranspiration_Energy.c.i
@@ -265,7 +289,7 @@ Evapotranspiration_Energy.i: Evapotranspiration_Energy.c.i
 
 # target to preprocess a source file
 Evapotranspiration_Energy.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Evapotranspiration_Energy.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Evapotranspiration_Energy.c.i
 .PHONY : Evapotranspiration_Energy.c.i
 
 Evapotranspiration_Energy.s: Evapotranspiration_Energy.c.s
@@ -273,32 +297,8 @@ Evapotranspiration_Energy.s: Evapotranspiration_Energy.c.s
 
 # target to generate assembly for a file
 Evapotranspiration_Energy.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Evapotranspiration_Energy.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Evapotranspiration_Energy.c.s
 .PHONY : Evapotranspiration_Energy.c.s
-
-Evapotranspiration_main.obj: Evapotranspiration_main.c.obj
-.PHONY : Evapotranspiration_main.obj
-
-# target to build an object file
-Evapotranspiration_main.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Evapotranspiration_main.c.obj
-.PHONY : Evapotranspiration_main.c.obj
-
-Evapotranspiration_main.i: Evapotranspiration_main.c.i
-.PHONY : Evapotranspiration_main.i
-
-# target to preprocess a source file
-Evapotranspiration_main.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Evapotranspiration_main.c.i
-.PHONY : Evapotranspiration_main.c.i
-
-Evapotranspiration_main.s: Evapotranspiration_main.c.s
-.PHONY : Evapotranspiration_main.s
-
-# target to generate assembly for a file
-Evapotranspiration_main.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Evapotranspiration_main.c.s
-.PHONY : Evapotranspiration_main.c.s
 
 GEO2ASCII.obj: GEO2ASCII.c.obj
 .PHONY : GEO2ASCII.obj
@@ -396,12 +396,84 @@ GEO_para.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/GEO_para.c.s
 .PHONY : GEO_para.c.s
 
+HM_GlobalPara.obj: HM_GlobalPara.c.obj
+.PHONY : HM_GlobalPara.obj
+
+# target to build an object file
+HM_GlobalPara.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/HM_GlobalPara.c.obj
+.PHONY : HM_GlobalPara.c.obj
+
+HM_GlobalPara.i: HM_GlobalPara.c.i
+.PHONY : HM_GlobalPara.i
+
+# target to preprocess a source file
+HM_GlobalPara.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/HM_GlobalPara.c.i
+.PHONY : HM_GlobalPara.c.i
+
+HM_GlobalPara.s: HM_GlobalPara.c.s
+.PHONY : HM_GlobalPara.s
+
+# target to generate assembly for a file
+HM_GlobalPara.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/HM_GlobalPara.c.s
+.PHONY : HM_GlobalPara.c.s
+
+Initial_VAR.obj: Initial_VAR.c.obj
+.PHONY : Initial_VAR.obj
+
+# target to build an object file
+Initial_VAR.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Initial_VAR.c.obj
+.PHONY : Initial_VAR.c.obj
+
+Initial_VAR.i: Initial_VAR.c.i
+.PHONY : Initial_VAR.i
+
+# target to preprocess a source file
+Initial_VAR.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Initial_VAR.c.i
+.PHONY : Initial_VAR.c.i
+
+Initial_VAR.s: Initial_VAR.c.s
+.PHONY : Initial_VAR.s
+
+# target to generate assembly for a file
+Initial_VAR.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Initial_VAR.c.s
+.PHONY : Initial_VAR.c.s
+
+Lookup_SoilLib.obj: Lookup_SoilLib.c.obj
+.PHONY : Lookup_SoilLib.obj
+
+# target to build an object file
+Lookup_SoilLib.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Lookup_SoilLib.c.obj
+.PHONY : Lookup_SoilLib.c.obj
+
+Lookup_SoilLib.i: Lookup_SoilLib.c.i
+.PHONY : Lookup_SoilLib.i
+
+# target to preprocess a source file
+Lookup_SoilLib.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Lookup_SoilLib.c.i
+.PHONY : Lookup_SoilLib.c.i
+
+Lookup_SoilLib.s: Lookup_SoilLib.c.s
+.PHONY : Lookup_SoilLib.s
+
+# target to generate assembly for a file
+Lookup_SoilLib.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Lookup_SoilLib.c.s
+.PHONY : Lookup_SoilLib.c.s
+
 Lookup_VegLib.obj: Lookup_VegLib.c.obj
 .PHONY : Lookup_VegLib.obj
 
 # target to build an object file
 Lookup_VegLib.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Lookup_VegLib.c.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Lookup_VegLib.c.obj
 .PHONY : Lookup_VegLib.c.obj
 
 Lookup_VegLib.i: Lookup_VegLib.c.i
@@ -409,7 +481,7 @@ Lookup_VegLib.i: Lookup_VegLib.c.i
 
 # target to preprocess a source file
 Lookup_VegLib.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Lookup_VegLib.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Lookup_VegLib.c.i
 .PHONY : Lookup_VegLib.c.i
 
 Lookup_VegLib.s: Lookup_VegLib.c.s
@@ -417,7 +489,7 @@ Lookup_VegLib.s: Lookup_VegLib.c.s
 
 # target to generate assembly for a file
 Lookup_VegLib.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Lookup_VegLib.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Lookup_VegLib.c.s
 .PHONY : Lookup_VegLib.c.s
 
 NC_copy_global_att.obj: NC_copy_global_att.c.obj
@@ -425,9 +497,10 @@ NC_copy_global_att.obj: NC_copy_global_att.c.obj
 
 # target to build an object file
 NC_copy_global_att.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/NC_copy_global_att.c.obj
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\WEATHER.dir\build.make CMakeFiles/WEATHER.dir/NC_copy_global_att.c.obj
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\UH.dir\build.make CMakeFiles/UH.dir/NC_copy_global_att.c.obj
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/NC_copy_global_att.c.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/NC_copy_global_att.c.obj
 .PHONY : NC_copy_global_att.c.obj
 
 NC_copy_global_att.i: NC_copy_global_att.c.i
@@ -435,9 +508,10 @@ NC_copy_global_att.i: NC_copy_global_att.c.i
 
 # target to preprocess a source file
 NC_copy_global_att.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/NC_copy_global_att.c.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\WEATHER.dir\build.make CMakeFiles/WEATHER.dir/NC_copy_global_att.c.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\UH.dir\build.make CMakeFiles/UH.dir/NC_copy_global_att.c.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/NC_copy_global_att.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/NC_copy_global_att.c.i
 .PHONY : NC_copy_global_att.c.i
 
 NC_copy_global_att.s: NC_copy_global_att.c.s
@@ -445,9 +519,10 @@ NC_copy_global_att.s: NC_copy_global_att.c.s
 
 # target to generate assembly for a file
 NC_copy_global_att.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\GEO.dir\build.make CMakeFiles/GEO.dir/NC_copy_global_att.c.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\WEATHER.dir\build.make CMakeFiles/WEATHER.dir/NC_copy_global_att.c.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\UH.dir\build.make CMakeFiles/UH.dir/NC_copy_global_att.c.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/NC_copy_global_att.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/NC_copy_global_att.c.s
 .PHONY : NC_copy_global_att.c.s
 
 NetCDF_IO_geo.obj: NetCDF_IO_geo.c.obj
@@ -456,6 +531,7 @@ NetCDF_IO_geo.obj: NetCDF_IO_geo.c.obj
 # target to build an object file
 NetCDF_IO_geo.c.obj:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\WEATHER.dir\build.make CMakeFiles/WEATHER.dir/NetCDF_IO_geo.c.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/NetCDF_IO_geo.c.obj
 .PHONY : NetCDF_IO_geo.c.obj
 
 NetCDF_IO_geo.i: NetCDF_IO_geo.c.i
@@ -464,6 +540,7 @@ NetCDF_IO_geo.i: NetCDF_IO_geo.c.i
 # target to preprocess a source file
 NetCDF_IO_geo.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\WEATHER.dir\build.make CMakeFiles/WEATHER.dir/NetCDF_IO_geo.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/NetCDF_IO_geo.c.i
 .PHONY : NetCDF_IO_geo.c.i
 
 NetCDF_IO_geo.s: NetCDF_IO_geo.c.s
@@ -472,7 +549,32 @@ NetCDF_IO_geo.s: NetCDF_IO_geo.c.s
 # target to generate assembly for a file
 NetCDF_IO_geo.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\WEATHER.dir\build.make CMakeFiles/WEATHER.dir/NetCDF_IO_geo.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/NetCDF_IO_geo.c.s
 .PHONY : NetCDF_IO_geo.c.s
+
+OutNamelist.obj: OutNamelist.c.obj
+.PHONY : OutNamelist.obj
+
+# target to build an object file
+OutNamelist.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/OutNamelist.c.obj
+.PHONY : OutNamelist.c.obj
+
+OutNamelist.i: OutNamelist.c.i
+.PHONY : OutNamelist.i
+
+# target to preprocess a source file
+OutNamelist.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/OutNamelist.c.i
+.PHONY : OutNamelist.c.i
+
+OutNamelist.s: OutNamelist.c.s
+.PHONY : OutNamelist.s
+
+# target to generate assembly for a file
+OutNamelist.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/OutNamelist.c.s
+.PHONY : OutNamelist.c.s
 
 Radiation_Calc.obj: Radiation_Calc.c.obj
 .PHONY : Radiation_Calc.obj
@@ -480,7 +582,7 @@ Radiation_Calc.obj: Radiation_Calc.c.obj
 # target to build an object file
 Radiation_Calc.c.obj:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\SNOW.dir\build.make CMakeFiles/SNOW.dir/Radiation_Calc.c.obj
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Radiation_Calc.c.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Radiation_Calc.c.obj
 .PHONY : Radiation_Calc.c.obj
 
 Radiation_Calc.i: Radiation_Calc.c.i
@@ -489,7 +591,7 @@ Radiation_Calc.i: Radiation_Calc.c.i
 # target to preprocess a source file
 Radiation_Calc.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\SNOW.dir\build.make CMakeFiles/SNOW.dir/Radiation_Calc.c.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Radiation_Calc.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Radiation_Calc.c.i
 .PHONY : Radiation_Calc.c.i
 
 Radiation_Calc.s: Radiation_Calc.c.s
@@ -498,7 +600,7 @@ Radiation_Calc.s: Radiation_Calc.c.s
 # target to generate assembly for a file
 Radiation_Calc.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\SNOW.dir\build.make CMakeFiles/SNOW.dir/Radiation_Calc.c.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Radiation_Calc.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Radiation_Calc.c.s
 .PHONY : Radiation_Calc.c.s
 
 Resistance.obj: Resistance.c.obj
@@ -506,7 +608,7 @@ Resistance.obj: Resistance.c.obj
 
 # target to build an object file
 Resistance.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Resistance.c.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Resistance.c.obj
 .PHONY : Resistance.c.obj
 
 Resistance.i: Resistance.c.i
@@ -514,7 +616,7 @@ Resistance.i: Resistance.c.i
 
 # target to preprocess a source file
 Resistance.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Resistance.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Resistance.c.i
 .PHONY : Resistance.c.i
 
 Resistance.s: Resistance.c.s
@@ -522,7 +624,7 @@ Resistance.s: Resistance.c.s
 
 # target to generate assembly for a file
 Resistance.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ET.dir\build.make CMakeFiles/ET.dir/Resistance.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Resistance.c.s
 .PHONY : Resistance.c.s
 
 Route_UH.obj: Route_UH.c.obj
@@ -669,6 +771,30 @@ Snow_main.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\SNOW.dir\build.make CMakeFiles/SNOW.dir/Snow_main.c.s
 .PHONY : Snow_main.c.s
 
+Soil_Desorption.obj: Soil_Desorption.c.obj
+.PHONY : Soil_Desorption.obj
+
+# target to build an object file
+Soil_Desorption.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Soil_Desorption.c.obj
+.PHONY : Soil_Desorption.c.obj
+
+Soil_Desorption.i: Soil_Desorption.c.i
+.PHONY : Soil_Desorption.i
+
+# target to preprocess a source file
+Soil_Desorption.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Soil_Desorption.c.i
+.PHONY : Soil_Desorption.c.i
+
+Soil_Desorption.s: Soil_Desorption.c.s
+.PHONY : Soil_Desorption.s
+
+# target to generate assembly for a file
+Soil_Desorption.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Soil_Desorption.c.s
+.PHONY : Soil_Desorption.c.s
+
 Weather2NC.obj: Weather2NC.c.obj
 .PHONY : Weather2NC.obj
 
@@ -717,6 +843,30 @@ Weather2NC_main.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\WEATHER.dir\build.make CMakeFiles/WEATHER.dir/Weather2NC_main.c.s
 .PHONY : Weather2NC_main.c.s
 
+xHM_main.obj: xHM_main.c.obj
+.PHONY : xHM_main.obj
+
+# target to build an object file
+xHM_main.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/xHM_main.c.obj
+.PHONY : xHM_main.c.obj
+
+xHM_main.i: xHM_main.c.i
+.PHONY : xHM_main.i
+
+# target to preprocess a source file
+xHM_main.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/xHM_main.c.i
+.PHONY : xHM_main.c.i
+
+xHM_main.s: xHM_main.c.s
+.PHONY : xHM_main.s
+
+# target to generate assembly for a file
+xHM_main.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/xHM_main.c.s
+.PHONY : xHM_main.c.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -725,14 +875,17 @@ help:
 	@echo ... depend
 	@echo ... edit_cache
 	@echo ... rebuild_cache
-	@echo ... ET
 	@echo ... GEO
 	@echo ... SNOW
 	@echo ... UH
 	@echo ... WEATHER
+	@echo ... xHM
 	@echo ... Calendar.obj
 	@echo ... Calendar.i
 	@echo ... Calendar.s
+	@echo ... Check_Data.obj
+	@echo ... Check_Data.i
+	@echo ... Check_Data.s
 	@echo ... Evaporation_soil.obj
 	@echo ... Evaporation_soil.i
 	@echo ... Evaporation_soil.s
@@ -742,9 +895,6 @@ help:
 	@echo ... Evapotranspiration_Energy.obj
 	@echo ... Evapotranspiration_Energy.i
 	@echo ... Evapotranspiration_Energy.s
-	@echo ... Evapotranspiration_main.obj
-	@echo ... Evapotranspiration_main.i
-	@echo ... Evapotranspiration_main.s
 	@echo ... GEO2ASCII.obj
 	@echo ... GEO2ASCII.i
 	@echo ... GEO2ASCII.s
@@ -757,6 +907,15 @@ help:
 	@echo ... GEO_para.obj
 	@echo ... GEO_para.i
 	@echo ... GEO_para.s
+	@echo ... HM_GlobalPara.obj
+	@echo ... HM_GlobalPara.i
+	@echo ... HM_GlobalPara.s
+	@echo ... Initial_VAR.obj
+	@echo ... Initial_VAR.i
+	@echo ... Initial_VAR.s
+	@echo ... Lookup_SoilLib.obj
+	@echo ... Lookup_SoilLib.i
+	@echo ... Lookup_SoilLib.s
 	@echo ... Lookup_VegLib.obj
 	@echo ... Lookup_VegLib.i
 	@echo ... Lookup_VegLib.s
@@ -766,6 +925,9 @@ help:
 	@echo ... NetCDF_IO_geo.obj
 	@echo ... NetCDF_IO_geo.i
 	@echo ... NetCDF_IO_geo.s
+	@echo ... OutNamelist.obj
+	@echo ... OutNamelist.i
+	@echo ... OutNamelist.s
 	@echo ... Radiation_Calc.obj
 	@echo ... Radiation_Calc.i
 	@echo ... Radiation_Calc.s
@@ -790,12 +952,18 @@ help:
 	@echo ... Snow_main.obj
 	@echo ... Snow_main.i
 	@echo ... Snow_main.s
+	@echo ... Soil_Desorption.obj
+	@echo ... Soil_Desorption.i
+	@echo ... Soil_Desorption.s
 	@echo ... Weather2NC.obj
 	@echo ... Weather2NC.i
 	@echo ... Weather2NC.s
 	@echo ... Weather2NC_main.obj
 	@echo ... Weather2NC_main.i
 	@echo ... Weather2NC_main.s
+	@echo ... xHM_main.obj
+	@echo ... xHM_main.i
+	@echo ... xHM_main.s
 .PHONY : help
 
 
