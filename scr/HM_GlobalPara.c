@@ -188,7 +188,7 @@ void Initialize_GlobalPara(
     GLOBAL_PARA *global_para
 )
 {
-
+    /* weather data parameters */
     strcpy(global_para->FP_PRE, "\0");
     strcpy(global_para->FP_PRS, "\0");
     strcpy(global_para->FP_RHU, "\0");
@@ -197,19 +197,31 @@ void Initialize_GlobalPara(
     strcpy(global_para->FP_TEM_AVG, "\0");
     strcpy(global_para->FP_TEM_MAX, "\0");
     strcpy(global_para->FP_TEM_MIN, "\0");
+
+    /* GEO info parameters */
     strcpy(global_para->FP_SOIL_HWSD_ID, "\0");
     strcpy(global_para->FP_SOILLIB, "\0");
     strcpy(global_para->FP_GEO, "\0");
     strcpy(global_para->FP_VEGLIB, "\0");
-    strcpy(global_para->FP_OUTNAMELIST, "\0");
-    strcpy(global_para->PATH_OUT, "\0");
 
+    /* model setup parameters */
     global_para->START_DAY = 1; global_para->END_DAY = 1;
     global_para->START_HOUR = 0; global_para->END_HOUR = 0;
     global_para->START_MONTH = 1; global_para->END_MONTH = 1;
     global_para->START_YEAR = 1900; global_para->END_YEAR = 1900;
     global_para->STEP_TIME = 24;
 
+    /* UH parameters */
+    strcpy(global_para->SURFACE_RUNOFF, "UH");
+    strcpy(global_para->FP_UH, "\0");
+    global_para->Velocity_avg = 480.0;
+    global_para->Velocity_max = 13200.0;
+    global_para->Velocity_min = 100.0;
+    global_para->b = 0.5; global_para->c = 0.5;
+
+    /* output parameters */
+    strcpy(global_para->FP_OUTNAMELIST, "\0");
+    strcpy(global_para->PATH_OUT, "\0");
 }
 
 
