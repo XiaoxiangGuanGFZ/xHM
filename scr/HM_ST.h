@@ -112,6 +112,13 @@ typedef struct
     int END_MONTH;
     int END_DAY;
     int END_HOUR;
+    char FP_UH[MAXCHAR];
+    char SURFACE_RUNOFF[30];
+    double Velocity_avg;
+    double Velocity_max;
+    double Velocity_min;
+    double b;
+    double c;
     char PATH_OUT[MAXCHAR];
     char FP_OUTNAMELIST[MAXCHAR];
 } GLOBAL_PARA;

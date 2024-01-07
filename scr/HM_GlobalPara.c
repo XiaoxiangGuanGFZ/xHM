@@ -143,6 +143,34 @@ void Import_GlobalPara(
                 {
                     global_para->STEP_TIME = atoi(S2);
                 }
+                else if (strcmp(S1, "SURFACE_RUNOFF") == 0)
+                {
+                    strcpy(global_para->SURFACE_RUNOFF, S2);
+                }
+                else if (strcmp(S1, "FP_UH") == 0)
+                {
+                    strcpy(global_para->FP_UH, S2);
+                }
+                else if (strcmp(S1, "Velocity_avg") == 0)
+                {
+                    global_para->Velocity_avg = atof(S2);
+                }
+                else if (strcmp(S1, "Velocity_max") == 0)
+                {
+                    global_para->Velocity_max = atof(S2);
+                }
+                else if (strcmp(S1, "Velocity_min") == 0)
+                {
+                    global_para->Velocity_min = atof(S2);
+                }
+                else if (strcmp(S1, "b") == 0)
+                {
+                    global_para->b = atof(S2);
+                }
+                else if (strcmp(S1, "c") == 0)
+                {
+                    global_para->c = atof(S2);
+                }
                 else
                 {
                     printf("Unrecognized field in row %d: %s\n", j, row);
