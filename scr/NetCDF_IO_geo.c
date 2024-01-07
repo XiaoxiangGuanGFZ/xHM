@@ -115,8 +115,8 @@ void Write2NC(
     nc_def_var(ncID_out, "time", NC_INT, 1, &dimID_time, &varID_ts); // long int (64-byte)
     
     nc_def_var(ncID_out, varNAME, NC_INT, 3, dims, &varID_out);
-    nc_put_att_text(ncID_out, varID_out, "Units", 20L, att_unit);
-    nc_put_att_text(ncID_out, varID_out, "long_name", 40L, att_longname);
+    nc_put_att_text(ncID_out, varID_out, "Units", 40L, att_unit);
+    nc_put_att_text(ncID_out, varID_out, "long_name", 100L, att_longname);
     nc_put_att_double(ncID_out, varID_out, "scale_factor", NC_DOUBLE, 1, &scale_factor);
     nc_put_att_int(ncID_out, varID_out, "NODATA_value", NC_INT, 1, &HD.NODATA_value);
     nc_put_att_int(ncID_out, varID_out, "STEP_TIME(hours)", NC_INT, 1, &step_time);
@@ -131,7 +131,26 @@ void Write2NC(
     nc_put_var_double(ncID_out, varID_lat, data_lat);
     
     // the ourput variable: 3D
-    
+    if (*(data_DEM + 0) == HD.NODATA_value && *(*rdata + 0) != HD.NODATA_value)
+    {
+        /***
+         * check the NODATA_value of the outputted variable
+        */
+        for (size_t i = 0; i < HD.nrows; i++)
+        {
+            for (size_t j = 0; j < HD.ncols; j++)
+            {
+                if (*(data_DEM + i * HD.ncols + j) == HD.NODATA_value)
+                {
+                    for (size_t t = 0; t < ts_length; t++)
+                    {
+                        *(*rdata + t * HD.ncols * HD.nrows + i * HD.ncols + j) = HD.NODATA_value;
+                    }
+                }
+            }
+        }
+    }
+
     int out_start[3] = {0,0,0};
     int out_count[3];
     out_count[0] = ts_length; 
@@ -144,22 +163,6 @@ void Write2NC(
         exit(-1);
     }
 
-    // size_t index[3] = {0,0,0};
-    // for (size_t i = 0; i < HD.nrows; i++)
-    // {
-    //     index[1] = i;
-    //     for (size_t j = 0; j < HD.ncols; j++)
-    //     {
-    //         index[2] = j;
-    //         for (size_t t = 0; t < ts_length; t++)
-    //         {
-    //             index[0] = t;
-    //             nc_put_var1_int(
-    //                 ncID_out, varID_out, index,
-    //                 (*rdata + t * HD.ncols * HD.nrows + i * HD.ncols + j));
-    //         }
-    //     }
-    // }
 
     // the time variable in NetCDF
     time_t start_time;
