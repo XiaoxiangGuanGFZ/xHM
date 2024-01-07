@@ -262,14 +262,14 @@ int main(int argc, char *argv[])
     int t = 0;
     int t_offset_PRE, t_offset_PRS, t_offset_SSD, t_offset_RHU, t_offset_WIN;
     int t_offset_TEM_AVG, t_offset_TEM_MAX, t_offset_TEM_MIN;
-    t_offset_PRE = (t_PRE - start_time) / (GP.STEP_TIME * 3600);
-    t_offset_PRS = (t_PRS - start_time) / (GP.STEP_TIME * 3600);
-    t_offset_SSD = (t_SSD - start_time) / (GP.STEP_TIME * 3600);
-    t_offset_RHU = (t_RHU - start_time) / (GP.STEP_TIME * 3600);
-    t_offset_WIN = (t_WIN - start_time) / (GP.STEP_TIME * 3600);
-    t_offset_TEM_AVG = (t_TEM_AVG - start_time) / (GP.STEP_TIME * 3600);
-    t_offset_TEM_MAX = (t_TEM_MAX - start_time) / (GP.STEP_TIME * 3600);
-    t_offset_TEM_MIN = (t_TEM_MIN - start_time) / (GP.STEP_TIME * 3600);
+    t_offset_PRE = (start_time - t_PRE) / (GP.STEP_TIME * 3600);
+    t_offset_PRS = (start_time - t_PRS) / (GP.STEP_TIME * 3600);
+    t_offset_SSD = (start_time - t_SSD) / (GP.STEP_TIME * 3600);
+    t_offset_RHU = (start_time - t_RHU) / (GP.STEP_TIME * 3600);
+    t_offset_WIN = (start_time - t_WIN) / (GP.STEP_TIME * 3600);
+    t_offset_TEM_AVG = (start_time - t_TEM_AVG) / (GP.STEP_TIME * 3600);
+    t_offset_TEM_MAX = (start_time - t_TEM_MAX) / (GP.STEP_TIME * 3600);
+    t_offset_TEM_MIN = (start_time - t_TEM_MIN) / (GP.STEP_TIME * 3600);
     printf("t_offset:\n");
     printf("PRE: %d\n", t_offset_PRE);
     printf("WIN: %d\n", t_offset_WIN);
@@ -307,10 +307,14 @@ int main(int argc, char *argv[])
      *              define the ourput variables (results) from simulation
      ***********************************************************************************/
     char FP_OUT_VAR[MAXCHAR]="";
-    int *out_Rs, *out_Ep, *out_EI_o;
+    int *out_Rs, *out_L_sky, *out_Rno, *out_Rnu;
+    int *out_Ep, *out_EI_o, *out_EI_u, *out_ET_o, *out_ET_u, *out_ET_s;
+    int *out_Interception_o, *out_Interception_u, *out_Prec_net;
     malloc_Outnamelist(
         outnl, cell_counts_total, time_steps_run,
-        &out_Rs);
+        &out_Rs, &out_L_sky, &out_Rno, &out_Rnu,
+        &out_Ep, &out_EI_o, &out_EI_u, &out_ET_o, &out_ET_u, &out_ET_s,
+        &out_Interception_o, &out_Interception_u, &out_Prec_net);
 
     /***********************************************************************************
      *                       define the iteration variables
@@ -433,20 +437,59 @@ int main(int argc, char *argv[])
 
                     /**************** unsaturated soil zone water movement *****************/
 
-                    /**************** water movement in saturated soil zone *****************/
-
-                    /************************ surface runoff routing **********************/
-
-                    /********************* river channel flow routing ****************/
-
-                    /************************* save variables *************************/
+                    
+                    /************************* save ET variables *************************/
                     if (outnl.Rs == 1)
                     {
                         *(out_Rs + index_run) = (int) ((data_RADIA + index_geo)->Rs * 10);
                     }
-                    
+                    if (outnl.L_sky == 1)
+                    {
+                        *(out_L_sky + index_run) = (int) ((data_RADIA + index_geo)->L_sky * 10);
+                    }
+                    if (outnl.Rno == 1)
+                    {
+                        *(out_Rno + index_run) = (int) ((data_RADIA + index_geo)->Rno * 10);
+                    }
+                    if (outnl.Rnu == 1)
+                    {
+                        *(out_Rnu + index_run) = (int) ((data_RADIA + index_geo)->Rnu * 10);
+                    }
+                    if (outnl.Ep == 1)
+                    {
+                        *(out_Ep + index_run) = (int) ((data_ET + index_geo)->Ep * GP.STEP_TIME * 10000);
+                    }
+                    if (outnl.EI_o == 1)
+                    {
+                        *(out_EI_o + index_run) = (int) ((data_ET + index_geo)->EI_o * 10000);
+                    }
+                    if (outnl.EI_u == 1)
+                    {
+                        *(out_EI_u + index_run) = (int) ((data_ET + index_geo)->EI_u * 10000);
+                    }
+                    if (outnl.ET_o == 1)
+                    {
+                        *(out_ET_o + index_run) = (int) ((data_ET + index_geo)->ET_o * 10000);
+                    }
+                    if (outnl.ET_u == 1)
+                    {
+                        *(out_ET_u + index_run) = (int) ((data_ET + index_geo)->ET_u * 10000);
+                    }
+                    if (outnl.ET_s == 1)
+                    {
+                        *(out_ET_s + index_run) = (int) ((data_ET + index_geo)->ET_s * 10000);
+                    }
+                    if (outnl.Prec_net == 1)
+                    {
+                        *(out_Prec_net + index_run) = (int) ((data_ET + index_geo)->Prec_net * 10000);
+                    }
                 }
             }
+            /**************** water movement in saturated soil zone *****************/
+
+            /************************ surface runoff routing **********************/
+
+            /********************* river channel flow routing ****************/
         }
         
         t += 1;
@@ -456,16 +499,14 @@ int main(int argc, char *argv[])
     /***************************************************************************************************
      *                               export the variables
      ****************************************************************************************************/
-    if (outnl.Rs == 1)
-    {
-        FP_OUT_VAR[0] = '\0';
-        strcat(strcat(FP_OUT_VAR, WS_OUT), "Rs.nc");
-        Write2NC("Rs", "kJ/m2/h", "shortwave radiation",
-                 0.1, GP.FP_GEO, FP_OUT_VAR, &out_Rs,
-                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
-    }
+    Write2NC_Outnamelist(
+        outnl, time_steps_run,
+        &out_Rs, &out_L_sky, &out_Rno, &out_Rnu,
+        &out_Ep, &out_EI_o, &out_EI_u, &out_ET_o, &out_ET_u, &out_ET_s,
+        &out_Interception_o, &out_Interception_u, &out_Prec_net,
+        GP
+    );
     
-
     /***************************************************************************************************
      *                               finalize the program
      ****************************************************************************************************/
