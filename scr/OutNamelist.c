@@ -53,9 +53,9 @@ void Import_Outnamelist(
                 {
                     outnl->ET_u = atoi(S2);
                 }
-                else if (strcmp(S1, "Es") == 0)
+                else if (strcmp(S1, "ET_s") == 0)
                 {
-                    outnl->Es = atoi(S2);
+                    outnl->ET_s = atoi(S2);
                 }
                 else if (strcmp(S1, "Ep") == 0)
                 {
@@ -68,6 +68,10 @@ void Import_Outnamelist(
                 else if (strcmp(S1, "Interception_o") == 0)
                 {
                     outnl->Interception_o = atoi(S2);
+                }
+                else if (strcmp(S1, "Prec_net") == 0)
+                {
+                    outnl->Prec_net = atoi(S2);
                 }
                 else if (strcmp(S1, "Rs") == 0)
                 {
@@ -140,17 +144,92 @@ void malloc_Outnamelist(
     OUT_NAME_LIST outnl,
     int cell_counts_total,
     int time_steps_run,
-    int **out_Rs
+    int **out_Rs,
+    int **out_L_sky,
+    int **out_Rno,
+    int **out_Rnu,
+    int **out_Ep,
+    int **out_EI_o,
+    int **out_EI_u,
+    int **out_ET_o,
+    int **out_ET_u,
+    int **out_ET_s,
+    int **out_Interception_o,
+    int **out_Interception_u,
+    int **out_Prec_net
 )
 {
+    long size;
+    size = time_steps_run * cell_counts_total;
+    // radiation vars
     if (outnl.Rs == 1)
     {
-        *out_Rs = (int *)malloc(sizeof(int) * time_steps_run * cell_counts_total);
+        *out_Rs = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_Rs, "Rs");
     }
-    
+    if (outnl.L_sky == 1)
+    {
+        *out_L_sky = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_L_sky, "L_sky");
+    }
+    if (outnl.Rno == 1)
+    {
+        *out_Rno = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_Rno, "Rno");
+    }
+    if (outnl.Rnu == 1)
+    {
+        *out_Rnu = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_Rnu, "Rnu");
+    }
+    // ET variables
+    if (outnl.Ep == 1)
+    {
+        *out_Ep = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_Ep, "Ep");
+    }
+    if (outnl.EI_o == 1)
+    {
+        *out_EI_o = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_EI_o, "EI_o");
+    }
+    if (outnl.EI_u == 1)
+    {
+        *out_EI_u = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_EI_u, "EI_u");
+    }
+    if (outnl.ET_o == 1)
+    {
+        *out_ET_o = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_ET_o, "ET_o");
+    }
+    if (outnl.ET_u == 1)
+    {
+        *out_ET_u = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_ET_u, "ET_u");
+    }
+    if (outnl.ET_s == 1)
+    {
+        *out_ET_s = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_ET_s, "ET_s");
+    }
+    if (outnl.Interception_o == 1)
+    {
+        *out_Interception_o = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_Interception_o, "Interception_o");
+    }
+    if (outnl.Interception_u == 1)
+    {
+        *out_Interception_u = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_Interception_u, "Interception_u");
+    }
+    if (outnl.Prec_net == 1)
+    {
+        *out_Prec_net = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_Prec_net, "Prec_net");
+    }
+    // soil variables
+
 }
 
-
+void malloc_memory_error(
+    int *data,
+    char var[]
+)
+{
+    if (data == NULL)
+    {
+        printf("memory allocation failed for variable %s!\n", var);
+        exit(-3);
+    }
+}
 // int main(int argc, char const *argv[])
 // {
 //     /* code */
