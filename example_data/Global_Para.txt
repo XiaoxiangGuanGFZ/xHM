@@ -1,3 +1,16 @@
+
+# ---------- model setup --------------------------
+
+START_YEAR,2005
+START_MONTH,4
+START_DAY,15
+START_HOUR,0
+END_YEAR,2005
+END_MONTH,6
+END_DAY,13
+END_HOUR,23
+STEP_TIME,24 # hours
+
 # --------- weather data file path ----------------
 
 FP_PRE,D:/xHM/example_data/JN_GEO_1km/Weather/PRE.nc
@@ -15,17 +28,14 @@ FP_VEGLIB,D:/xHM/example_data/VegeLib.txt
 FP_SOILLIB,D:/xHM/example_data/SOIL_LIB.txt
 FP_SOIL_HWSD_ID,D:/xHM/example_data/SOIL_HWSD_ID.txt
 
-# ---------- model setup --------------------------
-
-START_YEAR,2001
-START_MONTH,1
-START_DAY,1
-START_HOUR,0
-END_YEAR,2001
-END_MONTH,1
-END_DAY,31
-END_HOUR,23
-STEP_TIME,24 # hours
+# ---------- Surface runoff routing ---------------
+SURFACE_RUNOFF,UH
+FP_UH,D:/xHM/example_data/JN_GEO_1km/UH.nc
+Velocity_avg,480.0
+Velocity_max,13200.0
+Velocity_min,100.0
+b,0.5
+c,0.5
 
 # ---------- output variables ---------------------
 PATH_OUT,D:/xHM/output/
