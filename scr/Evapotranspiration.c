@@ -505,7 +505,7 @@ void ET_CELL(
     */
     *Rs = *Rs * 1000/24;
     *L_sky = *L_sky * 1000/24;
-    printf("Rs: %8.2f\nL_sky: %8.2f\n", Rs, L_sky);
+    printf("Rs: %8.2f\nL_sky: %8.2f\n", *Rs, *L_sky);
     int Toggle_Overstory = 1;           /* whether there is overstory, yes: 1 */
     if (Frac_canopy < 0.0001)
     {
