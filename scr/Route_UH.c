@@ -60,9 +60,10 @@
 #include <math.h>
 #include <stdlib.h>
 #include <netcdf.h>
-
+#include <string.h>
 #include "GEO_ST.h"
 #include "Route_UH.h"
+#include "NC_copy_global_att.h"
 
 void Grid_Slope(
     int *data_DEM,
@@ -161,7 +162,8 @@ void Grid_Slope(
             *(data_Slope + i * ncols + j) = slope;
             *(data_FlowDistance + i * ncols + j) = flow_distance;
         }        
-    }    
+    }  
+    printf("Grid_Slope: done!\n");  
 }
 
 
@@ -208,6 +210,7 @@ void Grid_SlopeArea(
         }
     }
     *slope_area_avg = slope_area_sum / cell_count;
+    printf("Grid_SlopeArea: done!\n");
 }
 
 void Grid_Velocity(
@@ -249,7 +252,7 @@ void Grid_Velocity(
             *(data_V + i * ncols + j) = V;
         }
     }
-    printf("Grid_Grid_Velocity: done!\n");
+    printf("Grid_Velocity: done!\n");
 }
 
 void Grid_Outlets(
@@ -295,6 +298,7 @@ void Grid_Outlets(
             }
         }
     }
+    printf("Grid_Outlets: done!\n");
 }
 
 void Grid_OutletMask(
@@ -449,7 +453,7 @@ void Grid_OutletMask(
             }
         }
     }
-
+    printf("Grid_OutletMask: done!\n");
 }
 
 
@@ -620,3 +624,312 @@ void Grid_UH(
     printf("Grid_UH: done!\n");
 }
 
+void UH_Generation(
+    char FP_GEO[],
+    char FP_UH[],
+    int step_time,
+    double Velocity_avg,
+    double Velocity_max, 
+    double Velocity_min,
+    double b, 
+    double c
+)
+{
+    /*****
+     * new_UH == 1: regenerate UH anyway,
+     * new_UH == 0: no operation
+     */
+    int new_UH = 0;
+    int ncID_UH;
+    int status_nc;
+    status_nc = nc_open(FP_UH, NC_WRITE, &ncID_UH);
+    if (status_nc == 2)
+    {
+        // No such file or directory
+        new_UH = 1;
+    }
+    else
+    {
+        // check other errors
+        handle_error(status_nc, FP_UH);
+        int step_time_old;
+        double Velocity_avg_old, Velocity_max_old, Velocity_min_old;
+        double b_old, c_old;
+        nc_get_att_double(ncID_UH, NC_GLOBAL, "b", &b_old);
+        nc_get_att_double(ncID_UH, NC_GLOBAL, "c", &c_old);
+        nc_get_att_int(ncID_UH, NC_GLOBAL, "STEP_TIME", &step_time_old);
+        nc_get_att_double(ncID_UH, NC_GLOBAL, "Velocity_avg", &Velocity_avg_old);
+        nc_get_att_double(ncID_UH, NC_GLOBAL, "Velocity_max", &Velocity_max_old);
+        nc_get_att_double(ncID_UH, NC_GLOBAL, "Velocity_min", &Velocity_min_old);
+        if (step_time == step_time_old &&
+            FloatEqual(b, b_old) == 1 &&
+            FloatEqual(c, c_old) == 1 &&
+            FloatEqual(Velocity_avg, Velocity_avg_old) == 1 &&
+            FloatEqual(Velocity_max, Velocity_max_old) == 1 &&
+            FloatEqual(Velocity_min, Velocity_min_old) == 1)
+        {
+            new_UH = 0;
+        }
+        else
+        {
+            new_UH = 1;
+        }
+        nc_close(ncID_UH);
+    }
+    if (new_UH == 1)
+    {
+        printf("---------------- UH generating ----------------\n");
+        printf("UH parameters:\n");
+        printf("* STEP_TIME: %d\n", step_time);
+        printf("* b: %.2f\n* c: %.2f\n* Velocity_avg: %.1f\n* Velocity_max: %.1f\n* Velocity_min: %.1f\n",
+               b, c, Velocity_avg, Velocity_max, Velocity_min);
+        int i, j;
+        int ncID_GEO;
+        status_nc = nc_open(FP_GEO, NC_WRITE, &ncID_GEO);
+        handle_error(status_nc, FP_GEO);
+
+        ST_Header GEO_header;
+        int varID_FDR, varID_FAC, varID_DEM, varID_OUTLET;
+        int varID_lon, varID_lat;
+        int *data_DEM;
+        int *data_FDR;
+        int *data_FAC;
+        int *data_OUTLET;
+        double *data_lon;
+        double *data_lat;
+        int cellsize_m;
+
+        nc_get_att_int(ncID_GEO, NC_GLOBAL, "ncols", &GEO_header.ncols);
+        nc_get_att_int(ncID_GEO, NC_GLOBAL, "nrows", &GEO_header.nrows);
+        nc_get_att_int(ncID_GEO, NC_GLOBAL, "cellsize_m", &cellsize_m);
+        // printf("ncols: %d\nnrows: %d\n", GEO_header.ncols, GEO_header.nrows);
+
+        nc_inq_varid(ncID_GEO, "DEM", &varID_DEM);
+        nc_inq_varid(ncID_GEO, "FDR", &varID_FDR);
+        nc_inq_varid(ncID_GEO, "FAC", &varID_FAC);
+        nc_inq_varid(ncID_GEO, "OUTLET", &varID_OUTLET);
+        nc_inq_varid(ncID_GEO, "lon", &varID_lon);
+        nc_inq_varid(ncID_GEO, "lat", &varID_lat);
+
+        data_DEM = (int *)malloc(sizeof(int) * GEO_header.nrows * GEO_header.ncols);
+        data_FDR = (int *)malloc(sizeof(int) * GEO_header.nrows * GEO_header.ncols);
+        data_FAC = (int *)malloc(sizeof(int) * GEO_header.nrows * GEO_header.ncols);
+        data_OUTLET = (int *)malloc(sizeof(int) * GEO_header.nrows * GEO_header.ncols);
+        data_lon = (double *)malloc(sizeof(double) * GEO_header.ncols);
+        data_lat = (double *)malloc(sizeof(double) * GEO_header.nrows);
+
+        nc_get_var_int(ncID_GEO, varID_DEM, data_DEM);
+        nc_get_var_int(ncID_GEO, varID_FDR, data_FDR);
+        nc_get_var_int(ncID_GEO, varID_FAC, data_FAC);
+        nc_get_var_int(ncID_GEO, varID_OUTLET, data_OUTLET);
+        nc_get_var_double(ncID_GEO, varID_lon, data_lon);
+        nc_get_var_double(ncID_GEO, varID_lat, data_lat);
+
+        nc_get_att_int(ncID_GEO, varID_DEM, "NODATA_value", &GEO_header.NODATA_value);
+
+        /****** UH parameters ***/
+        double *data_Slope;
+        double *data_FlowDistance;
+        data_Slope = (double *)malloc(sizeof(double) * GEO_header.nrows * GEO_header.ncols);
+        data_FlowDistance = (double *)malloc(sizeof(double) * GEO_header.nrows * GEO_header.ncols);
+        Grid_Slope(data_DEM, data_FDR, data_Slope, data_FlowDistance,
+                   GEO_header.ncols,
+                   GEO_header.nrows,
+                   GEO_header.NODATA_value,
+                   cellsize_m);
+
+        double *data_SlopeArea;
+        data_SlopeArea = (double *)malloc(sizeof(double) * GEO_header.nrows * GEO_header.ncols);
+        double slope_area_avg;
+        Grid_SlopeArea(data_FAC, data_Slope, data_SlopeArea,
+                       &slope_area_avg, b, c,
+                       GEO_header.ncols,
+                       GEO_header.nrows,
+                       GEO_header.NODATA_value,
+                       cellsize_m);
+        printf("* average of slope_area term: %.3f\n", slope_area_avg);
+
+        double *data_V;
+        data_V = (double *)malloc(sizeof(double) * GEO_header.nrows * GEO_header.ncols);
+        Grid_Velocity(data_FAC, data_SlopeArea, slope_area_avg, data_V,
+                      Velocity_avg, Velocity_max, Velocity_min,
+                      GEO_header.ncols,
+                      GEO_header.nrows,
+                      GEO_header.NODATA_value);
+
+        int outlet_count = 0;
+        int outlet_index_row[MAX_OUTLETS];
+        int outlet_index_col[MAX_OUTLETS];
+        Grid_Outlets(
+            data_OUTLET,
+            outlet_index_row,
+            outlet_index_col,
+            &outlet_count,
+            GEO_header.ncols,
+            GEO_header.nrows,
+            GEO_header.NODATA_value);
+        printf("* the number of outlets: %d\n", outlet_count);
+        printf("* %5s%5s%5s\n", "outlet", "row", "col");
+        for (size_t c = 0; c < outlet_count; c++)
+        {
+            printf("* %5d%5d%5d\n", c, outlet_index_row[c], outlet_index_col[c]);
+        }
+
+        /********** write data to NetCDF ***********/
+        // int ncID_UH;
+        int dimID_lon, dimID_lat, dimID_time;
+        int varID_UH, varID_Slope, varID_FlowDistance, varID_SlopeArea, varID_V, varID_FlowTime;
+        nc_create(FP_UH, NC_CLOBBER, &ncID_UH);
+
+        nc_def_dim(ncID_UH, "lon", GEO_header.ncols, &dimID_lon);
+        nc_def_dim(ncID_UH, "lat", GEO_header.nrows, &dimID_lat);
+        nc_def_dim(ncID_UH, "time", NC_UNLIMITED, &dimID_time);
+        int dims[3];
+        dims[0] = dimID_time;
+        dims[1] = dimID_lat;
+        dims[2] = dimID_lon;
+
+        nc_def_var(ncID_UH, "lon", NC_DOUBLE, 1, &dimID_lon, &varID_lon);
+        nc_def_var(ncID_UH, "lat", NC_DOUBLE, 1, &dimID_lat, &varID_lat);
+        // nc_def_var(ncID_UH, "time", NC_INT, 1, &dimID_time, &varID_time);
+        nc_def_var(ncID_UH, "Slope", NC_DOUBLE, 2, dims + 1, &varID_Slope);
+        nc_def_var(ncID_UH, "FlowDistance", NC_DOUBLE, 2, dims + 1, &varID_FlowDistance);
+        nc_def_var(ncID_UH, "SlopeArea", NC_DOUBLE, 2, dims + 1, &varID_SlopeArea);
+        nc_def_var(ncID_UH, "Velocity", NC_DOUBLE, 2, dims + 1, &varID_V);
+
+        nc_put_att_text(ncID_UH, varID_FlowDistance, "units", 40L, "m");
+        nc_put_att_text(ncID_UH, varID_V, "units", 40L, "m/h");
+        copy_global_attributes(ncID_GEO, ncID_UH);
+        nc_put_att_int(ncID_UH, NC_GLOBAL, "outlet_count", NC_INT, 1, &outlet_count);
+        nc_put_att_int(ncID_UH, NC_GLOBAL, "STEP_TIME", NC_INT, 1, &step_time);
+        nc_put_att_double(ncID_UH, NC_GLOBAL, "b", NC_DOUBLE, 1, &b);
+        nc_put_att_double(ncID_UH, NC_GLOBAL, "c", NC_DOUBLE, 1, &c);
+        nc_put_att_double(ncID_UH, NC_GLOBAL, "Velocity_avg", NC_DOUBLE, 1, &Velocity_avg);
+        nc_put_att_double(ncID_UH, NC_GLOBAL, "Velocity_max", NC_DOUBLE, 1, &Velocity_max);
+        nc_put_att_double(ncID_UH, NC_GLOBAL, "Velocity_min", NC_DOUBLE, 1, &Velocity_min);
+
+        nc_enddef(ncID_UH);
+        nc_put_var_double(ncID_UH, varID_Slope, data_Slope);
+        nc_put_var_double(ncID_UH, varID_FlowDistance, data_FlowDistance);
+        nc_put_var_double(ncID_UH, varID_SlopeArea, data_SlopeArea);
+        nc_put_var_double(ncID_UH, varID_V, data_V);
+
+        nc_put_var_double(ncID_UH, varID_lon, data_lon);
+        nc_put_var_double(ncID_UH, varID_lat, data_lat);
+
+        for (size_t c = 0; c < outlet_count; c++)
+        {
+            int *data_Mask;
+            data_Mask = (int *)malloc(sizeof(int) * GEO_header.nrows * GEO_header.ncols);
+            Grid_OutletMask(outlet_index_row[c], outlet_index_col[c],
+                            data_FDR,
+                            data_Mask,
+                            GEO_header.ncols,
+                            GEO_header.nrows,
+                            GEO_header.NODATA_value);
+
+            double *data_FlowTime;
+            data_FlowTime = (double *)malloc(sizeof(double) * GEO_header.nrows * GEO_header.ncols);
+
+            Grid_FlowTime(data_Mask, data_FDR, data_V, data_FlowDistance, data_FlowTime,
+                          outlet_index_row[c], // int outlet_index_row,
+                          outlet_index_col[c], // int outlet_index_col,
+                          GEO_header.ncols,
+                          GEO_header.nrows,
+                          GEO_header.NODATA_value);
+
+            double *data_UH;
+            int time_steps;
+            int step_time = 24; // 1 hour
+            double beta = 0.5;
+            Grid_UH(data_Mask, data_FlowTime, &data_UH,
+                    &time_steps, beta, step_time,
+                    GEO_header.ncols,
+                    GEO_header.nrows,
+                    GEO_header.NODATA_value);
+
+            printf("* total time steps in UH: %d\n", time_steps);
+
+            char varUH_name[40] = "UH";
+            char varFlowTime_name[40] = "FlowTime";
+            char numberString[4];
+            sprintf(numberString, "%d", c);
+            strcat(varUH_name, numberString);
+            strcat(varFlowTime_name, numberString);
+
+            nc_redef(ncID_UH);
+            nc_def_var(ncID_UH, varFlowTime_name, NC_DOUBLE, 2, dims + 1, &varID_FlowTime);
+            nc_put_att_text(ncID_UH, varID_FlowTime, "units", 40L, "h");
+
+            nc_def_var(ncID_UH, varUH_name, NC_DOUBLE, 3, dims, &varID_UH);
+            nc_put_att_text(ncID_UH, varID_UH, "units", 40L, "h-1");
+            nc_put_att_int(ncID_UH, varID_UH, "step_time", NC_INT, 1, &step_time);
+            nc_put_att_int(ncID_UH, varID_UH, "varID", NC_INT, 1, &varID_UH);
+            nc_put_att_int(ncID_UH, varID_UH, "UH_steps", NC_INT, 1, &time_steps);
+            nc_put_att_int(ncID_UH, varID_UH, "outlet_index_row", NC_INT, 1, outlet_index_row + c);
+            nc_put_att_int(ncID_UH, varID_UH, "outlet_index_col", NC_INT, 1, outlet_index_col + c);
+
+            nc_enddef(ncID_UH); // end of define mode
+
+            /***************
+             * write data to nc fiel
+             */
+            nc_put_var_double(ncID_UH, varID_FlowTime, data_FlowTime);
+            // nc_put_var_double(ncID_UH, varID_UH, data_UH);
+            size_t index[3] = {0, 0, 0};
+            int t;
+            for (t = 0; t < time_steps; t++)
+            {
+                index[0] = t;
+                for (i = 0; i < GEO_header.nrows; i++)
+                {
+                    index[1] = i;
+                    for (j = 0; j < GEO_header.ncols; j++)
+                    {
+                        index[2] = j;
+                        nc_put_var1_double(
+                            ncID_UH, varID_UH, index,
+                            data_UH + t * GEO_header.ncols * GEO_header.nrows + i * GEO_header.ncols + j);
+                    }
+                }
+            }
+        }
+
+        nc_close(ncID_GEO);
+        nc_close(ncID_UH);
+        printf("--------------- UH generation: DONE! -------------\n");
+    }
+    else
+    {
+        printf("UH already exists, no changing parameters!\n");
+    }
+}
+
+
+int FloatEqual(
+    double x1,
+    double x2)
+{
+    /*************
+     * compare two float numbers, 
+     * 1: close enough, address that two numbers equal each other.
+     * 0: not close enough
+    */
+    double d;
+    int result;
+    d = x1 - x2;
+    if (d < 0)
+    {
+        d = -d;
+    }
+    
+    if (d < 0.0001)
+    {
+        result = 1;
+    }
+    else
+    {
+        result = 0;
+    }
+    return result;
+}

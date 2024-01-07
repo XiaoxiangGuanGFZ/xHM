@@ -88,6 +88,20 @@ void Grid_UH(
     int NODATA_value
 );
 
+void UH_Generation(
+    char FP_GEO[],
+    char FP_UH[],
+    int step_time,
+    double Velocity_avg,
+    double Velocity_max, 
+    double Velocity_min,
+    double b, 
+    double c
+);
+
+int FloatEqual(
+    double x1,
+    double x2);
 
 #endif
 
