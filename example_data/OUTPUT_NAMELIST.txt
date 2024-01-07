@@ -29,7 +29,7 @@ EI_u,1
 ET_u,1
 
 # soil evaporation, [mm]
-Es,1
+ET_s,1
 
 # canopy (overstory) intercepted water, [mm]
 Interception_o,1
@@ -37,6 +37,8 @@ Interception_o,1
 # understory intercepted water, [mm]
 Interception_u,1
 
+# net precipitation on the ground surface, [mm]
+Prec_net,1
 
 # --------- variables in soil water movement ------------
 # soil moisture from upper soil layer, [fraction]
