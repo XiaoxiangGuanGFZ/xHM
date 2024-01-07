@@ -438,50 +438,50 @@ int main(int argc, char *argv[])
                     /**************** unsaturated soil zone water movement *****************/
 
                     
-                    /************************* save ET variables *************************/
+                    /************************* save variables *************************/
                     if (outnl.Rs == 1)
                     {
-                        *(out_Rs + index_run) = (int) ((data_RADIA + index_geo)->Rs * 10);
+                        *(out_Rs + index_run) = (int)((data_RADIA + index_geo)->Rs * 10);
                     }
                     if (outnl.L_sky == 1)
                     {
-                        *(out_L_sky + index_run) = (int) ((data_RADIA + index_geo)->L_sky * 10);
+                        *(out_L_sky + index_run) = (int)((data_RADIA + index_geo)->L_sky * 10);
                     }
                     if (outnl.Rno == 1)
                     {
-                        *(out_Rno + index_run) = (int) ((data_RADIA + index_geo)->Rno * 10);
+                        *(out_Rno + index_run) = (int)((data_RADIA + index_geo)->Rno * 10);
                     }
                     if (outnl.Rnu == 1)
                     {
-                        *(out_Rnu + index_run) = (int) ((data_RADIA + index_geo)->Rnu * 10);
+                        *(out_Rnu + index_run) = (int)((data_RADIA + index_geo)->Rnu * 10);
                     }
                     if (outnl.Ep == 1)
                     {
-                        *(out_Ep + index_run) = (int) ((data_ET + index_geo)->Ep * GP.STEP_TIME * 10000);
+                        *(out_Ep + index_run) = (int)((data_ET + index_geo)->Ep * GP.STEP_TIME * 10000);
                     }
                     if (outnl.EI_o == 1)
                     {
-                        *(out_EI_o + index_run) = (int) ((data_ET + index_geo)->EI_o * 10000);
+                        *(out_EI_o + index_run) = (int)((data_ET + index_geo)->EI_o * 10000);
                     }
                     if (outnl.EI_u == 1)
                     {
-                        *(out_EI_u + index_run) = (int) ((data_ET + index_geo)->EI_u * 10000);
+                        *(out_EI_u + index_run) = (int)((data_ET + index_geo)->EI_u * 10000);
                     }
                     if (outnl.ET_o == 1)
                     {
-                        *(out_ET_o + index_run) = (int) ((data_ET + index_geo)->ET_o * 10000);
+                        *(out_ET_o + index_run) = (int)((data_ET + index_geo)->ET_o * 10000);
                     }
                     if (outnl.ET_u == 1)
                     {
-                        *(out_ET_u + index_run) = (int) ((data_ET + index_geo)->ET_u * 10000);
+                        *(out_ET_u + index_run) = (int)((data_ET + index_geo)->ET_u * 10000);
                     }
                     if (outnl.ET_s == 1)
                     {
-                        *(out_ET_s + index_run) = (int) ((data_ET + index_geo)->ET_s * 10000);
+                        *(out_ET_s + index_run) = (int)((data_ET + index_geo)->ET_s * 10000);
                     }
                     if (outnl.Prec_net == 1)
                     {
-                        *(out_Prec_net + index_run) = (int) ((data_ET + index_geo)->Prec_net * 10000);
+                        *(out_Prec_net + index_run) = (int)((data_ET + index_geo)->Prec_net * 10000);
                     }
                 }
             }
@@ -506,7 +506,7 @@ int main(int argc, char *argv[])
         &out_Interception_o, &out_Interception_u, &out_Prec_net,
         GP
     );
-    
+
     /***************************************************************************************************
      *                               finalize the program
      ****************************************************************************************************/
