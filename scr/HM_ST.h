@@ -74,10 +74,11 @@ typedef struct
     short EI_u;
     short ET_o;
     short ET_u;
-    short Es;
-
+    short ET_s;
     short Interception_o;
     short Interception_u;
+    short Prec_net;
+
     short SM_Upper;
     short SM_Lower;
     short SW_Run_Infil;
