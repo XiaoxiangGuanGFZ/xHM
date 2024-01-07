@@ -5,7 +5,7 @@
 #include "Constants.h"
 #include "HM_ST.h"
 #include "OutNamelist.h"
-
+#include "NetCDF_IO_geo.h"
 void Import_Outnamelist(
     char FP[],
     OUT_NAME_LIST *outnl
@@ -228,6 +228,115 @@ void malloc_memory_error(
     {
         printf("memory allocation failed for variable %s!\n", var);
         exit(-3);
+    }
+}
+void Write2NC_Outnamelist(
+    OUT_NAME_LIST outnl,
+    int time_steps_run,
+    int **out_Rs,
+    int **out_L_sky,
+    int **out_Rno,
+    int **out_Rnu,
+    int **out_Ep,
+    int **out_EI_o,
+    int **out_EI_u,
+    int **out_ET_o,
+    int **out_ET_u,
+    int **out_ET_s,
+    int **out_Interception_o,
+    int **out_Interception_u,
+    int **out_Prec_net,
+    GLOBAL_PARA GP
+)
+{
+    char FP_OUT_VAR[MAXCHAR];
+    if (outnl.Rs == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "Rs.nc");
+        Write2NC("Rs", "kJ/m2/h", "canopy received shortwave radiation",
+                 0.1, GP.FP_GEO, FP_OUT_VAR, out_Rs,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
+    }
+    if (outnl.L_sky == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "L_sky.nc");
+        Write2NC("L_sky", "kJ/m2/h", "canopy received longwave radiation",
+                 0.1, GP.FP_GEO, FP_OUT_VAR, out_L_sky,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
+    }
+    if (outnl.Rno == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "Rno.nc");
+        Write2NC("Rno", "kJ/m2/h", "canopy received net radiation",
+                 0.1, GP.FP_GEO, FP_OUT_VAR, out_Rno,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
+    }
+    if (outnl.Rnu == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "Rnu.nc");
+        Write2NC("Rnu", "kJ/m2/h", "understory received net radiation",
+                 0.1, GP.FP_GEO, FP_OUT_VAR, out_Rnu,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
+    }
+    if (outnl.Ep == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "Ep.nc");
+        Write2NC("Ep", "mm", "potential evapotranspiration",
+                 0.1, GP.FP_GEO, FP_OUT_VAR, out_Ep,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
+    }
+    if (outnl.EI_o == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "EI_o.nc");
+        Write2NC("EI_o", "mm", "overstory evaporation",
+                 0.1, GP.FP_GEO, FP_OUT_VAR, out_EI_o,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
+    }
+    if (outnl.EI_u == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "EI_u.nc");
+        Write2NC("EI_u", "mm", "understory evaporation",
+                 0.1, GP.FP_GEO, FP_OUT_VAR, out_EI_u,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
+    }
+    if (outnl.ET_o == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "ET_o.nc");
+        Write2NC("ET_o", "mm", "overstory transpiration",
+                 0.1, GP.FP_GEO, FP_OUT_VAR, out_ET_o,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
+    }
+    if (outnl.ET_u == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "ET_u.nc");
+        Write2NC("ET_u", "mm", "understory transpiration",
+                 0.1, GP.FP_GEO, FP_OUT_VAR, out_ET_u,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
+    }
+    if (outnl.ET_s == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "ET_s.nc");
+        Write2NC("ET_s", "mm", "soil evaporation",
+                 0.1, GP.FP_GEO, FP_OUT_VAR, out_ET_s,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
+    }
+    if (outnl.Prec_net == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "Prec_net.nc");
+        Write2NC("Prec_net", "mm", "net precipitation",
+                 0.1, GP.FP_GEO, FP_OUT_VAR, out_Prec_net,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
     }
 }
 // int main(int argc, char const *argv[])
