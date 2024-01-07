@@ -91,6 +91,7 @@ typedef struct
 
 typedef struct
 {
+    /* weather data parameters */
     char FP_PRE[MAXCHAR];
     char FP_PRS[MAXCHAR];
     char FP_RHU[MAXCHAR];
@@ -99,10 +100,12 @@ typedef struct
     char FP_TEM_AVG[MAXCHAR];
     char FP_TEM_MAX[MAXCHAR];
     char FP_TEM_MIN[MAXCHAR];
+    /* GEO info parameters */
     char FP_GEO[MAXCHAR];
     char FP_VEGLIB[MAXCHAR];
     char FP_SOILLIB[MAXCHAR];
     char FP_SOIL_HWSD_ID[MAXCHAR];
+    /* model setup parameters */
     int START_YEAR;
     int START_MONTH;
     int START_DAY;
@@ -112,6 +115,7 @@ typedef struct
     int END_MONTH;
     int END_DAY;
     int END_HOUR;
+    /* UH parameters */
     char FP_UH[MAXCHAR];
     char SURFACE_RUNOFF[30];
     double Velocity_avg;
@@ -119,6 +123,7 @@ typedef struct
     double Velocity_min;
     double b;
     double c;
+    /* output parameters */
     char PATH_OUT[MAXCHAR];
     char FP_OUTNAMELIST[MAXCHAR];
 } GLOBAL_PARA;
