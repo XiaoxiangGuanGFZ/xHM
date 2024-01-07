@@ -633,6 +633,7 @@ Route_UH.obj: Route_UH.c.obj
 # target to build an object file
 Route_UH.c.obj:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\UH.dir\build.make CMakeFiles/UH.dir/Route_UH.c.obj
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Route_UH.c.obj
 .PHONY : Route_UH.c.obj
 
 Route_UH.i: Route_UH.c.i
@@ -641,6 +642,7 @@ Route_UH.i: Route_UH.c.i
 # target to preprocess a source file
 Route_UH.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\UH.dir\build.make CMakeFiles/UH.dir/Route_UH.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Route_UH.c.i
 .PHONY : Route_UH.c.i
 
 Route_UH.s: Route_UH.c.s
@@ -649,6 +651,7 @@ Route_UH.s: Route_UH.c.s
 # target to generate assembly for a file
 Route_UH.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\UH.dir\build.make CMakeFiles/UH.dir/Route_UH.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Route_UH.c.s
 .PHONY : Route_UH.c.s
 
 Route_UH_main.obj: Route_UH_main.c.obj
