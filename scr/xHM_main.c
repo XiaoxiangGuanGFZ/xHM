@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
     data_SOILTYPE = (int *)malloc(sizeof(int) * cell_counts_total);
     data_lat = (double *)malloc(sizeof(double) * GEO_header.nrows);
     data_lon = (double *)malloc(sizeof(double) * GEO_header.ncols);
-
+    
     nc_inq_varid(ncID_GEO, "VEGTYPE", &varID_VEGTYPE);
     nc_inq_varid(ncID_GEO, "VEGFRAC", &varID_VEGFRAC);
     nc_inq_varid(ncID_GEO, "SOILTYPE", &varID_SOILTYPE);
@@ -128,7 +128,11 @@ int main(int argc, char *argv[])
     nc_get_var_int(ncID_GEO, varID_SOILTYPE, data_SOILTYPE);
     nc_get_var_double(ncID_GEO, varID_lon, data_lon);
     nc_get_var_double(ncID_GEO, varID_lat, data_lat);
-
+    printf("lat: %.2f\n", *(data_lat + 25));
+    printf("SOIL: %d\n", *(data_SOILTYPE + 25*GEO_header.ncols + 25));
+    printf("VEG: %d\n", *(data_VEGTYPE + 25*GEO_header.ncols + 25));
+    printf("VEGFRAC: %d\n", *(data_VEGFRAC + 25*GEO_header.ncols + 25));
+    
     // check the GEO data
     Check_GEO(ncID_GEO);
     // import the vegetation library
@@ -200,7 +204,9 @@ int main(int argc, char *argv[])
     nc_inq_dimid(ncID_TEM_MIN, "time", &dimID_time); nc_inq_dimlen(ncID_TEM_MIN, dimID_time, &time_steps_TEM_MIN);
 
     // printf("length of PRE observation: %d\n", time_steps_PRE);
+    printf("start time of TEM_AVG: %ld\n", t_TEM_AVG);
     printf("length of TEM_AVG observation: %d\n", time_steps_TEM_AVG);
+    printf("length of TEM_PRE observation: %d\n", time_steps_PRE);
 
     status_nc = nc_inq_varid(ncID_PRE, "PRE", &varID_PRE); handle_error(status_nc, GP.FP_PRE);
     status_nc = nc_inq_varid(ncID_PRS, "PRS", &varID_PRS); handle_error(status_nc, GP.FP_PRS);
@@ -210,30 +216,46 @@ int main(int argc, char *argv[])
     status_nc = nc_inq_varid(ncID_TEM_AVG, "TEM_AVG", &varID_TEM_AVG); handle_error(status_nc, GP.FP_TEM_AVG);
     status_nc = nc_inq_varid(ncID_TEM_MAX, "TEM_MAX", &varID_TEM_MAX); handle_error(status_nc, GP.FP_TEM_MAX);
     status_nc = nc_inq_varid(ncID_TEM_MIN, "TEM_MIN", &varID_TEM_MIN); handle_error(status_nc, GP.FP_TEM_MIN);
-    printf("malloc for weather data\n");
-    printf("size of weather data in total: %.2f GB\n", 
-    (float) sizeof(int) * time_steps_PRE * cell_counts_total * 8 / 1024 / 1024 / 1024
-    );
+    printf("malloc for weather data: ");
+    printf("memory size required in total: %.2f GB\n",
+           (float)sizeof(int) * time_steps_PRE * cell_counts_total * 8 / 1024 / 1024 / 1024);
     data_PRE = (int *)malloc(sizeof(int) * time_steps_PRE * cell_counts_total); malloc_error(data_PRE);
     data_PRS = (int *)malloc(sizeof(int) * time_steps_PRS * cell_counts_total); malloc_error(data_PRS);
     data_SSD = (int *)malloc(sizeof(int) * time_steps_SSD * cell_counts_total); malloc_error(data_SSD);
     data_RHU = (int *)malloc(sizeof(int) * time_steps_RHU * cell_counts_total); malloc_error(data_RHU);
     data_WIN = (int *)malloc(sizeof(int) * time_steps_WIN * cell_counts_total); malloc_error(data_WIN);
-    printf("TEM_AVG\n");
     data_TEM_AVG = (int *)malloc(sizeof(int) * time_steps_TEM_AVG * cell_counts_total); malloc_error(data_TEM_AVG);
-    printf("TEM_MAX\n");
     data_TEM_MAX = (int *)malloc(sizeof(int) * time_steps_TEM_MAX * cell_counts_total); malloc_error(data_TEM_MAX);
-    printf("TEM_MIN\n");
     data_TEM_MIN = (int *)malloc(sizeof(int) * time_steps_TEM_MIN * cell_counts_total); malloc_error(data_TEM_MIN);
-    printf("import weather data\n");
+    
     status_nc = nc_get_var_int(ncID_PRE, varID_PRE, data_PRE); handle_error(status_nc, GP.FP_PRE);
-    // status_nc = nc_get_var_int(ncID_PRS, varID_PRS, data_PRS); handle_error(status_nc, GP.FP_PRS);
-    // status_nc = nc_get_var_int(ncID_SSD, varID_SSD, data_SSD); handle_error(status_nc, GP.FP_SSD);
-    // status_nc = nc_get_var_int(ncID_RHU, varID_RHU, data_RHU); handle_error(status_nc, GP.FP_RHU);
+    status_nc = nc_get_var_int(ncID_PRS, varID_PRS, data_PRS); handle_error(status_nc, GP.FP_PRS);
+    status_nc = nc_get_var_int(ncID_SSD, varID_SSD, data_SSD); handle_error(status_nc, GP.FP_SSD);
+    status_nc = nc_get_var_int(ncID_RHU, varID_RHU, data_RHU); handle_error(status_nc, GP.FP_RHU);
     status_nc = nc_get_var_int(ncID_WIN, varID_WIN, data_WIN); handle_error(status_nc, GP.FP_WIN);
     status_nc = nc_get_var_int(ncID_TEM_AVG, varID_TEM_AVG, data_TEM_AVG); handle_error(status_nc, GP.FP_TEM_AVG);
     status_nc = nc_get_var_int(ncID_TEM_MAX, varID_TEM_MAX, data_TEM_MAX); handle_error(status_nc, GP.FP_TEM_MAX);
     status_nc = nc_get_var_int(ncID_TEM_MIN, varID_TEM_MIN, data_TEM_MIN); handle_error(status_nc, GP.FP_TEM_MIN);
+    printf("check weather data at row15 col25:\n");
+    printf("PRE: %d\n", *(data_PRE + 25*GEO_header.ncols + 25));
+    printf("RHU: %d\n", *(data_RHU + 25*GEO_header.ncols + 25));
+    printf("TEM_AVG: %d\n", *(data_TEM_AVG + 25*GEO_header.ncols + 25));
+    nc_get_att_int(ncID_PRE, varID_PRE, "NODATA_value", &GEO_header.NODATA_value);
+
+    double scale_PRE, scale_PRS, scale_SSD, scale_RHU, scale_WIN, scale_TEM_AVG, scale_TEM_MAX, scale_TEM_MIN;
+    status_nc = nc_get_att_double(ncID_PRE, varID_PRE, "scale_factor", &scale_PRE); handle_error(status_nc, GP.FP_PRE);
+    status_nc = nc_get_att_double(ncID_PRS, varID_PRS, "scale_factor", &scale_PRS); handle_error(status_nc, GP.FP_PRS);
+    status_nc = nc_get_att_double(ncID_SSD, varID_SSD, "scale_factor", &scale_SSD); handle_error(status_nc, GP.FP_SSD);
+    status_nc = nc_get_att_double(ncID_RHU, varID_RHU, "scale_factor", &scale_RHU); handle_error(status_nc, GP.FP_RHU);
+    status_nc = nc_get_att_double(ncID_WIN, varID_WIN, "scale_factor", &scale_WIN); handle_error(status_nc, GP.FP_WIN);
+    status_nc = nc_get_att_double(ncID_TEM_AVG, varID_TEM_AVG, "scale_factor", &scale_TEM_AVG); handle_error(status_nc, GP.FP_TEM_AVG);
+    status_nc = nc_get_att_double(ncID_TEM_MAX, varID_TEM_MAX, "scale_factor", &scale_TEM_MAX); handle_error(status_nc, GP.FP_TEM_MAX);
+    status_nc = nc_get_att_double(ncID_TEM_MIN, varID_TEM_MIN, "scale_factor", &scale_TEM_MIN); handle_error(status_nc, GP.FP_TEM_MIN);
+    printf("check scale_factor:\n");
+    printf("PRE: %.1f\n", scale_PRE);
+    printf("RHU: %.1f\n", scale_RHU);
+    printf("TEM_AVG: %.1f\n", scale_TEM_AVG);
+    printf("import weather data from NetCDF files: DONE!\n");
     /***********************************************************************************
      *                          set model running period
      ************************************************************************************/
@@ -248,6 +270,10 @@ int main(int argc, char *argv[])
     t_offset_TEM_AVG = (t_TEM_AVG - start_time) / (GP.STEP_TIME * 3600);
     t_offset_TEM_MAX = (t_TEM_MAX - start_time) / (GP.STEP_TIME * 3600);
     t_offset_TEM_MIN = (t_TEM_MIN - start_time) / (GP.STEP_TIME * 3600);
+    printf("t_offset:\n");
+    printf("PRE: %d\n", t_offset_PRE);
+    printf("WIN: %d\n", t_offset_WIN);
+    printf("TEM_AVG: %d\n", t_offset_TEM_AVG);
     time_t run_time;
     run_time = start_time;
     int index_PRE, index_PRS, index_SSD, index_RHU, index_WIN, index_TEM_AVG, index_TEM_MAX, index_TEM_MIN;
@@ -281,7 +307,7 @@ int main(int argc, char *argv[])
      *              define the ourput variables (results) from simulation
      ***********************************************************************************/
     char FP_OUT_VAR[MAXCHAR]="";
-    int *out_Rs;
+    int *out_Rs, *out_Ep, *out_EI_o;
     malloc_Outnamelist(
         outnl, cell_counts_total, time_steps_run,
         &out_Rs);
@@ -310,7 +336,7 @@ int main(int argc, char *argv[])
     struct tm *tm_run;
     double Soil_Fe = 0.0;
     /***********************************************************************************
-     *                       dxHM model iteration
+     *                       xHM model iteration
      ***********************************************************************************/
     while (run_time <= end_time)
     {
@@ -318,6 +344,7 @@ int main(int argc, char *argv[])
         year = tm_run->tm_year + 1900;
         month = tm_run->tm_mon + 1;
         day = tm_run->tm_mday;
+        printf("%d-%02d-%02d\n",year,month,day);
         for (size_t i = 0; i < GEO_header.nrows; i++)
         {
             for (size_t j = 0; j < GEO_header.ncols; j++)
@@ -335,18 +362,25 @@ int main(int argc, char *argv[])
                     index_TEM_AVG = (t + t_offset_TEM_AVG) * cell_counts_total + index_geo;
                     index_TEM_MAX = (t + t_offset_TEM_MAX) * cell_counts_total + index_geo;
                     index_TEM_MIN = (t + t_offset_TEM_MIN) * cell_counts_total + index_geo;
+                    
                     /************** weather forcing for cell ******************/
-                    cell_PRE = *(data_PRE + index_PRE);
-                    cell_PRS = *(data_PRS + index_PRS);
-                    cell_SSD = *(data_SSD + index_SSD);
-                    cell_RHU = *(data_RHU + index_RHU);
-                    cell_WIN = *(data_WIN + index_WIN);
-                    cell_TEM_AVG = *(data_TEM_AVG + index_TEM_AVG);
-                    cell_TEM_MAX = *(data_TEM_MAX + index_TEM_MAX);
-                    cell_TEM_MIN = *(data_TEM_MIN + index_TEM_MIN);
+                    cell_PRE = *(data_PRE + index_PRE) * scale_PRE / 1000;  // [m]
+                    cell_PRS = *(data_PRS + index_PRS) * scale_PRS;
+                    cell_SSD = *(data_SSD + index_SSD) * scale_SSD;
+                    cell_RHU = *(data_RHU + index_RHU) * scale_RHU;
+                    cell_WIN = *(data_WIN + index_WIN) * scale_WIN;
+                    cell_TEM_AVG = *(data_TEM_AVG + index_TEM_AVG) * scale_TEM_AVG;
+                    cell_TEM_MAX = *(data_TEM_MAX + index_TEM_MAX) * scale_TEM_MAX;
+                    cell_TEM_MIN = *(data_TEM_MIN + index_TEM_MIN) * scale_TEM_MIN;
+                    printf(
+                        "%8s%8s%8s%8s%8s%8s%8s%8s\n",
+                        "PRE", "TEM_AVG", "TEM_MAX", "TEM_MIN", "WIN", "SSD", "RHU", "PRS");
+                    printf("%8.2f%8.2f%8.2f%8.2f%8.1f%8.0f%8.1f%8.1f\n",
+                           cell_PRE * 1000, cell_TEM_AVG, cell_TEM_MAX, cell_TEM_MIN, cell_WIN, cell_SSD, cell_RHU, cell_PRS);
                     /**************** parameter preparation *****************/
-                    cell_lat = *(data_lat + index_geo);
+                    cell_lat = *(data_lat + i);
                     cell_VEG_class = *(data_VEGTYPE + index_geo);
+                    printf("VEG_CLASS: %d\n", cell_VEG_class);
                     cell_SOIL_ID = *(data_SOILTYPE + index_geo);
                     cell_veg.CAN_FRAC = *(data_VEGFRAC + index_geo) / 100;
                     Lookup_VegLib_CELL(veglib, cell_VEG_class, &cell_veg);
@@ -408,7 +442,7 @@ int main(int argc, char *argv[])
                     /************************* save variables *************************/
                     if (outnl.Rs == 1)
                     {
-                        *(out_Rs + index_run) = (int) ((data_RADIA + index_geo)->Rs * 10000);
+                        *(out_Rs + index_run) = (int) ((data_RADIA + index_geo)->Rs * 10);
                     }
                     
                 }
