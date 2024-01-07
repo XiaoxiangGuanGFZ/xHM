@@ -44,6 +44,8 @@
 
 #include <stdio.h>
 #include "Constants.h"
+#include "Soil_Infiltration.h"
+#include "Soil_Percolation.h"
 #include "Soil_UnsaturatedMove.h"
 #include "Lookup_SoilLib.h"
 
