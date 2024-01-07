@@ -44,6 +44,7 @@
 #include "Lookup_SoilLib.h"
 #include "Initial_VAR.h"
 #include "NetCDF_IO_geo.h"
+#include "Route_UH.h"
 
 void malloc_error(
     int *data
@@ -279,6 +280,12 @@ int main(int argc, char *argv[])
     int index_PRE, index_PRS, index_SSD, index_RHU, index_WIN, index_TEM_AVG, index_TEM_MAX, index_TEM_MIN;
     int index_geo;
     int index_run;
+
+    /***********************************************************************************
+     *                      surface runoff routing - UH
+     ************************************************************************************/
+    UH_Generation(GP.FP_GEO, GP.FP_UH, GP.STEP_TIME,
+                  GP.Velocity_avg, GP.Velocity_max, GP.Velocity_min, GP.b, GP.c);
 
     /***********************************************************************************
      *              define and initialize the intermediate variables
