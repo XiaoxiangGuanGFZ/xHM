@@ -1,0 +1,17 @@
+FP_DATA,D:/xHM/example_data/Weather/data_TEM_AVG.csv
+FP_COOR,D:/xHM/example_data/Weather/info_rr_daily_18sites_2001-2016_Weather.csv
+FP_GEO,D:/xHM/example_data/JN_GEO_1km/GEO_data.nc
+FP_OUT,D:/xHM/example_data/JN_GEO_1km/Weather/TEM_AVG.nc
+
+# the weather variable (VARNAME, with unit) could be: 
+# PRS(kPa), RHU(%), SSD(h), WIN(m/s), TEM_AVG(C), TEM_MAX(C), TEM_MIN(C)
+VARNAME,TEM_AVG
+START_YEAR,2001
+START_MONTH,1
+START_DAY,1
+START_HOUR,0
+STEP_TIME,24 # hours
+SITES,1
+
+
+
