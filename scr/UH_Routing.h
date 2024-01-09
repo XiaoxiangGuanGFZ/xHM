@@ -21,5 +21,17 @@ void UH_Import(
     double **data_UH
 );
 
+void UH_Routing(
+    int *data_RUNOFF_sf,
+    double *data_UH,
+    double **Qout,
+    int UH_steps,
+    int ncols,
+    int nrows,
+    int time_steps_run,
+    int cellsize_m,
+    int NODATA_value,
+    int STEP_TIME
+);
 
 #endif

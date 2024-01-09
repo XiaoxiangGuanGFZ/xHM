@@ -20,6 +20,10 @@
  *
  */
 
+/*******************************************************************************
+ * VARIABLEs:
+ * 
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -76,15 +80,83 @@ void UH_Import(
     }
 }
 
+
 void UH_Routing(
-    
-    int *out_RUN_sf,
-    double *data_UH
-    double *Qout
+    int *data_RUNOFF_sf,  // unit: m 
+    double *data_UH,
+    double **Qout,
+    int UH_steps,
+    int ncols,
+    int nrows,
+    int time_steps_run,
+    int cellsize_m,
+    int NODATA_value,
+    int STEP_TIME
 )
 {
+    double cell_area;
+    int index_geo;
+    int index_uh;
+    int index_run;
 
+    int cell_counts_total;
+    cell_counts_total = ncols * nrows;
+    cell_area = cellsize_m * cellsize_m;
+    *Qout = malloc(sizeof(double) * time_steps_run);
+    for (size_t r = 0; r < time_steps_run; r++)
+    {
+        // each simulation step
+        *(*Qout + r) = 0.0;
+        for (size_t t = 0; t < UH_steps; t++)
+        {
+            // each UH step
+            if ((r - t) >= 0)
+            {
+                // check:
+                // the beginning steps within the length of UH series
+                index_uh = t * cell_counts_total;
+                index_run = (r - t) * cell_counts_total;
+                for (size_t i = 0; i < nrows; i++)
+                {
+                    for (size_t j = 0; j < ncols; j++)
+                    {
+                        index_geo = i * ncols + j;
+                        if (IsNODATA(*(data_UH + index_geo), NODATA_value) != 1)
+                        {
+                            *(*Qout + r) += *(data_UH + index_uh + index_geo) * *(data_RUNOFF_sf + index_run + index_geo);
+                        }
+                    }
+                }
+            }
+        }
+        *(*Qout + r) = *(*Qout + r) * cell_area; // unit: m3/h
+    }
 }
+
+int IsNODATA(
+    double value,
+    int NODATA_value
+)
+{
+    double y;
+    int result;
+    y = value - NODATA_value;
+    if (y < 0)
+    {
+        y = -y;
+    }
+
+    if (Y < 0.00001)
+    {
+        result = 1;
+    }
+    else
+    {
+        result = 0;
+    }
+    return result;
+}
+
 
 
 int main(int argc, char const *argv[])
@@ -140,3 +212,4 @@ int main(int argc, char const *argv[])
     
     return 0;
 }
+
