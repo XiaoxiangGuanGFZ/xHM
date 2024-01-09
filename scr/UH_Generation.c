@@ -699,12 +699,12 @@ void UH_Generation(
         double *data_lon;
         double *data_lat;
         int cellsize_m;
-
+        int cell_counts_total;
         nc_get_att_int(ncID_GEO, NC_GLOBAL, "ncols", &GEO_header.ncols);
         nc_get_att_int(ncID_GEO, NC_GLOBAL, "nrows", &GEO_header.nrows);
         nc_get_att_int(ncID_GEO, NC_GLOBAL, "cellsize_m", &cellsize_m);
         // printf("ncols: %d\nnrows: %d\n", GEO_header.ncols, GEO_header.nrows);
-
+        cell_counts_total = GEO_header.ncols * GEO_header.nrows;
         nc_inq_varid(ncID_GEO, "DEM", &varID_DEM);
         nc_inq_varid(ncID_GEO, "FDR", &varID_FDR);
         nc_inq_varid(ncID_GEO, "FAC", &varID_FAC);
@@ -712,10 +712,10 @@ void UH_Generation(
         nc_inq_varid(ncID_GEO, "lon", &varID_lon);
         nc_inq_varid(ncID_GEO, "lat", &varID_lat);
 
-        data_DEM = (int *)malloc(sizeof(int) * GEO_header.nrows * GEO_header.ncols);
-        data_FDR = (int *)malloc(sizeof(int) * GEO_header.nrows * GEO_header.ncols);
-        data_FAC = (int *)malloc(sizeof(int) * GEO_header.nrows * GEO_header.ncols);
-        data_OUTLET = (int *)malloc(sizeof(int) * GEO_header.nrows * GEO_header.ncols);
+        data_DEM = (int *)malloc(sizeof(int) * cell_counts_total);
+        data_FDR = (int *)malloc(sizeof(int) * cell_counts_total);
+        data_FAC = (int *)malloc(sizeof(int) * cell_counts_total);
+        data_OUTLET = (int *)malloc(sizeof(int) * cell_counts_total);
         data_lon = (double *)malloc(sizeof(double) * GEO_header.ncols);
         data_lat = (double *)malloc(sizeof(double) * GEO_header.nrows);
 
@@ -727,12 +727,12 @@ void UH_Generation(
         nc_get_var_double(ncID_GEO, varID_lat, data_lat);
 
         nc_get_att_int(ncID_GEO, varID_DEM, "NODATA_value", &GEO_header.NODATA_value);
-
+        
         /****** UH parameters ***/
         double *data_Slope;
         double *data_FlowDistance;
-        data_Slope = (double *)malloc(sizeof(double) * GEO_header.nrows * GEO_header.ncols);
-        data_FlowDistance = (double *)malloc(sizeof(double) * GEO_header.nrows * GEO_header.ncols);
+        data_Slope = (double *)malloc(sizeof(double) * cell_counts_total);
+        data_FlowDistance = (double *)malloc(sizeof(double) * cell_counts_total);
         Grid_Slope(data_DEM, data_FDR, data_Slope, data_FlowDistance,
                    GEO_header.ncols,
                    GEO_header.nrows,
@@ -740,7 +740,7 @@ void UH_Generation(
                    cellsize_m);
 
         double *data_SlopeArea;
-        data_SlopeArea = (double *)malloc(sizeof(double) * GEO_header.nrows * GEO_header.ncols);
+        data_SlopeArea = (double *)malloc(sizeof(double) * cell_counts_total);
         double slope_area_avg;
         Grid_SlopeArea(data_FAC, data_Slope, data_SlopeArea,
                        &slope_area_avg, b, c,
@@ -751,7 +751,7 @@ void UH_Generation(
         printf("* average of slope_area term: %.3f\n", slope_area_avg);
 
         double *data_V;
-        data_V = (double *)malloc(sizeof(double) * GEO_header.nrows * GEO_header.ncols);
+        data_V = (double *)malloc(sizeof(double) * cell_counts_total);
         Grid_Velocity(data_FAC, data_SlopeArea, slope_area_avg, data_V,
                       Velocity_avg, Velocity_max, Velocity_min,
                       GEO_header.ncols,
@@ -779,7 +779,7 @@ void UH_Generation(
         /********** write data to NetCDF ***********/
         // int ncID_UH;
         int dimID_lon, dimID_lat, dimID_time;
-        int varID_UH, varID_Slope, varID_FlowDistance, varID_SlopeArea, varID_V, varID_FlowTime;
+        int varID_UH, varID_Slope, varID_FlowDistance, varID_SlopeArea, varID_V, varID_FlowTime, varID_OutletMask;
         nc_create(FP_UH, NC_CLOBBER, &ncID_UH);
 
         nc_def_dim(ncID_UH, "lon", GEO_header.ncols, &dimID_lon);
@@ -801,6 +801,8 @@ void UH_Generation(
         nc_put_att_text(ncID_UH, varID_FlowDistance, "units", 40L, "m");
         nc_put_att_text(ncID_UH, varID_V, "units", 40L, "m/h");
         copy_global_attributes(ncID_GEO, ncID_UH);
+
+        nc_put_att_int(ncID_UH, NC_GLOBAL, "NODATA_value", NC_INT, 1, &GEO_header.NODATA_value);
         nc_put_att_int(ncID_UH, NC_GLOBAL, "outlet_count", NC_INT, 1, &outlet_count);
         nc_put_att_int(ncID_UH, NC_GLOBAL, "STEP_TIME", NC_INT, 1, &step_time);
         nc_put_att_double(ncID_UH, NC_GLOBAL, "b", NC_DOUBLE, 1, &b);
@@ -821,7 +823,7 @@ void UH_Generation(
         for (size_t c = 0; c < outlet_count; c++)
         {
             int *data_Mask;
-            data_Mask = (int *)malloc(sizeof(int) * GEO_header.nrows * GEO_header.ncols);
+            data_Mask = (int *)malloc(sizeof(int) * cell_counts_total);
             Grid_OutletMask(outlet_index_row[c], outlet_index_col[c],
                             data_FDR,
                             data_Mask,
@@ -830,7 +832,7 @@ void UH_Generation(
                             GEO_header.NODATA_value);
 
             double *data_FlowTime;
-            data_FlowTime = (double *)malloc(sizeof(double) * GEO_header.nrows * GEO_header.ncols);
+            data_FlowTime = (double *)malloc(sizeof(double) * cell_counts_total);
 
             Grid_FlowTime(data_Mask, data_FDR, data_V, data_FlowDistance, data_FlowTime,
                           outlet_index_row[c], // int outlet_index_row,
@@ -853,14 +855,19 @@ void UH_Generation(
 
             char varUH_name[40] = "UH";
             char varFlowTime_name[40] = "FlowTime";
+            char varOutletMask_name[40] = "OutletMask";
             char numberString[4];
             sprintf(numberString, "%d", c);
             strcat(varUH_name, numberString);
             strcat(varFlowTime_name, numberString);
+            strcat(varOutletMask_name, numberString);
 
             nc_redef(ncID_UH);
             nc_def_var(ncID_UH, varFlowTime_name, NC_DOUBLE, 2, dims + 1, &varID_FlowTime);
             nc_put_att_text(ncID_UH, varID_FlowTime, "units", 40L, "h");
+            
+            nc_def_var(ncID_UH, varOutletMask_name, NC_INT, 2, dims + 1, &varID_OutletMask);
+            nc_put_att_int(ncID_UH, varID_OutletMask, "mask_value", NC_INT, 1, (int[]){1});
 
             nc_def_var(ncID_UH, varUH_name, NC_DOUBLE, 3, dims, &varID_UH);
             nc_put_att_text(ncID_UH, varID_UH, "units", 40L, "h-1");
@@ -873,31 +880,29 @@ void UH_Generation(
             nc_enddef(ncID_UH); // end of define mode
 
             /***************
-             * write data to nc fiel
+             * write data to nc file
              */
             nc_put_var_double(ncID_UH, varID_FlowTime, data_FlowTime);
-            // nc_put_var_double(ncID_UH, varID_UH, data_UH);
-            size_t index[3] = {0, 0, 0};
-            int t;
-            for (t = 0; t < time_steps; t++)
-            {
-                index[0] = t;
-                for (i = 0; i < GEO_header.nrows; i++)
-                {
-                    index[1] = i;
-                    for (j = 0; j < GEO_header.ncols; j++)
-                    {
-                        index[2] = j;
-                        nc_put_var1_double(
-                            ncID_UH, varID_UH, index,
-                            data_UH + t * GEO_header.ncols * GEO_header.nrows + i * GEO_header.ncols + j);
-                    }
-                }
-            }
+            nc_put_var_int(ncID_UH, varID_OutletMask, data_Mask);
+
+            int out_start[3] = {0, 0, 0};
+            int out_count[3];
+            out_count[0] = time_steps;
+            out_count[1] = GEO_header.nrows;
+            out_count[2] = GEO_header.ncols;
+            status_nc = nc_put_vara_double(ncID_UH, varID_UH, out_start, out_count, data_UH);
+            handle_error(status_nc, FP_UH);
+            free(data_FlowTime);
+            free(data_Mask);
+            free(data_UH);
         }
 
         nc_close(ncID_GEO);
         nc_close(ncID_UH);
+        
+        free(data_DEM); free(data_FDR); free(data_FAC); free(data_OUTLET);
+        free(data_lat); free(data_lon);
+        free(data_FlowDistance); free(data_Slope); free(data_SlopeArea); free(data_V);
         printf("--------------- UH generation: DONE! -------------\n");
     }
     else
