@@ -851,7 +851,7 @@ void UH_Generation(
                     GEO_header.nrows,
                     GEO_header.NODATA_value);
 
-            printf("* total time steps in UH: %d\n", time_steps);
+            printf("* total time steps in UH%d: %d\n", c, time_steps);
 
             char varUH_name[40] = "UH";
             char varFlowTime_name[40] = "FlowTime";
