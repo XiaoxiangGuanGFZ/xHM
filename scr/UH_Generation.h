@@ -1,6 +1,6 @@
 
-#ifndef ROUTE_UH
-#define ROUTE_UH
+#ifndef UH_GENE
+#define UH_GENE
 
 #include "GEO_ST.h"
 #define MAX_OUTLETS 100     // maximum number of outlets

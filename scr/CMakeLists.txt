@@ -34,7 +34,7 @@ set(WEATHER
 )
 
 set(UH
-    Route_UH.c
+    UH_Generation.c
     Route_UH_main.c
     NC_copy_global_att.c
 )
@@ -68,7 +68,7 @@ set(xHM
     Lookup_VegLib.c
     Lookup_SoilLib.c
     NetCDF_IO_geo.c
-    Route_UH.c
+    UH_Generation.c
 )
 
 

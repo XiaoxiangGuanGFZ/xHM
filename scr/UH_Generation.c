@@ -1,5 +1,5 @@
 /*
- * SUMMARY:      Route_UH.c
+ * SUMMARY:      UH_Generation.c
  * USAGE:        Calculate overland runoff routing using Unit Hydrograph (UH) 
  * AUTHOR:       Xiaoxiang Guan
  * ORG:          Section Hydrology, GFZ
@@ -9,7 +9,8 @@
  *               the UH is derived based on topography (DEM). 
  * DESCRIP-END.
  * FUNCTIONS:    Grid_Slope(), Grid_SlopeArea(), Grid_Velocity()
- *                  Grid_FlowTime(), Grid_UH(), Grid_Outlets()
+ *                  Grid_FlowTime(), Grid_UH(), Grid_Outlets(), 
+ *                  Grid_OutletMask(), UH_Generation()
  * 
  * COMMENTS:
  * - Grid_Slope():          derive the slope from DEM and flow direction (D8)
@@ -19,7 +20,7 @@
  * - Grid_UH():             generate UH for each grid cell
  * - Grid_Outlets():        extract the number and coordinates (row and col index) of outlets
  * - Grid_OutletMask():     extract the mask (the upstream region) of an outlet (based on coordinates)
- * 
+ * - UH_Generation():       generate the Unit Hydrograph for multiple outlets
  * REFERENCES:
  * 
  *
@@ -62,7 +63,7 @@
 #include <netcdf.h>
 #include <string.h>
 #include "GEO_ST.h"
-#include "Route_UH.h"
+#include "UH_Generation.h"
 #include "NC_copy_global_att.h"
 
 void Grid_Slope(
