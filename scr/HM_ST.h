@@ -54,7 +54,8 @@ typedef struct
     double SW_Percolation_Lower; /* water percolation from lower soil layer, [m] */
     double SW_SR_Infil;          /* surface runoff from excess-infiltration, [m] */
     double SW_SR_Satur;          /* surface runoff from saturation, [m] */
-
+    double SWV_gw;               /* the volume of water supplied by a rising water table, [m] */
+    double SWV_rf;               /* the volume of return flow (generated when a rising water table reaches the ground surface), [m] */
 } CELL_VAR_SOIL;
 
 typedef struct
