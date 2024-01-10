@@ -156,7 +156,14 @@ void malloc_Outnamelist(
     int **out_ET_s,
     int **out_Interception_o,
     int **out_Interception_u,
-    int **out_Prec_net
+    int **out_Prec_net,
+    int **out_SM_Upper,
+    int **out_SM_Lower,
+    int **out_SW_Percolation_Upper,
+    int **out_SW_Percolation_Lower,
+    int **out_SW_Infiltration,
+    int **out_SW_Run_Infil,
+    int **out_SW_Run_Satur
 )
 {
     long size;
@@ -216,7 +223,34 @@ void malloc_Outnamelist(
         *out_Prec_net = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_Prec_net, "Prec_net");
     }
     // soil variables
-
+    if (outnl.SM_Lower == 1)
+    {
+        *out_SM_Lower = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_SM_Lower, "SM_Lower");
+    }
+    if (outnl.SM_Upper == 1)
+    {
+        *out_SM_Upper = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_SM_Upper, "SM_Upper");
+    }
+    if (outnl.SW_Infiltration == 1)
+    {
+        *out_SW_Infiltration = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_SW_Infiltration, "SW_Infiltration");
+    }
+    if (outnl.SW_Percolation_Upper == 1)
+    {
+        *out_SW_Percolation_Upper = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_SW_Percolation_Upper, "SW_Percolation_Upper");
+    }
+    if (outnl.SW_Percolation_Lower == 1)
+    {
+        *out_SW_Percolation_Lower = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_SW_Percolation_Lower, "SW_Percolation_Lower");
+    }
+    if (outnl.SW_Run_Infil == 1)
+    {
+        *out_SW_Run_Infil = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_SW_Run_Infil, "SW_Run_Infil");
+    }
+    if (outnl.SW_Run_Satur == 1)
+    {
+        *out_SW_Run_Satur = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_SW_Run_Satur, "SW_Run_Satur");
+    }
 }
 
 void malloc_memory_error(
@@ -246,6 +280,13 @@ void Write2NC_Outnamelist(
     int **out_Interception_o,
     int **out_Interception_u,
     int **out_Prec_net,
+    int **out_SM_Upper,
+    int **out_SM_Lower,
+    int **out_SW_Percolation_Upper,
+    int **out_SW_Percolation_Lower,
+    int **out_SW_Infiltration,
+    int **out_SW_Run_Infil,
+    int **out_SW_Run_Satur,
     GLOBAL_PARA GP
 )
 {
@@ -338,6 +379,64 @@ void Write2NC_Outnamelist(
                  0.1, GP.FP_GEO, FP_OUT_VAR, out_Prec_net,
                  GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
     }
+    // soil variables
+    if (outnl.SM_Upper == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "SM_Upper.nc");
+        Write2NC("SM_Upper", "FRAC", "soil moisture of upper soil layer",
+                 0.01, GP.FP_GEO, FP_OUT_VAR, out_SM_Upper,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
+    }
+    if (outnl.SM_Lower == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "SM_Lower.nc");
+        Write2NC("SM_Lower", "FRAC", "soil moisture of lower soil layer",
+                 0.01, GP.FP_GEO, FP_OUT_VAR, out_SM_Lower,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
+    }
+    if (outnl.SW_Infiltration == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "SW_Infiltration.nc");
+        Write2NC("SW_Infiltration", "mm", "infiltration water",
+                 0.1, GP.FP_GEO, FP_OUT_VAR, out_SW_Infiltration,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
+    }
+    if (outnl.SW_Percolation_Upper == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "SW_Percolation_Upper.nc");
+        Write2NC("SW_Percolation_Upper", "mm", "upper soil layer water percolation",
+                 0.1, GP.FP_GEO, FP_OUT_VAR, out_SW_Percolation_Upper,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
+    }
+    if (outnl.SW_Percolation_Lower == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "SW_Percolation_Lower.nc");
+        Write2NC("SW_Percolation_Lower", "mm", "lower soil layer water percolation",
+                 0.1, GP.FP_GEO, FP_OUT_VAR, out_SW_Percolation_Lower,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
+    }
+    if (outnl.SW_Run_Infil == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "SW_Run_Infil.nc");
+        Write2NC("SW_Run_Infil", "mm", "surface runoff from infiltration-excess",
+                 0.1, GP.FP_GEO, FP_OUT_VAR, out_SW_Run_Infil,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
+    }
+    if (outnl.SW_Run_Satur == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "SW_Run_Satur.nc");
+        Write2NC("SW_Run_Satur", "mm", "surface runoff from saturation-excess",
+                 0.1, GP.FP_GEO, FP_OUT_VAR, out_SW_Run_Satur,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
+    }
+    
 }
 // int main(int argc, char const *argv[])
 // {

@@ -27,7 +27,14 @@ void malloc_Outnamelist(
     int **out_ET_s,
     int **out_Interception_o,
     int **out_Interception_u,
-    int **out_Prec_net
+    int **out_Prec_net,
+    int **out_SM_Upper,
+    int **out_SM_Lower,
+    int **out_SW_Percolation_Upper,
+    int **out_SW_Percolation_Lower,
+    int **out_SW_Infiltration,
+    int **out_SW_Run_Infil,
+    int **out_SW_Run_Satur
 );
 
 void malloc_memory_error(
@@ -51,6 +58,13 @@ void Write2NC_Outnamelist(
     int **out_Interception_o,
     int **out_Interception_u,
     int **out_Prec_net,
+    int **out_SM_Upper,
+    int **out_SM_Lower,
+    int **out_SW_Percolation_Upper,
+    int **out_SW_Percolation_Lower,
+    int **out_SW_Infiltration,
+    int **out_SW_Run_Infil,
+    int **out_SW_Run_Satur,
     GLOBAL_PARA GP
 );
 

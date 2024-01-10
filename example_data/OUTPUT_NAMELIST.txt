@@ -63,19 +63,3 @@ SW_Run_Infil,1
 SW_Run_Satur,1
 
 # --------- variables in routing ------------------------------
-
-# soil moisture / content of the upper soil layer, [fraction]
-SM_Upper,1
-
-# soil moisture of the lower soil layer, [fraction]
-SM_Lower,1
-
-# infiltration water from ground surface into upper soil layer, [mm] 
-SW_Infiltration,1
-
-# surface runoff generation from infiltration-excess, [mm]
-SW_SR_Infil,1
-
-# surface runoff generation from saturation-excess, [mm]
-SW_SR_Satur,1
-
