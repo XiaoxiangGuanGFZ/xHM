@@ -119,7 +119,7 @@ void Import_Outnamelist(
                 }
                 else
                 {
-                    printf("Unrecognized field in row %d: %s\n", j, row);
+                    printf("Unrecognized field in row %d in OUTPUT_NAMELIST.txt: %s\n", j, row);
                     exit(0);
                 }
             }
