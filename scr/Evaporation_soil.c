@@ -34,8 +34,8 @@
 #include "Evaporation_soil.h"
 
 double ET_soil(
-    double ET_soil_pot, /* potential evaporation rate, m/h */ 
-    double Soil_Fe      /* soil desorptivity, should be m/h */  
+    double ET_soil_pot, /* potential evaporation rate, [m/h] */ 
+    double Soil_Fe      /* soil desorptivity rate, [m/h] */  
 )
 {
     /****
@@ -57,5 +57,5 @@ double ET_soil(
     }
 
     // ET_s = min(ET_soil_pot, Soil_Fe);
-    return ET_s;
+    return ET_s;  // m/h
 }

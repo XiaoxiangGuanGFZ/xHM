@@ -304,9 +304,9 @@ void ET_iteration(
     double Radia_net,   /* the net radiation flux density on the cell surface, kJ/h/m2 */ 
     
     double Prec,                /* precipitation (total) within the time step, m */
-    double *Prec_throughfall,   /* precipitation throughfall from overstory */
-    double *Prec_net,           /* net precipitation from understory into soil process */
-    double *Ep,                 /* the potential evaporation rate [m/h] */
+    double *Prec_throughfall,   /* precipitation throughfall from overstory, [m] */
+    double *Prec_net,           /* net precipitation from understory into soil process, [m] */
+    double *Ep,                 /* the potential evaporation rate, [m/h] */
     double *EI_o,               /* actual evaporation from overstory, m */
     double *ET_o,               /* actual transpiration from overstory, m */
     double *EI_u,               /* actual evaporation from understory, m */
@@ -326,7 +326,7 @@ void ET_iteration(
     double LAI_o,
     double LAI_u,
     double Frac_canopy,    /* canopy fraction, [0, 1] */  
-    double Soil_Fe,        /* soil desorptivity */  
+    double Soil_Fe,        /* soil desorptivity, [m] */  
     int Toggle_Understory, /* 1: there is an understory */ 
     int step_time          /* iteration time step: in hours */ 
  )
@@ -399,8 +399,7 @@ void ET_iteration(
         /* there is only bare soil for this cell 
         * no overstory, no understory
         */
-        *ET_s = ET_soil(
-            Ep_u, Soil_Fe);
+        *ET_s = ET_soil(Ep_u, Soil_Fe / step_time) * step_time;
         *EI_u = 0.0;
         *ET_u = 0.0;
         *Interception_u = 0.0;
@@ -432,6 +431,7 @@ void ET_CELL(
     double Air_ws_obs,  /* wind speed at the measurement height, m/s */
     double ws_obs_z,    /* the measurement height, m */
     double Air_ssd,     /* sunshine duration in a day, hours */
+
     double *Rs,         /* received shortwave radiation for the overstory canopy, [kJ/m2/h] */
     double *L_sky,      /* received longwave radiation for the overstory canopy, [kJ/m2/h] */
     double *Rno,        /* net radiation for the overstory, [kJ/m2/h] */
@@ -439,6 +439,7 @@ void ET_CELL(
     double *Rnu,        /* net radiation for the understory, [kJ/m2/h] */
     double *Rnu_short,  /* net shortwave radiation for the understory, [kJ/m2/h] */
     double *Rns,        /* net radiation for ground/soil, [kJ/m2/h] */
+
     double Frac_canopy, /* the fractional forest cover, between 0.0 and 1.0 */
     double Ref_o,       /* reflection coefficient of radiation for overstory */
     double Ref_u,       /* reflection coefficient of radiation for understory */
@@ -446,11 +447,11 @@ void ET_CELL(
     double LAI_o,       /* LAI for overstory */
     double LAI_u,       /* LAI for understory */
     double Rpc_o,       /* the light level where rs is twice the rs_min */
-    double rs_min_o,    /* minimum stomatal resistance */
-    double rs_max_o,    /* maximum (cuticular) resistance */
+    double rs_min_o,    /* minimum stomatal resistance, [s/m] */
+    double rs_max_o,    /* maximum (cuticular) resistance, [s/m] */
     double Rpc_u,       /* the light level where rs is twice the rs_min */
-    double rs_min_u,    /* minimum stomatal resistance */
-    double rs_max_u,    /* maximum (cuticular) resistance */
+    double rs_min_u,    /* minimum stomatal resistance, [s/m] */
+    double rs_max_u,    /* maximum (cuticular) resistance, [s/m] */
     double Canopy_zr,   /* reference height of canopy, m */
     double Canopy_h,    /* height of canopy, m */
     double d_o,         /* displacement height of canopy, m */
@@ -460,12 +461,12 @@ void ET_CELL(
     
     double SM,          /* average soil moisture content */
     double SM_wp,       /* the plant wilting point */
-    double SM_free,     /* the moisture content above which soil conditions do not restrict transpiration. */
-    double Soil_Fe,     /* soil desorptivity */
+    double SM_free,     /* the moisture content above which soil conditions do not restrict transpiration, field capacity. */
+    double Soil_Fe,     /* soil desorptivity, [m] */
 
-    double *Prec_throughfall, /* precipitation throughfall from overstory */
-    double *Prec_net,         /* net precipitation from understory into soil process */
-    double *Ep,               /* the potential evaporation rate [m/h] */
+    double *Prec_throughfall, /* precipitation throughfall from overstory, [m] */
+    double *Prec_net,         /* net precipitation from understory into soil process, [m] */
+    double *Ep,               /* the potential evaporation rate, [m/h] */
     double *EI_o,             /* actual evaporation, m */
     double *ET_o,             /* actual transpiration, m */
     double *EI_u,             /* actual evaporation, m */

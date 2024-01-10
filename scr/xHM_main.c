@@ -404,7 +404,7 @@ int main(int argc, char *argv[])
                         (1.0 / cell_soil.Topsoil->PoreSizeDisP),
                         (cell_soil.Topsoil->Porosity / 100.0),
                         cell_soil.Topsoil->Bubbling,
-                        GP.STEP_TIME);
+                        GP.STEP_TIME); // unit: m
                     ET_CELL(
                         year, month, day, cell_lat,
                         cell_PRE, cell_TEM_AVG, cell_TEM_MIN, cell_TEM_MAX, cell_RHU, cell_PRS, cell_WIN,
