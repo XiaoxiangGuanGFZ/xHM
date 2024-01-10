@@ -747,6 +747,78 @@ Soil_Desorption.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Soil_Desorption.c.s
 .PHONY : Soil_Desorption.c.s
 
+Soil_Infiltration.obj: Soil_Infiltration.c.obj
+.PHONY : Soil_Infiltration.obj
+
+# target to build an object file
+Soil_Infiltration.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Soil_Infiltration.c.obj
+.PHONY : Soil_Infiltration.c.obj
+
+Soil_Infiltration.i: Soil_Infiltration.c.i
+.PHONY : Soil_Infiltration.i
+
+# target to preprocess a source file
+Soil_Infiltration.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Soil_Infiltration.c.i
+.PHONY : Soil_Infiltration.c.i
+
+Soil_Infiltration.s: Soil_Infiltration.c.s
+.PHONY : Soil_Infiltration.s
+
+# target to generate assembly for a file
+Soil_Infiltration.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Soil_Infiltration.c.s
+.PHONY : Soil_Infiltration.c.s
+
+Soil_Percolation.obj: Soil_Percolation.c.obj
+.PHONY : Soil_Percolation.obj
+
+# target to build an object file
+Soil_Percolation.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Soil_Percolation.c.obj
+.PHONY : Soil_Percolation.c.obj
+
+Soil_Percolation.i: Soil_Percolation.c.i
+.PHONY : Soil_Percolation.i
+
+# target to preprocess a source file
+Soil_Percolation.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Soil_Percolation.c.i
+.PHONY : Soil_Percolation.c.i
+
+Soil_Percolation.s: Soil_Percolation.c.s
+.PHONY : Soil_Percolation.s
+
+# target to generate assembly for a file
+Soil_Percolation.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Soil_Percolation.c.s
+.PHONY : Soil_Percolation.c.s
+
+Soil_UnsaturatedMove.obj: Soil_UnsaturatedMove.c.obj
+.PHONY : Soil_UnsaturatedMove.obj
+
+# target to build an object file
+Soil_UnsaturatedMove.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Soil_UnsaturatedMove.c.obj
+.PHONY : Soil_UnsaturatedMove.c.obj
+
+Soil_UnsaturatedMove.i: Soil_UnsaturatedMove.c.i
+.PHONY : Soil_UnsaturatedMove.i
+
+# target to preprocess a source file
+Soil_UnsaturatedMove.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Soil_UnsaturatedMove.c.i
+.PHONY : Soil_UnsaturatedMove.c.i
+
+Soil_UnsaturatedMove.s: Soil_UnsaturatedMove.c.s
+.PHONY : Soil_UnsaturatedMove.s
+
+# target to generate assembly for a file
+Soil_UnsaturatedMove.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\xHM.dir\build.make CMakeFiles/xHM.dir/Soil_UnsaturatedMove.c.s
+.PHONY : Soil_UnsaturatedMove.c.s
+
 UH_GENE_main.obj: UH_GENE_main.c.obj
 .PHONY : UH_GENE_main.obj
 
@@ -952,6 +1024,15 @@ help:
 	@echo ... Soil_Desorption.obj
 	@echo ... Soil_Desorption.i
 	@echo ... Soil_Desorption.s
+	@echo ... Soil_Infiltration.obj
+	@echo ... Soil_Infiltration.i
+	@echo ... Soil_Infiltration.s
+	@echo ... Soil_Percolation.obj
+	@echo ... Soil_Percolation.i
+	@echo ... Soil_Percolation.s
+	@echo ... Soil_UnsaturatedMove.obj
+	@echo ... Soil_UnsaturatedMove.i
+	@echo ... Soil_UnsaturatedMove.s
 	@echo ... UH_GENE_main.obj
 	@echo ... UH_GENE_main.i
 	@echo ... UH_GENE_main.s

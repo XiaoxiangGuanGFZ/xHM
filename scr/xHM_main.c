@@ -45,6 +45,7 @@
 #include "Initial_VAR.h"
 #include "NetCDF_IO_geo.h"
 #include "UH_Generation.h"
+#include "Soil_UnsaturatedMove.h"
 
 void malloc_error(
     int *data
@@ -346,6 +347,9 @@ int main(int argc, char *argv[])
     int day;
     struct tm *tm_run;
     double Soil_Fe = 0.0;
+
+    double Soil_thickness_upper = 0.2;
+    double Soil_thickness_lower = 0.5;
     /***********************************************************************************
      *                       xHM model iteration
      ***********************************************************************************/
@@ -383,11 +387,11 @@ int main(int argc, char *argv[])
                     cell_TEM_AVG = *(data_TEM_AVG + index_TEM_AVG) * scale_TEM_AVG;
                     cell_TEM_MAX = *(data_TEM_MAX + index_TEM_MAX) * scale_TEM_MAX;
                     cell_TEM_MIN = *(data_TEM_MIN + index_TEM_MIN) * scale_TEM_MIN;
-                    printf(
-                        "%8s%8s%8s%8s%8s%8s%8s%8s\n",
-                        "PRE", "TEM_AVG", "TEM_MAX", "TEM_MIN", "WIN", "SSD", "RHU", "PRS");
-                    printf("%8.2f%8.2f%8.2f%8.2f%8.1f%8.0f%8.1f%8.1f\n",
-                           cell_PRE * 1000, cell_TEM_AVG, cell_TEM_MAX, cell_TEM_MIN, cell_WIN, cell_SSD, cell_RHU, cell_PRS);
+                    // printf(
+                    //     "%8s%8s%8s%8s%8s%8s%8s%8s\n",
+                    //     "PRE", "TEM_AVG", "TEM_MAX", "TEM_MIN", "WIN", "SSD", "RHU", "PRS");
+                    // printf("%8.2f%8.2f%8.2f%8.2f%8.1f%8.0f%8.1f%8.1f\n",
+                    //        cell_PRE * 1000, cell_TEM_AVG, cell_TEM_MAX, cell_TEM_MIN, cell_WIN, cell_SSD, cell_RHU, cell_PRS);
                     /**************** parameter preparation *****************/
                     cell_lat = *(data_lat + i);
                     cell_VEG_class = *(data_VEGTYPE + index_geo);
@@ -443,8 +447,25 @@ int main(int argc, char *argv[])
                         GP.STEP_TIME);
 
                     /**************** unsaturated soil zone water movement *****************/
+                    UnsaturatedWaterMove(
+                        (data_ET + index_geo)->Prec_net,
+                        (data_ET + index_geo)->ET_o,
+                        (data_ET + index_geo)->ET_u,
+                        (data_ET + index_geo)->ET_s,
+                        &((data_SOIL + index_geo)->SM_Upper),
+                        &((data_SOIL + index_geo)->SM_Lower),
+                        &((data_SOIL + index_geo)->SW_Infiltration),
+                        &((data_SOIL + index_geo)->SW_Percolation_Upper),
+                        &((data_SOIL + index_geo)->SW_Percolation_Lower),
+                        (data_SOIL + index_geo)->SWV_gw,
+                        (data_SOIL + index_geo)->SWV_rf,
+                        &((data_SOIL + index_geo)->SW_SR_Infil),
+                        &((data_SOIL + index_geo)->SW_SR_Satur),
+                        Soil_thickness_upper,
+                        Soil_thickness_lower,
+                        &cell_soil,
+                        GP.STEP_TIME);
 
-                    
                     /************************* save variables *************************/
                     if (outnl.Rs == 1)
                     {
@@ -492,16 +513,15 @@ int main(int argc, char *argv[])
                     }
                 }
             }
-            /**************** water movement in saturated soil zone *****************/
-
-            /************************ surface runoff routing **********************/
-
-            /********************* river channel flow routing ****************/
         }
+        /**************** water movement in saturated soil zone *****************/
+
+        /********************* river channel flow routing ****************/
         
         t += 1;
         run_time += 3600 * GP.STEP_TIME;
     }
+    /************************ surface runoff routing **********************/
 
     /***************************************************************************************************
      *                               export the variables

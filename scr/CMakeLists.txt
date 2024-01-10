@@ -69,6 +69,10 @@ set(xHM
     Lookup_SoilLib.c
     NetCDF_IO_geo.c
     UH_Generation.c
+    Soil_Infiltration.c
+    Soil_Percolation.c
+    Soil_Desorption.c
+    Soil_UnsaturatedMove.c
 )
 
 
