@@ -1,29 +1,29 @@
 /*
  * SUMMARY:      UH_Routing.c
- * USAGE:        use UH to route the surface runoff 
+ * USAGE:        use UH to route the surface runoff
  * AUTHOR:       Xiaoxiang Guan
  * ORG:          Section Hydrology, GFZ
  * E-MAIL:       guan@gfz-potsdam.de
  * ORIG-DATE:    Jan-2024
  * DESCRIPTION:  simulate the surface runoff-induced discharge by using unit hydrograph
  * DESCRIP-END.
- * FUNCTIONS:    Grid_Slope(), Grid_SlopeArea(), Grid_Velocity()
- * 
+ * FUNCTIONS:    UH_Read(), UH_Import(), UH_Routing()
+ *
  * COMMENTS:
- * - Grid_Slope():          derive the slope from DEM and flow direction (D8)
- * - Grid_SlopeArea():      compute the slope-area term for each grid cell
- * - Grid_Velocity():       assign flow velocity to each grid cell
- * - Grid_FlowTime():       compute the flow time of each grid to the outlet
- * 
+ * - UH_Read():          read the main UH attributes from UH.nc
+ * - UH_Import():        import the UH fromUH.nc file
+ * - UH_Routing():       route the surface runoff using UH
+ * - IsNODATA():         
+ *
  * REFERENCES:
- * 
+ *
  *
  */
 
 /*******************************************************************************
  * VARIABLEs:
- * 
-*/
+ *
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -138,6 +138,12 @@ int IsNODATA(
     int NODATA_value
 )
 {
+    /*****
+     * check whether the double number equals 
+     * or is close enough to the NODATA_value:
+     * 1: close enough
+     * 0: not
+     * */ 
     double y;
     int result;
     y = value - NODATA_value;
