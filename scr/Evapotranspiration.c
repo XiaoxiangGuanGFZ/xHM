@@ -304,7 +304,7 @@ void ET_iteration(
     double Radia_net,   /* the net radiation flux density on the cell surface, kJ/h/m2 */ 
     
     double Prec,                /* precipitation (total) within the time step, m */
-    double *Prec_throughfall,   /* precipitation throughfall from overstory*/
+    double *Prec_throughfall,   /* precipitation throughfall from overstory */
     double *Prec_net,           /* net precipitation from understory into soil process */
     double *Ep,                 /* the potential evaporation rate [m/h] */
     double *EI_o,               /* actual evaporation from overstory, m */
@@ -410,10 +410,10 @@ void ET_iteration(
             *Prec_net = 0.0;
         }
     }
-    printf("Ep: %8.2f\n", *Ep * step_time * 1000); // unit:mm 
-    printf("%s:%8.2f %s:%8.2f %s:%8.2f %s:%8.2f %s:%8.2f\n",
-    "EI_o", *EI_o * 1000, "ET_o", *ET_o * 1000, "EI_u", *EI_u * 1000, "ET_u", *ET_u * 1000, "ET_s", *ET_s * 1000
-    );
+    // printf("Ep: %8.2f\n", *Ep * step_time * 1000); // unit:mm 
+    // printf("%s:%8.2f %s:%8.2f %s:%8.2f %s:%8.2f %s:%8.2f\n",
+    // "EI_o", *EI_o * 1000, "ET_o", *ET_o * 1000, "EI_u", *EI_u * 1000, "ET_u", *ET_u * 1000, "ET_s", *ET_s * 1000
+    // );
 }
 
 
@@ -432,13 +432,13 @@ void ET_CELL(
     double Air_ws_obs,  /* wind speed at the measurement height, m/s */
     double ws_obs_z,    /* the measurement height, m */
     double Air_ssd,     /* sunshine duration in a day, hours */
-    double *Rs,         /* received shortwave radiation for the overstory canopy */
-    double *L_sky,      /* received longwave radiation for the overstory canopy */
-    double *Rno,        /* net radiation for the overstory */
-    double *Rno_short,  /* net shortwave radiation for the overstory */
-    double *Rnu,        /* net radiation for the understory */
-    double *Rnu_short,  /* net shortwave radiation for the understory */
-    double *Rns,        /* net radiation for ground/soil */
+    double *Rs,         /* received shortwave radiation for the overstory canopy, [kJ/m2/h] */
+    double *L_sky,      /* received longwave radiation for the overstory canopy, [kJ/m2/h] */
+    double *Rno,        /* net radiation for the overstory, [kJ/m2/h] */
+    double *Rno_short,  /* net shortwave radiation for the overstory, [kJ/m2/h] */
+    double *Rnu,        /* net radiation for the understory, [kJ/m2/h] */
+    double *Rnu_short,  /* net shortwave radiation for the understory, [kJ/m2/h] */
+    double *Rns,        /* net radiation for ground/soil, [kJ/m2/h] */
     double Frac_canopy, /* the fractional forest cover, between 0.0 and 1.0 */
     double Ref_o,       /* reflection coefficient of radiation for overstory */
     double Ref_u,       /* reflection coefficient of radiation for understory */
@@ -463,7 +463,7 @@ void ET_CELL(
     double SM_free,     /* the moisture content above which soil conditions do not restrict transpiration. */
     double Soil_Fe,     /* soil desorptivity */
 
-    double *Prec_throughfall, /* precipitation throughfall from overstory*/
+    double *Prec_throughfall, /* precipitation throughfall from overstory */
     double *Prec_net,         /* net precipitation from understory into soil process */
     double *Ep,               /* the potential evaporation rate [m/h] */
     double *EI_o,             /* actual evaporation, m */
@@ -505,7 +505,7 @@ void ET_CELL(
     */
     *Rs = *Rs * 1000/24;
     *L_sky = *L_sky * 1000/24;
-    printf("Rs: %8.2f\nL_sky: %8.2f\n", *Rs, *L_sky);
+    // printf("Rs: %8.2f\nL_sky: %8.2f\n", *Rs, *L_sky);
     int Toggle_Overstory = 1;           /* whether there is overstory, yes: 1 */
     if (Frac_canopy < 0.0001)
     {
@@ -526,10 +526,10 @@ void ET_CELL(
         Frac_canopy, Ref_o, Ref_u, Ref_s,
         Tem_o, Tem_u, Tem_s,
         LAI_o, LAI_u, Toggle_Understory);
-    printf(
-        "Rno: %8.2f\nRno_short: %8.2f\nRnu: %8.2f\nRnu_short: %8.2f\n",
-        *Rno, *Rno_short, *Rnu, *Rnu_short
-    );
+    // printf(
+    //     "Rno: %8.2f\nRno_short: %8.2f\nRnu: %8.2f\nRnu_short: %8.2f\n",
+    //     *Rno, *Rno_short, *Rnu, *Rnu_short
+    // );
     double R_net;
     if (Toggle_Overstory == 1) 
     {
@@ -543,7 +543,7 @@ void ET_CELL(
     {
         R_net = *Rns;
     }
-    printf("R_net: %8.2f\n", R_net);
+    // printf("R_net: %8.2f\n", R_net);
     double Rp_o, Rp_u;   // visiable radiation in net shortwave radiation
     Rp_o = VISFRACT * *Rno_short * 1000/3600;  // convert kJ/m2/h to W/m2, the same unit as Rpc
     Rp_u = VISFRACT * *Rnu_short * 1000/3600;
@@ -583,10 +583,10 @@ void ET_CELL(
         Res_canopy_u = 1.0;
         Res_aero_u = 1.0;
     }
-    printf(
-        "Res_canopy_o: %6.2f\nRes_aero_o: %6.2f\nRes_canopy_u: %6.2f\nRes_aero_u: %6.2f\n",
-        Res_canopy_o, Res_aero_o, Res_canopy_u, Res_aero_u
-    );
+    // printf(
+    //     "Res_canopy_o: %6.2f\nRes_aero_o: %6.2f\nRes_canopy_u: %6.2f\nRes_aero_u: %6.2f\n",
+    //     Res_canopy_o, Res_aero_o, Res_canopy_u, Res_aero_u
+    // );
     /***********
      * iteration for evapotranspiration computation
      * - evaporation
