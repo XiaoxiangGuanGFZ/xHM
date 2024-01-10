@@ -146,7 +146,7 @@ int IsNODATA(
         y = -y;
     }
 
-    if (Y < 0.00001)
+    if (y < 0.00001)
     {
         result = 1;
     }
