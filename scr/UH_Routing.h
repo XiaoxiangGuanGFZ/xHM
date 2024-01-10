@@ -34,4 +34,9 @@ void UH_Routing(
     int STEP_TIME
 );
 
+int IsNODATA(
+    double value,
+    int NODATA_value
+);
+
 #endif
