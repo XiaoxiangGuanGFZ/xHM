@@ -119,7 +119,7 @@ void Import_para(
                 }
                 else
                 {
-                    printf("Unrecognized field in %s!", FP);
+                    printf("Unrecognized field %s in %s!", S1, FP);
                     exit(0);
                 }
             }
