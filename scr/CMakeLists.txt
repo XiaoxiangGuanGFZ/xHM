@@ -35,7 +35,7 @@ set(WEATHER
 
 set(UH
     UH_Generation.c
-    Route_UH_main.c
+    UH_GENE_main.c
     NC_copy_global_att.c
 )
 
