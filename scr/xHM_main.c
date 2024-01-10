@@ -318,11 +318,15 @@ int main(int argc, char *argv[])
     int *out_Rs, *out_L_sky, *out_Rno, *out_Rnu;
     int *out_Ep, *out_EI_o, *out_EI_u, *out_ET_o, *out_ET_u, *out_ET_s;
     int *out_Interception_o, *out_Interception_u, *out_Prec_net;
+    int *out_SM_Upper, *out_SM_Lower, *out_SW_Percolation_Upper, *out_SW_Percolation_Lower;
+    int *out_SW_Infiltration, *out_SW_Run_Infil, *out_SW_Run_Satur;
     malloc_Outnamelist(
         outnl, cell_counts_total, time_steps_run,
         &out_Rs, &out_L_sky, &out_Rno, &out_Rnu,
         &out_Ep, &out_EI_o, &out_EI_u, &out_ET_o, &out_ET_u, &out_ET_s,
-        &out_Interception_o, &out_Interception_u, &out_Prec_net);
+        &out_Interception_o, &out_Interception_u, &out_Prec_net,
+        &out_SM_Upper, &out_SM_Lower, &out_SW_Percolation_Upper, &out_SW_Percolation_Lower,
+        &out_SW_Infiltration, &out_SW_Run_Infil, &out_SW_Run_Satur);
 
     /***********************************************************************************
      *                       define the iteration variables
@@ -511,13 +515,41 @@ int main(int argc, char *argv[])
                     {
                         *(out_Prec_net + index_run) = (int)((data_ET + index_geo)->Prec_net * 10000);
                     }
+                    if (outnl.SM_Upper == 1)
+                    {
+                        *(out_SM_Upper + index_run) = (int)((data_SOIL + index_geo)->SM_Upper * 100);
+                    }
+                    if (outnl.SM_Lower == 1)
+                    {
+                        *(out_SM_Lower + index_run) = (int)((data_SOIL + index_geo)->SM_Lower * 100);
+                    }
+                    if (outnl.SW_Infiltration == 1)
+                    {
+                        *(out_SW_Infiltration + index_run) = (int)((data_SOIL + index_geo)->SW_Infiltration * 10000);
+                    }
+                    if (outnl.SW_Run_Infil == 1)
+                    {
+                        *(out_SW_Run_Infil + index_run) = (int)((data_SOIL + index_geo)->SW_Run_Infil * 10000);
+                    }
+                    if (outnl.SW_Run_Satur == 1)
+                    {
+                        *(out_SW_Run_Satur + index_run) = (int)((data_SOIL + index_geo)->SW_Run_Satur * 10000);
+                    }
+                    if (outnl.SW_Percolation_Lower == 1)
+                    {
+                        *(out_SW_Percolation_Lower + index_run) = (int)((data_SOIL + index_geo)->SW_Percolation_Lower * 10000);
+                    }
+                    if (outnl.SW_Percolation_Upper == 1)
+                    {
+                        *(out_SW_Percolation_Upper + index_run) = (int)((data_SOIL + index_geo)->SW_Percolation_Upper * 10000);
+                    }
                 }
             }
         }
         /**************** water movement in saturated soil zone *****************/
 
         /********************* river channel flow routing ****************/
-        
+
         t += 1;
         run_time += 3600 * GP.STEP_TIME;
     }
@@ -531,6 +563,8 @@ int main(int argc, char *argv[])
         &out_Rs, &out_L_sky, &out_Rno, &out_Rnu,
         &out_Ep, &out_EI_o, &out_EI_u, &out_ET_o, &out_ET_u, &out_ET_s,
         &out_Interception_o, &out_Interception_u, &out_Prec_net,
+        &out_SM_Upper, &out_SM_Lower, &out_SW_Percolation_Upper, &out_SW_Percolation_Lower,
+        &out_SW_Infiltration, &out_SW_Run_Infil, &out_SW_Run_Satur,
         GP
     );
 
