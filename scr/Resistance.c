@@ -187,8 +187,8 @@ double Resist_Stomatal(
     double SM,     /* average soil moisture content */
     double SM_wp,  /* the plant wilting point */
     double SM_free /* the moisture content above which
-                        soil conditions do not
-                        restrict transpiration. */
+                   soil conditions do not
+                   restrict transpiration. */
 )
 {
     /******
@@ -227,7 +227,7 @@ double Factor_1(
 double Factor_2(
     double Air_tem_min, /*scalar: minimum air temperature (℃)*/
     double Air_tem_max, /*scalar: maximum air temperature (℃)*/
-    double Air_rhu      // relative humidity, %
+    double Air_rhu      /* relative humidity, % */ 
 )
 {
     /****
@@ -248,10 +248,10 @@ double Factor_2(
 }
 
 double Factor_3(
-    double Rp,     /* the visible radiation */
-    double Rpc,    /* the light level where rs is twice the rs_min */
-    double rs_min, /* minimum stomatal resistance */
-    double rs_max  /* maximum (cuticular) resistance */
+    double Rp,     /* the visible radiation, [W/m2] */
+    double Rpc,    /* the light level where rs is twice the rs_min, [W/m2] */
+    double rs_min, /* minimum stomatal resistance, [s/m] */
+    double rs_max  /* maximum (cuticular) resistance, [s/m] */
 )
 {
     /****
@@ -285,7 +285,7 @@ double Factor_4(
     double SM_wp,  /* the plant wilting point */
     double SM_free /* the moisture content above which
                         soil conditions do not
-                        restrict transpiration. */
+                        restrict transpiration, field capacity. */
 )
 {
     /****

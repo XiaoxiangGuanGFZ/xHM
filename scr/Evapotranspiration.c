@@ -446,7 +446,7 @@ void ET_CELL(
     double Ref_s,       /* reflection coefficient of radiation for soil/ground */
     double LAI_o,       /* LAI for overstory */
     double LAI_u,       /* LAI for understory */
-    double Rpc_o,       /* the light level where rs is twice the rs_min */
+    double Rpc_o,       /* the light level where rs is twice the rs_min, [W/m2] */
     double rs_min_o,    /* minimum stomatal resistance, [s/m] */
     double rs_max_o,    /* maximum (cuticular) resistance, [s/m] */
     double Rpc_u,       /* the light level where rs is twice the rs_min */
