@@ -54,9 +54,29 @@ typedef struct
     double SW_Percolation_Lower; /* water percolation from lower soil layer, [m] */
     double SW_SR_Infil;          /* surface runoff from excess-infiltration, [m] */
     double SW_SR_Satur;          /* surface runoff from saturation, [m] */
-    double SWV_gw;               /* the volume of water supplied by a rising water table, [m] */
-    double SWV_rf;               /* the volume of return flow (generated when a rising water table reaches the ground surface), [m] */
+
+    double z;                    /* the water table of the grid cell, positive downward, [m] */
+    int z_offset;                /* the water table from the reference height, 
+                                    considering DEM difference with neighboring cells, positive downward, [m] */
+    int z_offset_neighbor[8];    /* reference water table of 8 neighboring cells, [m] */
+    double q[8];                 /* outflow from the cell to 8 directions, [m3/h] */
+    int neighbor[8];             /* the status of the 8 neighbors, 1: valid, 0: nodata */
+    double Qout;                 /* total outflow from this cell, [m3/h] */
+    double Qin;                  /* total inflow to this cell, [m3/h] */
+    double SW_rise_lower;        /* water volume suppied by a rising water table to the lower soil layer, [m] */
+    double SW_rise_upper;        /* water volume suppied by a rising water table to the upper soil layer, [m] */
+    double SW_rf;                /* water volume of return flow (generated when a rising water table reaches the ground surface), [m] */
 } CELL_VAR_SOIL;
+
+
+typedef struct 
+{
+    double k;           /* channel storage parameter */
+    double Qc;          /* water flow from/into grid cell, [m3/h] */
+    double Q;           /* discharge of the channel, [m3/h] */
+    double V;           /* water volume of the channel, [m3] */
+} CELL_VAR_STREAM;
+
 
 typedef struct
 {
