@@ -60,8 +60,8 @@ void UnsaturatedWaterMove(
     double *SW_Infiltration,
     double *SW_Percolation_Upper,
     double *SW_Percolation_Lower,
-    double SWV_gw,
-    double SWV_rf,
+    double SW_rise_lower,
+    double SW_rise_upper,
     double *SW_Run_Infil,
     double *SW_Run_Satur,
     double Soil_thickness_upper,
@@ -124,7 +124,7 @@ void UnsaturatedWaterMove(
     /********
      * upper soil layer
     */
-    SM_buff = (SW_Infiltration - SW_Percolation_Upper - ET_o - ET_u - Es + SWV_gw - SWV_rf) /
+    SM_buff = (SW_Infiltration - SW_Percolation_Upper - ET_o - ET_u - Es + SW_rise_upper) /
                   Soil_thickness_upper +
               *Soil_Moisture_upper;
     if (SM_buff > cell_soil_lib->Topsoil->Porosity / 100)
@@ -146,7 +146,7 @@ void UnsaturatedWaterMove(
     /********
      * lower soil layer
     */
-    SM_buff = (*SW_Percolation_Upper - *SW_Percolation_Lower - ET_o + SWV_gw) /
+    SM_buff = (*SW_Percolation_Upper - *SW_Percolation_Lower - ET_o + SW_rise_lower) /
                   Soil_thickness_lower +
               *Soil_Moisture_lower;
     if (SM_buff > cell_soil_lib->Subsoil->Porosity / 100)
