@@ -71,7 +71,7 @@ typedef struct
 
 typedef struct 
 {
-    double k;           /* channel storage parameter */
+    double k;           /* channel storage parameter, [1/h] */
     double Qc;          /* water flow from/into grid cell, [m3/h] */
     double Q;           /* discharge of the channel, [m3/h] */
     double V;           /* water volume of the channel, [m3] */
