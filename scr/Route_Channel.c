@@ -21,13 +21,12 @@
 
 /******************************************************************
  * VARIABLES:
- * double *Qin             - inflow of the river reach, [m3/h]
- * double *Qout            - outflow of the river reach, [m3/h]
- * double *Vin             - water volume of river reach at the beginning of the time interval, [m3]
- * double *Vout            - water volume of river reach after the time interval, [m3]
+ * double Qc               - the water flow between grid cell and the river channel, [m3/h]
+ * double Q                - the streamflow of the river reach, [m3/h]
+ * double V                - the water volume of the river reach, [m3]
  * double k                - storage parameter: equal to the inverse of the average residence time, [1/h]
  * int step_time           - time step, interval, [h]
- * 
+ * int *data_STR           - pointing to the 2D stream (STR) array
  * 
 ******************************************************************/
 #include <stdio.h>
