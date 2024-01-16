@@ -46,6 +46,10 @@
 #include "NetCDF_IO_geo.h"
 #include "UH_Generation.h"
 #include "Soil_UnsaturatedMove.h"
+#include "Soil_SaturatedFlow.h"
+#include "Route_Channel.h"
+#include "UH_Routing.h"
+
 
 void malloc_error(
     int *data
@@ -94,21 +98,26 @@ int main(int argc, char *argv[])
     int status_nc;
     int ncID_GEO;
     ST_Header GEO_header;
+    int cellsize_m;
     nc_open(GP.FP_GEO, NC_NOWRITE, &ncID_GEO);
     nc_get_att_int(ncID_GEO, NC_GLOBAL, "ncols", &GEO_header.ncols);
     nc_get_att_int(ncID_GEO, NC_GLOBAL, "nrows", &GEO_header.nrows);
+    nc_get_att_int(ncID_GEO, NC_GLOBAL, "cellsize_m", &cellsize_m);
     nc_get_att_double(ncID_GEO, NC_GLOBAL, "xllcorner", &GEO_header.xllcorner);
     nc_get_att_double(ncID_GEO, NC_GLOBAL, "yllcorner", &GEO_header.yllcorner);
     nc_get_att_double(ncID_GEO, NC_GLOBAL, "cellsize", &GEO_header.cellsize);
+
     int cell_counts_total;
     cell_counts_total = GEO_header.ncols * GEO_header.nrows;
     printf("cell_counts_total: %d\n", cell_counts_total);
     printf("ncols: %d\nnrows: %d\nxllcorner: %.12f\nyllcorner: %.12f\ncellsize: %.12f\n",
            GEO_header.ncols, GEO_header.nrows, GEO_header.xllcorner, GEO_header.yllcorner, GEO_header.cellsize);
     
-    int varID_VEGTYPE, varID_VEGFRAC, varID_lon, varID_lat, varID_SOILTYPE;
+    int varID_VEGTYPE, varID_VEGFRAC, varID_lon, varID_lat, varID_SOILTYPE, varID_STR, varID_DEM;
     int *data_VEGTYPE;
     int *data_VEGFRAC;
+    int *data_STR;
+    int *data_DEM;
     int *data_SOILTYPE;
     double *data_lon;
     double *data_lat;
@@ -116,18 +125,24 @@ int main(int argc, char *argv[])
     data_VEGTYPE = (int *)malloc(sizeof(int) * cell_counts_total);
     data_VEGFRAC = (int *)malloc(sizeof(int) * cell_counts_total);
     data_SOILTYPE = (int *)malloc(sizeof(int) * cell_counts_total);
+    data_DEM = (int *)malloc(sizeof(int) * cell_counts_total);
+    data_STR = (int *)malloc(sizeof(int) * cell_counts_total);
     data_lat = (double *)malloc(sizeof(double) * GEO_header.nrows);
     data_lon = (double *)malloc(sizeof(double) * GEO_header.ncols);
     
     nc_inq_varid(ncID_GEO, "VEGTYPE", &varID_VEGTYPE);
     nc_inq_varid(ncID_GEO, "VEGFRAC", &varID_VEGFRAC);
     nc_inq_varid(ncID_GEO, "SOILTYPE", &varID_SOILTYPE);
+    nc_inq_varid(ncID_GEO, "DEM", &varID_DEM);
+    nc_inq_varid(ncID_GEO, "STR", &varID_STR);
     nc_inq_varid(ncID_GEO, "lon", &varID_lon);
     nc_inq_varid(ncID_GEO, "lat", &varID_lat);
 
     nc_get_var_int(ncID_GEO, varID_VEGTYPE, data_VEGTYPE);
     nc_get_var_int(ncID_GEO, varID_VEGFRAC, data_VEGFRAC);
     nc_get_var_int(ncID_GEO, varID_SOILTYPE, data_SOILTYPE);
+    nc_get_var_int(ncID_GEO, varID_DEM, data_DEM);
+    nc_get_var_int(ncID_GEO, varID_STR, data_STR);
     nc_get_var_double(ncID_GEO, varID_lon, data_lon);
     nc_get_var_double(ncID_GEO, varID_lat, data_lat);
     printf("lat: %.2f\n", *(data_lat + 25));
@@ -300,6 +315,9 @@ int main(int argc, char *argv[])
     CELL_VAR_SOIL *data_SOIL;
     data_SOIL = (CELL_VAR_SOIL *)malloc(sizeof(CELL_VAR_SOIL) * cell_counts_total);
 
+    CELL_VAR_STREAM *data_STREAM;
+    data_STREAM = (CELL_VAR_STREAM *)malloc(sizeof(CELL_VAR_STREAM) * cell_counts_total);
+
     for (size_t i = 0; i < GEO_header.nrows; i++)
     {
         for (size_t j = 0; j < GEO_header.ncols; j++)
@@ -310,6 +328,20 @@ int main(int argc, char *argv[])
             Initialize_SOIL(data_SOIL + index_geo);
         }
     }
+
+    Initialize_Soil_Satur(
+        data_SOIL,
+        data_DEM,
+        GEO_header.NODATA_value,
+        GEO_header.ncols,
+        GEO_header.nrows);
+
+    Initialize_STREAM(
+        data_STREAM,
+        data_STR,
+        GEO_header.NODATA_value,
+        GEO_header.ncols,
+        GEO_header.nrows);
 
     /***********************************************************************************
      *              define the ourput variables (results) from simulation
@@ -354,6 +386,12 @@ int main(int argc, char *argv[])
 
     double Soil_thickness_upper = 0.2;
     double Soil_thickness_lower = 0.5;
+    double Soil_Thickness;
+    double Soil_d1;
+    double Soil_d2;
+    double stream_depth;
+    double stream_width;
+
     /***********************************************************************************
      *                       xHM model iteration
      ***********************************************************************************/
@@ -547,6 +585,25 @@ int main(int argc, char *argv[])
             }
         }
         /**************** water movement in saturated soil zone *****************/
+
+        Soil_Satu_Move(
+            data_DEM,
+            data_STR,
+            data_SOILTYPE,
+            data_STREAM,
+            data_SOIL,
+            soillib,
+            soilID,
+            Soil_Thickness,
+            Soil_d1,
+            Soil_d2,
+            stream_depth,
+            stream_width,
+            GEO_header.NODATA_value,
+            GEO_header.ncols,
+            GEO_header.nrows,
+            cellsize_m,
+            GP.STEP_TIME);
 
         /********************* river channel flow routing ****************/
 
