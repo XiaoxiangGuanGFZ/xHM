@@ -30,21 +30,100 @@
  * 
  * 
 ******************************************************************/
-
+#include <stdio.h>
 #include <math.h>
+#include "HM_ST.h"
 #include "Route_Channel.h"
 
+// void Channel_Routing(
+//     double *Qin,
+//     double *Qout,
+//     double *Vin,
+//     double *Vout,
+//     double k,
+//     int step_time)
+// {
+//     *Vout = *Qin / k +
+//             (*Vin - *Qin / k) * exp(-k * (double)step_time);
+//     *Qout = *Qin - (*Vout - *Vin) / (double)step_time;
+// }
+
 void Channel_Routing(
-    double *Qin,
-    double *Qout,
-    double *Vin,
-    double *Vout,
+    double *Q,
+    double *V,
     double k,
     int step_time
 )
 {
-    *Vout = *Qin / k + 
-        (*Vin - *Qin / k) * exp(- k * (double) step_time);
-    *Qout = *Qin - (*Vout - *Vin) / (double) step_time;
+    double Vin;
+    Vin = *V;
+    *V = *Q / k + 
+        (*V - *Q / k) * exp(- k * (double) step_time);
+    *Q = *Q - (*V - Vin) / (double) step_time;
+}
 
+
+void Initialize_STREAM(
+    CELL_VAR_STREAM *data_STREAM,
+    int *data_STR,
+    int NODATA_value,
+    int ncols,
+    int nrows)
+{
+    int index_geo;  
+    for (size_t i = 0; i < nrows; i++)
+    {
+        for (size_t j = 0; j < ncols; j++)
+        {
+            index_geo = i * ncols + j;
+            if (*(data_STR + index_geo) != NODATA_value)
+            {
+                (data_STREAM + index_geo)->k = NODATA_value;
+                (data_STREAM + index_geo)->Q = NODATA_value;
+                (data_STREAM + index_geo)->Qc = NODATA_value;
+                (data_STREAM + index_geo)->V = NODATA_value;
+            }
+            else if (*(data_STR + index_geo) == 0)
+            {
+                (data_STREAM + index_geo)->k = NODATA_value;
+                (data_STREAM + index_geo)->Q = 0;
+                (data_STREAM + index_geo)->Qc = 0;
+                (data_STREAM + index_geo)->V = 0;
+            }
+            else if (*(data_STR + index_geo) == 1)
+            {
+                (data_STREAM + index_geo)->k = 3;
+                (data_STREAM + index_geo)->Q = 0.0;
+                (data_STREAM + index_geo)->Qc = 0.0;
+                (data_STREAM + index_geo)->V = 0.0;
+            }
+        }
+    }
+}
+
+void Channel_Routing_ITER(
+    CELL_VAR_STREAM *data_STREAM,
+    int *data_STR,
+    int NODATA_value,
+    int ncols,
+    int nrows,
+    int step_time
+)
+{
+    int index_geo;
+    for (size_t i = 0; i < nrows; i++)
+    {
+        for (size_t j = 0; j < ncols; j++)
+        {
+            index_geo = i * ncols + j;
+            if (*(data_STR + index_geo) == 1)
+            {
+                Channel_Routing(
+                    &((data_STREAM + index_geo)->Q),
+                    &((data_STREAM + index_geo)->V),
+                    (data_STREAM + index_geo)->k,
+                    step_time);
+            }
+        }
+    }
 }
