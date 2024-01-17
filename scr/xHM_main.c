@@ -727,7 +727,7 @@ int main(int argc, char *argv[])
     for (size_t s = 0; s < outlet_count; s++)
     {
         UH_Routing(
-            out_SW_Run_Infil, // unit: m
+            out_SW_Run_Infil, 
             data_UH + index_UH_gap,
             Qout_SF_Infil + time_steps_run * s,
             UH_steps[s],
@@ -738,7 +738,7 @@ int main(int argc, char *argv[])
             GEO_header.NODATA_value,
             GP.STEP_TIME);
         UH_Routing(
-            out_SW_Run_Satur, // unit: m
+            out_SW_Run_Satur, 
             data_UH + index_UH_gap,
             Qout_SF_Satur + time_steps_run * s,
             UH_steps[s],
