@@ -611,7 +611,7 @@ int main(int argc, char *argv[])
 
                     /************************* save variables *************************/
                     // mandatory
-                    *(out_SW_Run_Infil + index_run) = (int)((data_SOIL + index_geo)->SW_SR_Infil * 10000);
+                    *(out_SW_Run_Infil + index_run) = (int)((data_SOIL + index_geo)->SW_SR_Infil * 10000); // 0.1 mm
                     *(out_SW_Run_Satur + index_run) = (int)((data_SOIL + index_geo)->SW_SR_Satur * 10000);
 
                     // optional
