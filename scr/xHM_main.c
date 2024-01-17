@@ -6,19 +6,17 @@
  * E-MAIL:       guan@gfz-potsdam.de
  * ORIG-DATE:    Jan-2024
  * DESCRIPTION:  simulate the multiple hydrological processes:
- * 
+ *
  * DESCRIP-END.
- * FUNCTIONS:    
- * 
+ * FUNCTIONS:
+ *
  * COMMENTS:
- * 
- * 
+ *
+ *
  * References:
- * 
- * 
-*/
-
-
+ *
+ *
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,15 +43,14 @@
 #include "Initial_VAR.h"
 #include "NetCDF_IO_geo.h"
 #include "UH_Generation.h"
+#include "UH_Routing.h"
 #include "Soil_UnsaturatedMove.h"
 #include "Soil_SaturatedFlow.h"
 #include "Route_Channel.h"
-#include "UH_Routing.h"
-
+#include "Route_Outlet.h"
 
 void malloc_error(
-    int *data
-);
+    int *data);
 
 int main(int argc, char *argv[])
 {
@@ -63,7 +60,7 @@ int main(int argc, char *argv[])
     GLOBAL_PARA GP;
     Initialize_GlobalPara(&GP);
     Import_GlobalPara(*(++argv), &GP);
-    double ws_obs_z = 10.0;/* the height of wind measurement */
+    double ws_obs_z = 10.0; /* the height of wind measurement */
     char WS_OUT[MAXCHAR];
     strcpy(WS_OUT, GP.PATH_OUT);
     OUT_NAME_LIST outnl;
@@ -72,24 +69,32 @@ int main(int argc, char *argv[])
     /*****************************************************************************
      *                          model simulation period
      ******************************************************************************/
-    int time_steps_run;  // number of simulation steps
+    int time_steps_run; // number of simulation steps
     time_t start_time, end_time;
     struct tm tm_start, tm_end;
-    tm_start.tm_hour = GP.START_HOUR + 1; tm_end.tm_hour = GP.END_HOUR + 1;
-    tm_start.tm_min = 0; tm_end.tm_min = 0;
-    tm_start.tm_sec = 0; tm_end.tm_sec = 0;
-    tm_start.tm_mday = GP.START_DAY; tm_end.tm_mday = GP.END_DAY; 
-    tm_start.tm_mon = GP.START_MONTH - 1; tm_end.tm_mon = GP.END_MONTH - 1;
-    tm_start.tm_year = GP.START_YEAR - 1900; tm_end.tm_year = GP.END_YEAR - 1900;
+    tm_start.tm_hour = GP.START_HOUR + 1;
+    tm_end.tm_hour = GP.END_HOUR + 1;
+    tm_start.tm_min = 0;
+    tm_end.tm_min = 0;
+    tm_start.tm_sec = 0;
+    tm_end.tm_sec = 0;
+    tm_start.tm_mday = GP.START_DAY;
+    tm_end.tm_mday = GP.END_DAY;
+    tm_start.tm_mon = GP.START_MONTH - 1;
+    tm_end.tm_mon = GP.END_MONTH - 1;
+    tm_start.tm_year = GP.START_YEAR - 1900;
+    tm_end.tm_year = GP.END_YEAR - 1900;
     // Daylight Saving Time not in effect;Specify UTC time zone
-    tm_start.tm_isdst = 0; tm_end.tm_isdst = 0; 
-    start_time = mktime(&tm_start); end_time = mktime(&tm_end);
+    tm_start.tm_isdst = 0;
+    tm_end.tm_isdst = 0;
+    start_time = mktime(&tm_start);
+    end_time = mktime(&tm_end);
     if (start_time > end_time)
     {
         printf("Error: invalid start time or end time for the model running. Please check the global parameter file!\n");
         exit(-2);
     }
-    
+
     time_steps_run = (end_time - start_time) / (3600 * GP.STEP_TIME) + 1;
     printf("time_steps_run: %d\n", time_steps_run);
     /******************************************************************************
@@ -112,7 +117,7 @@ int main(int argc, char *argv[])
     printf("cell_counts_total: %d\n", cell_counts_total);
     printf("ncols: %d\nnrows: %d\nxllcorner: %.12f\nyllcorner: %.12f\ncellsize: %.12f\n",
            GEO_header.ncols, GEO_header.nrows, GEO_header.xllcorner, GEO_header.yllcorner, GEO_header.cellsize);
-    
+
     int varID_VEGTYPE, varID_VEGFRAC, varID_lon, varID_lat, varID_SOILTYPE, varID_STR, varID_DEM;
     int *data_VEGTYPE;
     int *data_VEGFRAC;
@@ -129,7 +134,7 @@ int main(int argc, char *argv[])
     data_STR = (int *)malloc(sizeof(int) * cell_counts_total);
     data_lat = (double *)malloc(sizeof(double) * GEO_header.nrows);
     data_lon = (double *)malloc(sizeof(double) * GEO_header.ncols);
-    
+
     nc_inq_varid(ncID_GEO, "VEGTYPE", &varID_VEGTYPE);
     nc_inq_varid(ncID_GEO, "VEGFRAC", &varID_VEGFRAC);
     nc_inq_varid(ncID_GEO, "SOILTYPE", &varID_SOILTYPE);
@@ -146,10 +151,10 @@ int main(int argc, char *argv[])
     nc_get_var_double(ncID_GEO, varID_lon, data_lon);
     nc_get_var_double(ncID_GEO, varID_lat, data_lat);
     printf("lat: %.2f\n", *(data_lat + 25));
-    printf("SOIL: %d\n", *(data_SOILTYPE + 25*GEO_header.ncols + 25));
-    printf("VEG: %d\n", *(data_VEGTYPE + 25*GEO_header.ncols + 25));
-    printf("VEGFRAC: %d\n", *(data_VEGFRAC + 25*GEO_header.ncols + 25));
-    
+    printf("SOIL: %d\n", *(data_SOILTYPE + 25 * GEO_header.ncols + 25));
+    printf("VEG: %d\n", *(data_VEGTYPE + 25 * GEO_header.ncols + 25));
+    printf("VEGFRAC: %d\n", *(data_VEGFRAC + 25 * GEO_header.ncols + 25));
+
     // check the GEO data
     Check_GEO(ncID_GEO);
     // import the vegetation library
@@ -161,7 +166,7 @@ int main(int argc, char *argv[])
     Import_soillib(GP.FP_SOILLIB, soillib);
     ST_SoilID soilID[1000];
     Import_soil_HWSD_ID(GP.FP_SOIL_HWSD_ID, soilID);
-    
+
     /******************************************************************************
      *                      read gridded weather data
      ******************************************************************************/
@@ -175,15 +180,23 @@ int main(int argc, char *argv[])
     int *data_TEM_AVG;
     int *data_TEM_MAX;
     int *data_TEM_MIN;
-    
-    status_nc = nc_open(GP.FP_PRE, NC_NOWRITE, &ncID_PRE); handle_error(status_nc, GP.FP_PRE);
-    status_nc = nc_open(GP.FP_PRS, NC_NOWRITE, &ncID_PRS); handle_error(status_nc, GP.FP_PRS);
-    status_nc = nc_open(GP.FP_RHU, NC_NOWRITE, &ncID_RHU); handle_error(status_nc, GP.FP_RHU);
-    status_nc = nc_open(GP.FP_SSD, NC_NOWRITE, &ncID_SSD); handle_error(status_nc, GP.FP_SSD);
-    status_nc = nc_open(GP.FP_WIN, NC_NOWRITE, &ncID_WIN); handle_error(status_nc, GP.FP_WIN);
-    status_nc = nc_open(GP.FP_TEM_AVG, NC_NOWRITE, &ncID_TEM_AVG); handle_error(status_nc, GP.FP_TEM_AVG);
-    status_nc = nc_open(GP.FP_TEM_MAX, NC_NOWRITE, &ncID_TEM_MAX); handle_error(status_nc, GP.FP_TEM_MAX);
-    status_nc = nc_open(GP.FP_TEM_MIN, NC_NOWRITE, &ncID_TEM_MIN); handle_error(status_nc, GP.FP_TEM_MIN);
+
+    status_nc = nc_open(GP.FP_PRE, NC_NOWRITE, &ncID_PRE);
+    handle_error(status_nc, GP.FP_PRE);
+    status_nc = nc_open(GP.FP_PRS, NC_NOWRITE, &ncID_PRS);
+    handle_error(status_nc, GP.FP_PRS);
+    status_nc = nc_open(GP.FP_RHU, NC_NOWRITE, &ncID_RHU);
+    handle_error(status_nc, GP.FP_RHU);
+    status_nc = nc_open(GP.FP_SSD, NC_NOWRITE, &ncID_SSD);
+    handle_error(status_nc, GP.FP_SSD);
+    status_nc = nc_open(GP.FP_WIN, NC_NOWRITE, &ncID_WIN);
+    handle_error(status_nc, GP.FP_WIN);
+    status_nc = nc_open(GP.FP_TEM_AVG, NC_NOWRITE, &ncID_TEM_AVG);
+    handle_error(status_nc, GP.FP_TEM_AVG);
+    status_nc = nc_open(GP.FP_TEM_MAX, NC_NOWRITE, &ncID_TEM_MAX);
+    handle_error(status_nc, GP.FP_TEM_MAX);
+    status_nc = nc_open(GP.FP_TEM_MIN, NC_NOWRITE, &ncID_TEM_MIN);
+    handle_error(status_nc, GP.FP_TEM_MIN);
     /* check the weather datasets: compatibility, consistency */
     Check_weather(ncID_PRE, ncID_PRS, ncID_RHU, ncID_SSD, ncID_WIN, ncID_TEM_AVG, ncID_TEM_MAX, ncID_TEM_MIN, start_time, end_time, GP.STEP_TIME);
 
@@ -193,81 +206,129 @@ int main(int argc, char *argv[])
     long t_PRE, t_PRS, t_SSD, t_RHU, t_WIN, t_TEM_AVG, t_TEM_MAX, t_TEM_MIN;
     // the length (steps) of the variable series
     int time_steps_PRE, time_steps_PRS, time_steps_RHU, time_steps_SSD, time_steps_WIN, time_steps_TEM_AVG, time_steps_TEM_MAX, time_steps_TEM_MIN;
-    
+
     size_t index = 0;
 
-    nc_inq_varid(ncID_PRE, "time", &varID_time); nc_get_var1_long(ncID_PRE, varID_time, &index, &t_PRE); 
-    nc_inq_dimid(ncID_PRE, "time", &dimID_time); nc_inq_dimlen(ncID_PRE, dimID_time, &time_steps_PRE);
+    nc_inq_varid(ncID_PRE, "time", &varID_time);
+    nc_get_var1_long(ncID_PRE, varID_time, &index, &t_PRE);
+    nc_inq_dimid(ncID_PRE, "time", &dimID_time);
+    nc_inq_dimlen(ncID_PRE, dimID_time, &time_steps_PRE);
 
-    nc_inq_varid(ncID_PRS, "time", &varID_time); nc_get_var1_long(ncID_PRS, varID_time, &index, &t_PRS);
-    nc_inq_dimid(ncID_PRS, "time", &dimID_time); nc_inq_dimlen(ncID_PRS, dimID_time, &time_steps_PRS);
+    nc_inq_varid(ncID_PRS, "time", &varID_time);
+    nc_get_var1_long(ncID_PRS, varID_time, &index, &t_PRS);
+    nc_inq_dimid(ncID_PRS, "time", &dimID_time);
+    nc_inq_dimlen(ncID_PRS, dimID_time, &time_steps_PRS);
 
-    nc_inq_varid(ncID_SSD, "time", &varID_time); nc_get_var1_long(ncID_SSD, varID_time, &index, &t_SSD);
-    nc_inq_dimid(ncID_SSD, "time", &dimID_time); nc_inq_dimlen(ncID_SSD, dimID_time, &time_steps_SSD);
+    nc_inq_varid(ncID_SSD, "time", &varID_time);
+    nc_get_var1_long(ncID_SSD, varID_time, &index, &t_SSD);
+    nc_inq_dimid(ncID_SSD, "time", &dimID_time);
+    nc_inq_dimlen(ncID_SSD, dimID_time, &time_steps_SSD);
 
-    nc_inq_varid(ncID_RHU, "time", &varID_time); nc_get_var1_long(ncID_RHU, varID_time, &index, &t_RHU);
-    nc_inq_dimid(ncID_RHU, "time", &dimID_time); nc_inq_dimlen(ncID_RHU, dimID_time, &time_steps_RHU);
+    nc_inq_varid(ncID_RHU, "time", &varID_time);
+    nc_get_var1_long(ncID_RHU, varID_time, &index, &t_RHU);
+    nc_inq_dimid(ncID_RHU, "time", &dimID_time);
+    nc_inq_dimlen(ncID_RHU, dimID_time, &time_steps_RHU);
 
-    nc_inq_varid(ncID_WIN, "time", &varID_time); nc_get_var1_long(ncID_WIN, varID_time, &index, &t_WIN);
-    nc_inq_dimid(ncID_WIN, "time", &dimID_time); nc_inq_dimlen(ncID_WIN, dimID_time, &time_steps_WIN);
+    nc_inq_varid(ncID_WIN, "time", &varID_time);
+    nc_get_var1_long(ncID_WIN, varID_time, &index, &t_WIN);
+    nc_inq_dimid(ncID_WIN, "time", &dimID_time);
+    nc_inq_dimlen(ncID_WIN, dimID_time, &time_steps_WIN);
 
-    nc_inq_varid(ncID_TEM_AVG, "time", &varID_time); nc_get_var1_long(ncID_TEM_AVG, varID_time, &index, &t_TEM_AVG);
-    nc_inq_dimid(ncID_TEM_AVG, "time", &dimID_time); nc_inq_dimlen(ncID_TEM_AVG, dimID_time, &time_steps_TEM_AVG);
+    nc_inq_varid(ncID_TEM_AVG, "time", &varID_time);
+    nc_get_var1_long(ncID_TEM_AVG, varID_time, &index, &t_TEM_AVG);
+    nc_inq_dimid(ncID_TEM_AVG, "time", &dimID_time);
+    nc_inq_dimlen(ncID_TEM_AVG, dimID_time, &time_steps_TEM_AVG);
 
-    nc_inq_varid(ncID_TEM_MAX, "time", &varID_time); nc_get_var1_long(ncID_TEM_MAX, varID_time, &index, &t_TEM_MAX);
-    nc_inq_dimid(ncID_TEM_MAX, "time", &dimID_time); nc_inq_dimlen(ncID_TEM_MAX, dimID_time, &time_steps_TEM_MAX);
+    nc_inq_varid(ncID_TEM_MAX, "time", &varID_time);
+    nc_get_var1_long(ncID_TEM_MAX, varID_time, &index, &t_TEM_MAX);
+    nc_inq_dimid(ncID_TEM_MAX, "time", &dimID_time);
+    nc_inq_dimlen(ncID_TEM_MAX, dimID_time, &time_steps_TEM_MAX);
 
-    nc_inq_varid(ncID_TEM_MIN, "time", &varID_time); nc_get_var1_long(ncID_TEM_MIN, varID_time, &index, &t_TEM_MIN); 
-    nc_inq_dimid(ncID_TEM_MIN, "time", &dimID_time); nc_inq_dimlen(ncID_TEM_MIN, dimID_time, &time_steps_TEM_MIN);
+    nc_inq_varid(ncID_TEM_MIN, "time", &varID_time);
+    nc_get_var1_long(ncID_TEM_MIN, varID_time, &index, &t_TEM_MIN);
+    nc_inq_dimid(ncID_TEM_MIN, "time", &dimID_time);
+    nc_inq_dimlen(ncID_TEM_MIN, dimID_time, &time_steps_TEM_MIN);
 
     // printf("length of PRE observation: %d\n", time_steps_PRE);
     printf("start time of TEM_AVG: %ld\n", t_TEM_AVG);
     printf("length of TEM_AVG observation: %d\n", time_steps_TEM_AVG);
     printf("length of TEM_PRE observation: %d\n", time_steps_PRE);
 
-    status_nc = nc_inq_varid(ncID_PRE, "PRE", &varID_PRE); handle_error(status_nc, GP.FP_PRE);
-    status_nc = nc_inq_varid(ncID_PRS, "PRS", &varID_PRS); handle_error(status_nc, GP.FP_PRS);
-    status_nc = nc_inq_varid(ncID_SSD, "SSD", &varID_SSD); handle_error(status_nc, GP.FP_SSD);
-    status_nc = nc_inq_varid(ncID_RHU, "RHU", &varID_RHU); handle_error(status_nc, GP.FP_RHU);
-    status_nc = nc_inq_varid(ncID_WIN, "WIN", &varID_WIN); handle_error(status_nc, GP.FP_WIN);
-    status_nc = nc_inq_varid(ncID_TEM_AVG, "TEM_AVG", &varID_TEM_AVG); handle_error(status_nc, GP.FP_TEM_AVG);
-    status_nc = nc_inq_varid(ncID_TEM_MAX, "TEM_MAX", &varID_TEM_MAX); handle_error(status_nc, GP.FP_TEM_MAX);
-    status_nc = nc_inq_varid(ncID_TEM_MIN, "TEM_MIN", &varID_TEM_MIN); handle_error(status_nc, GP.FP_TEM_MIN);
+    status_nc = nc_inq_varid(ncID_PRE, "PRE", &varID_PRE);
+    handle_error(status_nc, GP.FP_PRE);
+    status_nc = nc_inq_varid(ncID_PRS, "PRS", &varID_PRS);
+    handle_error(status_nc, GP.FP_PRS);
+    status_nc = nc_inq_varid(ncID_SSD, "SSD", &varID_SSD);
+    handle_error(status_nc, GP.FP_SSD);
+    status_nc = nc_inq_varid(ncID_RHU, "RHU", &varID_RHU);
+    handle_error(status_nc, GP.FP_RHU);
+    status_nc = nc_inq_varid(ncID_WIN, "WIN", &varID_WIN);
+    handle_error(status_nc, GP.FP_WIN);
+    status_nc = nc_inq_varid(ncID_TEM_AVG, "TEM_AVG", &varID_TEM_AVG);
+    handle_error(status_nc, GP.FP_TEM_AVG);
+    status_nc = nc_inq_varid(ncID_TEM_MAX, "TEM_MAX", &varID_TEM_MAX);
+    handle_error(status_nc, GP.FP_TEM_MAX);
+    status_nc = nc_inq_varid(ncID_TEM_MIN, "TEM_MIN", &varID_TEM_MIN);
+    handle_error(status_nc, GP.FP_TEM_MIN);
     printf("malloc for weather data: ");
     printf("memory size required in total: %.2f GB\n",
            (float)sizeof(int) * time_steps_PRE * cell_counts_total * 8 / 1024 / 1024 / 1024);
-    data_PRE = (int *)malloc(sizeof(int) * time_steps_PRE * cell_counts_total); malloc_error(data_PRE);
-    data_PRS = (int *)malloc(sizeof(int) * time_steps_PRS * cell_counts_total); malloc_error(data_PRS);
-    data_SSD = (int *)malloc(sizeof(int) * time_steps_SSD * cell_counts_total); malloc_error(data_SSD);
-    data_RHU = (int *)malloc(sizeof(int) * time_steps_RHU * cell_counts_total); malloc_error(data_RHU);
-    data_WIN = (int *)malloc(sizeof(int) * time_steps_WIN * cell_counts_total); malloc_error(data_WIN);
-    data_TEM_AVG = (int *)malloc(sizeof(int) * time_steps_TEM_AVG * cell_counts_total); malloc_error(data_TEM_AVG);
-    data_TEM_MAX = (int *)malloc(sizeof(int) * time_steps_TEM_MAX * cell_counts_total); malloc_error(data_TEM_MAX);
-    data_TEM_MIN = (int *)malloc(sizeof(int) * time_steps_TEM_MIN * cell_counts_total); malloc_error(data_TEM_MIN);
-    
-    status_nc = nc_get_var_int(ncID_PRE, varID_PRE, data_PRE); handle_error(status_nc, GP.FP_PRE);
-    status_nc = nc_get_var_int(ncID_PRS, varID_PRS, data_PRS); handle_error(status_nc, GP.FP_PRS);
-    status_nc = nc_get_var_int(ncID_SSD, varID_SSD, data_SSD); handle_error(status_nc, GP.FP_SSD);
-    status_nc = nc_get_var_int(ncID_RHU, varID_RHU, data_RHU); handle_error(status_nc, GP.FP_RHU);
-    status_nc = nc_get_var_int(ncID_WIN, varID_WIN, data_WIN); handle_error(status_nc, GP.FP_WIN);
-    status_nc = nc_get_var_int(ncID_TEM_AVG, varID_TEM_AVG, data_TEM_AVG); handle_error(status_nc, GP.FP_TEM_AVG);
-    status_nc = nc_get_var_int(ncID_TEM_MAX, varID_TEM_MAX, data_TEM_MAX); handle_error(status_nc, GP.FP_TEM_MAX);
-    status_nc = nc_get_var_int(ncID_TEM_MIN, varID_TEM_MIN, data_TEM_MIN); handle_error(status_nc, GP.FP_TEM_MIN);
+    data_PRE = (int *)malloc(sizeof(int) * time_steps_PRE * cell_counts_total);
+    malloc_error(data_PRE);
+    data_PRS = (int *)malloc(sizeof(int) * time_steps_PRS * cell_counts_total);
+    malloc_error(data_PRS);
+    data_SSD = (int *)malloc(sizeof(int) * time_steps_SSD * cell_counts_total);
+    malloc_error(data_SSD);
+    data_RHU = (int *)malloc(sizeof(int) * time_steps_RHU * cell_counts_total);
+    malloc_error(data_RHU);
+    data_WIN = (int *)malloc(sizeof(int) * time_steps_WIN * cell_counts_total);
+    malloc_error(data_WIN);
+    data_TEM_AVG = (int *)malloc(sizeof(int) * time_steps_TEM_AVG * cell_counts_total);
+    malloc_error(data_TEM_AVG);
+    data_TEM_MAX = (int *)malloc(sizeof(int) * time_steps_TEM_MAX * cell_counts_total);
+    malloc_error(data_TEM_MAX);
+    data_TEM_MIN = (int *)malloc(sizeof(int) * time_steps_TEM_MIN * cell_counts_total);
+    malloc_error(data_TEM_MIN);
+
+    status_nc = nc_get_var_int(ncID_PRE, varID_PRE, data_PRE);
+    handle_error(status_nc, GP.FP_PRE);
+    status_nc = nc_get_var_int(ncID_PRS, varID_PRS, data_PRS);
+    handle_error(status_nc, GP.FP_PRS);
+    status_nc = nc_get_var_int(ncID_SSD, varID_SSD, data_SSD);
+    handle_error(status_nc, GP.FP_SSD);
+    status_nc = nc_get_var_int(ncID_RHU, varID_RHU, data_RHU);
+    handle_error(status_nc, GP.FP_RHU);
+    status_nc = nc_get_var_int(ncID_WIN, varID_WIN, data_WIN);
+    handle_error(status_nc, GP.FP_WIN);
+    status_nc = nc_get_var_int(ncID_TEM_AVG, varID_TEM_AVG, data_TEM_AVG);
+    handle_error(status_nc, GP.FP_TEM_AVG);
+    status_nc = nc_get_var_int(ncID_TEM_MAX, varID_TEM_MAX, data_TEM_MAX);
+    handle_error(status_nc, GP.FP_TEM_MAX);
+    status_nc = nc_get_var_int(ncID_TEM_MIN, varID_TEM_MIN, data_TEM_MIN);
+    handle_error(status_nc, GP.FP_TEM_MIN);
     printf("check weather data at row15 col25:\n");
-    printf("PRE: %d\n", *(data_PRE + 25*GEO_header.ncols + 25));
-    printf("RHU: %d\n", *(data_RHU + 25*GEO_header.ncols + 25));
-    printf("TEM_AVG: %d\n", *(data_TEM_AVG + 25*GEO_header.ncols + 25));
+    printf("PRE: %d\n", *(data_PRE + 25 * GEO_header.ncols + 25));
+    printf("RHU: %d\n", *(data_RHU + 25 * GEO_header.ncols + 25));
+    printf("TEM_AVG: %d\n", *(data_TEM_AVG + 25 * GEO_header.ncols + 25));
     nc_get_att_int(ncID_PRE, varID_PRE, "NODATA_value", &GEO_header.NODATA_value);
 
     double scale_PRE, scale_PRS, scale_SSD, scale_RHU, scale_WIN, scale_TEM_AVG, scale_TEM_MAX, scale_TEM_MIN;
-    status_nc = nc_get_att_double(ncID_PRE, varID_PRE, "scale_factor", &scale_PRE); handle_error(status_nc, GP.FP_PRE);
-    status_nc = nc_get_att_double(ncID_PRS, varID_PRS, "scale_factor", &scale_PRS); handle_error(status_nc, GP.FP_PRS);
-    status_nc = nc_get_att_double(ncID_SSD, varID_SSD, "scale_factor", &scale_SSD); handle_error(status_nc, GP.FP_SSD);
-    status_nc = nc_get_att_double(ncID_RHU, varID_RHU, "scale_factor", &scale_RHU); handle_error(status_nc, GP.FP_RHU);
-    status_nc = nc_get_att_double(ncID_WIN, varID_WIN, "scale_factor", &scale_WIN); handle_error(status_nc, GP.FP_WIN);
-    status_nc = nc_get_att_double(ncID_TEM_AVG, varID_TEM_AVG, "scale_factor", &scale_TEM_AVG); handle_error(status_nc, GP.FP_TEM_AVG);
-    status_nc = nc_get_att_double(ncID_TEM_MAX, varID_TEM_MAX, "scale_factor", &scale_TEM_MAX); handle_error(status_nc, GP.FP_TEM_MAX);
-    status_nc = nc_get_att_double(ncID_TEM_MIN, varID_TEM_MIN, "scale_factor", &scale_TEM_MIN); handle_error(status_nc, GP.FP_TEM_MIN);
+    status_nc = nc_get_att_double(ncID_PRE, varID_PRE, "scale_factor", &scale_PRE);
+    handle_error(status_nc, GP.FP_PRE);
+    status_nc = nc_get_att_double(ncID_PRS, varID_PRS, "scale_factor", &scale_PRS);
+    handle_error(status_nc, GP.FP_PRS);
+    status_nc = nc_get_att_double(ncID_SSD, varID_SSD, "scale_factor", &scale_SSD);
+    handle_error(status_nc, GP.FP_SSD);
+    status_nc = nc_get_att_double(ncID_RHU, varID_RHU, "scale_factor", &scale_RHU);
+    handle_error(status_nc, GP.FP_RHU);
+    status_nc = nc_get_att_double(ncID_WIN, varID_WIN, "scale_factor", &scale_WIN);
+    handle_error(status_nc, GP.FP_WIN);
+    status_nc = nc_get_att_double(ncID_TEM_AVG, varID_TEM_AVG, "scale_factor", &scale_TEM_AVG);
+    handle_error(status_nc, GP.FP_TEM_AVG);
+    status_nc = nc_get_att_double(ncID_TEM_MAX, varID_TEM_MAX, "scale_factor", &scale_TEM_MAX);
+    handle_error(status_nc, GP.FP_TEM_MAX);
+    status_nc = nc_get_att_double(ncID_TEM_MIN, varID_TEM_MIN, "scale_factor", &scale_TEM_MIN);
+    handle_error(status_nc, GP.FP_TEM_MIN);
     printf("check scale_factor:\n");
     printf("PRE: %.1f\n", scale_PRE);
     printf("RHU: %.1f\n", scale_RHU);
@@ -276,7 +337,7 @@ int main(int argc, char *argv[])
     /***********************************************************************************
      *                          set model running period
      ************************************************************************************/
-    int t = 0;
+    
     int t_offset_PRE, t_offset_PRS, t_offset_SSD, t_offset_RHU, t_offset_WIN;
     int t_offset_TEM_AVG, t_offset_TEM_MAX, t_offset_TEM_MIN;
     t_offset_PRE = (start_time - t_PRE) / (GP.STEP_TIME * 3600);
@@ -303,12 +364,45 @@ int main(int argc, char *argv[])
     UH_Generation(GP.FP_GEO, GP.FP_UH, GP.STEP_TIME,
                   GP.Velocity_avg, GP.Velocity_max, GP.Velocity_min, GP.b, GP.c);
 
+    int ncID_UH;
+    nc_open(GP.FP_UH, NC_NOWRITE, &ncID_UH);
+    int varID_UH[MAX_OUTLETS];
+    int outlet_count;
+    int outlet_index_row[MAX_OUTLETS];
+    int outlet_index_col[MAX_OUTLETS];
+    int UH_steps[MAX_OUTLETS];
+    int UH_steps_total = 0;
+    UH_Read(
+        ncID_UH,
+        varID_UH,
+        &outlet_count,
+        outlet_index_row,
+        outlet_index_col,
+        UH_steps);
+    printf("outlet_count: %d\n", outlet_count);
+    printf("%6s%6s%6s%6s\n", "outlet", "row", "col", "steps");
+    for (size_t s = 0; s < outlet_count; s++)
+    {
+        printf("%6d%6d%6d%6d\n", s, outlet_index_row[s], outlet_index_col[s], UH_steps[s]);
+        UH_steps_total += UH_steps[s];
+    }
+    printf("UH_steps_total: %d\n", UH_steps_total);
+    double *data_UH;
+    data_UH = (double *)malloc(sizeof(double) * cell_counts_total * UH_steps_total);
+    UH_Import(
+        ncID_UH,
+        varID_UH,
+        outlet_count,
+        cell_counts_total,
+        UH_steps,
+        &data_UH);
+
     /***********************************************************************************
      *              define and initialize the intermediate variables
      ***********************************************************************************/
     CELL_VAR_RADIA *data_RADIA;
     data_RADIA = (CELL_VAR_RADIA *)malloc(sizeof(CELL_VAR_RADIA) * cell_counts_total);
-    
+
     CELL_VAR_ET *data_ET;
     data_ET = (CELL_VAR_ET *)malloc(sizeof(CELL_VAR_ET) * cell_counts_total);
 
@@ -346,7 +440,7 @@ int main(int argc, char *argv[])
     /***********************************************************************************
      *              define the ourput variables (results) from simulation
      ***********************************************************************************/
-    char FP_OUT_VAR[MAXCHAR]="";
+    char FP_OUT_VAR[MAXCHAR] = "";
     int *out_Rs, *out_L_sky, *out_Rno, *out_Rnu;
     int *out_Ep, *out_EI_o, *out_EI_u, *out_ET_o, *out_ET_u, *out_ET_s;
     int *out_Interception_o, *out_Interception_u, *out_Prec_net;
@@ -359,11 +453,18 @@ int main(int argc, char *argv[])
         &out_Interception_o, &out_Interception_u, &out_Prec_net,
         &out_SM_Upper, &out_SM_Lower, &out_SW_Percolation_Upper, &out_SW_Percolation_Lower,
         &out_SW_Infiltration, &out_SW_Run_Infil, &out_SW_Run_Satur);
+    *out_SW_Run_Infil = (int *)malloc(sizeof(int) * time_steps_run * cell_counts_total);
+    *out_SW_Run_Satur = (int *)malloc(sizeof(int) * time_steps_run * cell_counts_total);
 
+    double *Qout_SF_Infil, *Qout_SF_Satur, *Qout_Sub, *Qout_outlet;
+    Qout_SF_Infil = (double *)malloc(sizeof(double) * outlet_count * time_steps_run);
+    Qout_SF_Satur = (double *)malloc(sizeof(double) * outlet_count * time_steps_run);
+    Qout_Sub = (double *)malloc(sizeof(double) * outlet_count * time_steps_run);
+    Qout_outlet = (double *)malloc(sizeof(double) * outlet_count * time_steps_run);
     /***********************************************************************************
      *                       define the iteration variables
      ***********************************************************************************/
-
+    int t = 0;
     double cell_PRE;
     double cell_WIN;
     double cell_SSD;
@@ -372,7 +473,7 @@ int main(int argc, char *argv[])
     double cell_TEM_AVG;
     double cell_TEM_MAX;
     double cell_TEM_MIN;
-    
+
     ST_CELL_VEG cell_veg;
     ST_SOIL_LIB_CELL cell_soil;
     int cell_VEG_class;
@@ -401,7 +502,7 @@ int main(int argc, char *argv[])
         year = tm_run->tm_year + 1900;
         month = tm_run->tm_mon + 1;
         day = tm_run->tm_mday;
-        printf("%d-%02d-%02d\n",year,month,day);
+        printf("%d-%02d-%02d\n", year, month, day);
         for (size_t i = 0; i < GEO_header.nrows; i++)
         {
             for (size_t j = 0; j < GEO_header.ncols; j++)
@@ -419,9 +520,9 @@ int main(int argc, char *argv[])
                     index_TEM_AVG = (t + t_offset_TEM_AVG) * cell_counts_total + index_geo;
                     index_TEM_MAX = (t + t_offset_TEM_MAX) * cell_counts_total + index_geo;
                     index_TEM_MIN = (t + t_offset_TEM_MIN) * cell_counts_total + index_geo;
-                    
+
                     /************** weather forcing for cell ******************/
-                    cell_PRE = *(data_PRE + index_PRE) * scale_PRE / 1000;  // [m]
+                    cell_PRE = *(data_PRE + index_PRE) * scale_PRE / 1000; // [m]
                     cell_PRS = *(data_PRS + index_PRS) * scale_PRS;
                     cell_SSD = *(data_SSD + index_SSD) * scale_SSD;
                     cell_RHU = *(data_RHU + index_RHU) * scale_RHU;
@@ -437,7 +538,7 @@ int main(int argc, char *argv[])
                     /**************** parameter preparation *****************/
                     cell_lat = *(data_lat + i);
                     cell_VEG_class = *(data_VEGTYPE + index_geo);
-                    printf("VEG_CLASS: %d\n", cell_VEG_class);
+                    // printf("VEG_CLASS: %d\n", cell_VEG_class);
                     cell_SOIL_ID = *(data_SOILTYPE + index_geo);
                     cell_veg.CAN_FRAC = *(data_VEGFRAC + index_geo) / 100;
                     Lookup_VegLib_CELL(veglib, cell_VEG_class, &cell_veg);
@@ -509,6 +610,11 @@ int main(int argc, char *argv[])
                         GP.STEP_TIME);
 
                     /************************* save variables *************************/
+                    // mandatory
+                    *(out_SW_Run_Infil + index_run) = (int)((data_SOIL + index_geo)->SW_Run_Infil * 10000);
+                    *(out_SW_Run_Satur + index_run) = (int)((data_SOIL + index_geo)->SW_Run_Satur * 10000);
+
+                    // optional
                     if (outnl.Rs == 1)
                     {
                         *(out_Rs + index_run) = (int)((data_RADIA + index_geo)->Rs * 10);
@@ -565,14 +671,6 @@ int main(int argc, char *argv[])
                     {
                         *(out_SW_Infiltration + index_run) = (int)((data_SOIL + index_geo)->SW_Infiltration * 10000);
                     }
-                    if (outnl.SW_Run_Infil == 1)
-                    {
-                        *(out_SW_Run_Infil + index_run) = (int)((data_SOIL + index_geo)->SW_Run_Infil * 10000);
-                    }
-                    if (outnl.SW_Run_Satur == 1)
-                    {
-                        *(out_SW_Run_Satur + index_run) = (int)((data_SOIL + index_geo)->SW_Run_Satur * 10000);
-                    }
                     if (outnl.SW_Percolation_Lower == 1)
                     {
                         *(out_SW_Percolation_Lower + index_run) = (int)((data_SOIL + index_geo)->SW_Percolation_Lower * 10000);
@@ -606,11 +704,73 @@ int main(int argc, char *argv[])
             GP.STEP_TIME);
 
         /********************* river channel flow routing ****************/
+        Channel_Routing_ITER(
+            data_STREAM,
+            data_STR,
+            GEO_header.NODATA_value,
+            GEO_header.ncols,
+            GEO_header.nrows,
+            GP.STEP_TIME);
+        for (size_t s = 0; s < outlet_count; s++)
+        {
+            *(Qout_Sub + s * time_steps_run + t) = (data_STREAM + outlet_index_row[s] * GEO_header.ncols + outlet_index_col[s])->Q;
+        }
 
+        /********************* next iteration ****************/
         t += 1;
         run_time += 3600 * GP.STEP_TIME;
     }
     /************************ surface runoff routing **********************/
+    // UH method for multiple outlets
+    int index_UH_gap;
+    index_UH_gap = 0;
+    for (size_t s = 0; s < outlet_count; s++)
+    {
+        UH_Routing(
+            out_SW_Run_Infil, // unit: m
+            &(data_UH + index_UH_gap),
+            &(Qout_SF_Infil + time_steps_run * s),
+            UH_steps[s],
+            GEO_header.ncols,
+            GEO_header.nrows,
+            time_steps_run,
+            cellsize_m,
+            GEO_header.NODATA_value,
+            GP.STEP_TIME);
+        UH_Routing(
+            out_SW_Run_Satur, // unit: m
+            &(data_UH + index_UH_gap),
+            &(Qout_SF_Satur + time_steps_run * s),
+            UH_steps[s],
+            GEO_header.ncols,
+            GEO_header.nrows,
+            time_steps_run,
+            cellsize_m,
+            GEO_header.NODATA_value,
+            GP.STEP_TIME);
+        index_UH_gap += UH_steps[s] * cell_counts_total;
+    }
+
+    /******************** total discharge at outlets ************************/
+    Route_Outlet(
+        Qout_SF_Infil,
+        Qout_SF_Satur,
+        Qout_Sub,
+        Qout_outlet,
+        outlet_count,
+        time_steps_run);
+
+    Write_Qout(
+        outnl,
+        GP.PATH_OUT,
+        Qout_SF_Infil,
+        Qout_SF_Satur,
+        Qout_Sub,
+        Qout_outlet,
+        outlet_index_row,
+        outlet_index_col,
+        outlet_count,
+        time_steps_run);
 
     /***************************************************************************************************
      *                               export the variables
@@ -622,28 +782,31 @@ int main(int argc, char *argv[])
         &out_Interception_o, &out_Interception_u, &out_Prec_net,
         &out_SM_Upper, &out_SM_Lower, &out_SW_Percolation_Upper, &out_SW_Percolation_Lower,
         &out_SW_Infiltration, &out_SW_Run_Infil, &out_SW_Run_Satur,
-        GP
-    );
+        GP);
 
     /***************************************************************************************************
      *                               finalize the program
      ****************************************************************************************************/
-    nc_close(ncID_PRE); nc_close(ncID_PRS); nc_close(ncID_SSD); nc_close(ncID_RHU); 
-    nc_close(ncID_WIN); nc_close(ncID_TEM_AVG); nc_close(ncID_TEM_MAX); nc_close(ncID_TEM_MIN);
-    nc_close(ncID_GEO); 
+    nc_close(ncID_PRE);
+    nc_close(ncID_PRS);
+    nc_close(ncID_SSD);
+    nc_close(ncID_RHU);
+    nc_close(ncID_WIN);
+    nc_close(ncID_TEM_AVG);
+    nc_close(ncID_TEM_MAX);
+    nc_close(ncID_TEM_MIN);
+    nc_close(ncID_GEO);
+    nc_close(ncID_UH);
     printf("-------------------- xHM modelling: done!\n");
     return 1;
 }
 
-
 void malloc_error(
-    int *data
-)
+    int *data)
 {
     if (data == NULL)
     {
         printf("memory allocation failed!\n");
         exit(-3);
     }
-    
 }
