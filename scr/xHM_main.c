@@ -453,8 +453,8 @@ int main(int argc, char *argv[])
         &out_Interception_o, &out_Interception_u, &out_Prec_net,
         &out_SM_Upper, &out_SM_Lower, &out_SW_Percolation_Upper, &out_SW_Percolation_Lower,
         &out_SW_Infiltration, &out_SW_Run_Infil, &out_SW_Run_Satur);
-    *out_SW_Run_Infil = (int *)malloc(sizeof(int) * time_steps_run * cell_counts_total);
-    *out_SW_Run_Satur = (int *)malloc(sizeof(int) * time_steps_run * cell_counts_total);
+    out_SW_Run_Infil = (int *)malloc(sizeof(int) * time_steps_run * cell_counts_total);
+    out_SW_Run_Satur = (int *)malloc(sizeof(int) * time_steps_run * cell_counts_total);
 
     double *Qout_SF_Infil, *Qout_SF_Satur, *Qout_Sub, *Qout_outlet;
     Qout_SF_Infil = (double *)malloc(sizeof(double) * outlet_count * time_steps_run);
@@ -611,8 +611,8 @@ int main(int argc, char *argv[])
 
                     /************************* save variables *************************/
                     // mandatory
-                    *(out_SW_Run_Infil + index_run) = (int)((data_SOIL + index_geo)->SW_Run_Infil * 10000);
-                    *(out_SW_Run_Satur + index_run) = (int)((data_SOIL + index_geo)->SW_Run_Satur * 10000);
+                    *(out_SW_Run_Infil + index_run) = (int)((data_SOIL + index_geo)->SW_SR_Infil * 10000);
+                    *(out_SW_Run_Satur + index_run) = (int)((data_SOIL + index_geo)->SW_SR_Satur * 10000);
 
                     // optional
                     if (outnl.Rs == 1)
@@ -728,8 +728,8 @@ int main(int argc, char *argv[])
     {
         UH_Routing(
             out_SW_Run_Infil, // unit: m
-            &(data_UH + index_UH_gap),
-            &(Qout_SF_Infil + time_steps_run * s),
+            data_UH + index_UH_gap,
+            Qout_SF_Infil + time_steps_run * s,
             UH_steps[s],
             GEO_header.ncols,
             GEO_header.nrows,
@@ -739,8 +739,8 @@ int main(int argc, char *argv[])
             GP.STEP_TIME);
         UH_Routing(
             out_SW_Run_Satur, // unit: m
-            &(data_UH + index_UH_gap),
-            &(Qout_SF_Satur + time_steps_run * s),
+            data_UH + index_UH_gap,
+            Qout_SF_Satur + time_steps_run * s,
             UH_steps[s],
             GEO_header.ncols,
             GEO_header.nrows,
