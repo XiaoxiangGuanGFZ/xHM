@@ -21,7 +21,7 @@
 
 /******************************************************************
  * VARIABLES:
- * double Qc               - the water flow between grid cell and the river channel, [m3/h]
+ * double Qc               - the (subsurface) water flow between grid cell and the river channel, [m3/h]
  * double Q                - the streamflow of the river reach, [m3/h]
  * double V                - the water volume of the river reach, [m3]
  * double k                - storage parameter: equal to the inverse of the average residence time, [1/h]
@@ -50,15 +50,24 @@
 void Channel_Routing(
     double *Q,
     double *V,
+    double Qc,
     double k,
     int step_time
 )
 {
     double Vin;
     Vin = *V;
-    *V = *Q / k + 
-        (*V - *Q / k) * exp(- k * (double) step_time);
-    *Q = *Q - (*V - Vin) / (double) step_time;
+    if (*Q + Qc < 0)
+    {
+        *Q = 0.0;
+        *V = 0.0;
+    }
+    else
+    {
+        *V = (*Q + Qc) / k +
+             (*V - (*Q + Qc) / k) * exp(-k * (double)step_time);
+        *Q = (*Q + Qc) - (*V - Vin) / (double)step_time;
+    }
 }
 
 
@@ -120,6 +129,7 @@ void Channel_Routing_ITER(
                 Channel_Routing(
                     &((data_STREAM + index_geo)->Q),
                     &((data_STREAM + index_geo)->V),
+                    (data_STREAM + index_geo)->Qc,
                     (data_STREAM + index_geo)->k,
                     step_time);
             }

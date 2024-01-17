@@ -13,6 +13,7 @@
 void Channel_Routing(
     double *Q,
     double *V,
+    double *Qc,
     double k,
     int step_time
 );
