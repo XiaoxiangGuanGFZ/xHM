@@ -63,3 +63,15 @@ SW_Run_Infil,1
 SW_Run_Satur,1
 
 # --------- variables in routing ------------------------------
+
+# overland surface water flow at outlets from infiltration-excess, [m3/s]
+Qout_SF_Infil,1
+
+# overland surface water flow at outlets from saturation-excess, [m3/s]
+Qout_SF_Satur,1
+
+# subsurface water flow at outlets from saturated soil zone, [m3/s]
+Qout_Sub,1
+
+# total streamflow at outlets, [m3/s]
+Qout_outlet,1
