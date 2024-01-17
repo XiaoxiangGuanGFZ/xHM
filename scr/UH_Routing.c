@@ -165,57 +165,57 @@ int IsNODATA(
 
 
 
-int main(int argc, char const *argv[])
-{
-    int ncID_UH;
-    int ncols, nrows;
-    nc_open("D:/xHM/example_data/CT_GEO_250m/UH.nc", NC_NOWRITE, &ncID_UH);
-    nc_get_att_int(ncID_UH, NC_GLOBAL, "ncols", &ncols);
-    nc_get_att_int(ncID_UH, NC_GLOBAL, "nrows", &nrows);
-    int varID_UH[MAX_OUTLETS];
-    int outlet_count;
-    int outlet_index_row[MAX_OUTLETS];
-    int outlet_index_col[MAX_OUTLETS];
-    int UH_steps[MAX_OUTLETS];
-    int UH_steps_total = 0;
-    UH_Read(
-        ncID_UH,
-        varID_UH,
-        &outlet_count,
-        outlet_index_row,
-        outlet_index_col,
-        UH_steps);
-    printf("outlet_count: %d\n", outlet_count);
-    printf("%6s%6s%6s%6s\n", "outlet", "row", "col", "steps");
-    for (size_t i = 0; i < outlet_count; i++)
-    {
-        printf("%6d%6d%6d%6d\n", i, outlet_index_row[i], outlet_index_col[i], UH_steps[i]);
-        UH_steps_total += UH_steps[i];
-    }
-    printf("UH_steps_total: %d\n", UH_steps_total);
-    int cell_counts_total;
-    cell_counts_total = ncols * nrows;
-    printf("cell_counts_total: %d\n", cell_counts_total);
-    double *data_UH;
-    data_UH = (double *)malloc(sizeof(double) * cell_counts_total * UH_steps_total);
+// int main(int argc, char const *argv[])
+// {
+//     int ncID_UH;
+//     int ncols, nrows;
+//     nc_open("D:/xHM/example_data/CT_GEO_250m/UH.nc", NC_NOWRITE, &ncID_UH);
+//     nc_get_att_int(ncID_UH, NC_GLOBAL, "ncols", &ncols);
+//     nc_get_att_int(ncID_UH, NC_GLOBAL, "nrows", &nrows);
+//     int varID_UH[MAX_OUTLETS];
+//     int outlet_count;
+//     int outlet_index_row[MAX_OUTLETS];
+//     int outlet_index_col[MAX_OUTLETS];
+//     int UH_steps[MAX_OUTLETS];
+//     int UH_steps_total = 0;
+//     UH_Read(
+//         ncID_UH,
+//         varID_UH,
+//         &outlet_count,
+//         outlet_index_row,
+//         outlet_index_col,
+//         UH_steps);
+//     printf("outlet_count: %d\n", outlet_count);
+//     printf("%6s%6s%6s%6s\n", "outlet", "row", "col", "steps");
+//     for (size_t i = 0; i < outlet_count; i++)
+//     {
+//         printf("%6d%6d%6d%6d\n", i, outlet_index_row[i], outlet_index_col[i], UH_steps[i]);
+//         UH_steps_total += UH_steps[i];
+//     }
+//     printf("UH_steps_total: %d\n", UH_steps_total);
+//     int cell_counts_total;
+//     cell_counts_total = ncols * nrows;
+//     printf("cell_counts_total: %d\n", cell_counts_total);
+//     double *data_UH;
+//     data_UH = (double *)malloc(sizeof(double) * cell_counts_total * UH_steps_total);
 
-    UH_Import(
-        ncID_UH,
-        varID_UH,
-        outlet_count,
-        cell_counts_total,
-        UH_steps,
-        &data_UH);
-    // int t = 97-1 + 59;
-    // for (size_t i = 367; i < 377; i++)
-    // {
-    //     for (size_t j = 37; j < 42; j++)
-    //     {
-    //         printf("%8.4f ", *(data_UH + t * cell_counts_total + i * ncols + j));
-    //     }
-    //     printf("\n");
-    // }
+//     UH_Import(
+//         ncID_UH,
+//         varID_UH,
+//         outlet_count,
+//         cell_counts_total,
+//         UH_steps,
+//         &data_UH);
+//     // int t = 97-1 + 59;
+//     // for (size_t i = 367; i < 377; i++)
+//     // {
+//     //     for (size_t j = 37; j < 42; j++)
+//     //     {
+//     //         printf("%8.4f ", *(data_UH + t * cell_counts_total + i * ncols + j));
+//     //     }
+//     //     printf("\n");
+//     // }
     
-    return 0;
-}
+//     return 0;
+// }
 
