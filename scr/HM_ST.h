@@ -108,6 +108,10 @@ typedef struct
     short SW_Percolation_Upper;
     short SW_Percolation_Lower;
 
+    short Qout_SF_Infil;
+    short Qout_SF_Satur;
+    short Qout_Sub;
+    short Qout_outlet;
 } OUT_NAME_LIST;
 
 typedef struct
