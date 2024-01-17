@@ -24,7 +24,7 @@ void UH_Import(
 void UH_Routing(
     int *data_RUNOFF_sf,
     double *data_UH,
-    double **Qout,
+    double *Qout,
     int UH_steps,
     int ncols,
     int nrows,

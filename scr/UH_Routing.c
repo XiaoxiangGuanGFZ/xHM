@@ -84,7 +84,7 @@ void UH_Import(
 void UH_Routing(
     int *data_RUNOFF_sf,  // unit: m 
     double *data_UH,
-    double **Qout,
+    double *Qout,
     int UH_steps,
     int ncols,
     int nrows,
@@ -102,11 +102,11 @@ void UH_Routing(
     int cell_counts_total;
     cell_counts_total = ncols * nrows;
     cell_area = cellsize_m * cellsize_m;
-    *Qout = malloc(sizeof(double) * time_steps_run);
+    // *Qout = malloc(sizeof(double) * time_steps_run);
     for (size_t r = 0; r < time_steps_run; r++)
     {
         // each simulation step
-        *(*Qout + r) = 0.0;
+        *(Qout + r) = 0.0;
         for (size_t t = 0; t < UH_steps; t++)
         {
             // each UH step
@@ -123,13 +123,13 @@ void UH_Routing(
                         index_geo = i * ncols + j;
                         if (IsNODATA(*(data_UH + index_geo), NODATA_value) != 1)
                         {
-                            *(*Qout + r) += *(data_UH + index_uh + index_geo) * *(data_RUNOFF_sf + index_run + index_geo);
+                            *(Qout + r) += *(data_UH + index_uh + index_geo) * *(data_RUNOFF_sf + index_run + index_geo);
                         }
                     }
                 }
             }
         }
-        *(*Qout + r) = *(*Qout + r) * cell_area; // unit: m3/h
+        *(Qout + r) = *(Qout + r) * cell_area; // unit: m3/h
     }
 }
 
