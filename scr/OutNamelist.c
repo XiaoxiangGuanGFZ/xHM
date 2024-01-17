@@ -117,6 +117,22 @@ void Import_Outnamelist(
                 {
                     outnl->SW_Run_Satur = atoi(S2);
                 }
+                else if (strcmp(S1, "Qout_SF_Infil") == 0)
+                {
+                    outnl->Qout_SF_Infil = atoi(S2);
+                }
+                else if (strcmp(S1, "Qout_SF_Satur") == 0)
+                {
+                    outnl->Qout_SF_Satur = atoi(S2);
+                }
+                else if (strcmp(S1, "Qout_Sub") == 0)
+                {
+                    outnl->Qout_Sub = atoi(S2);
+                }
+                else if (strcmp(S1, "Qout_outlet") == 0)
+                {
+                    outnl->Qout_outlet = atoi(S2);
+                }
                 else
                 {
                     printf("Unrecognized field in row %d in OUTPUT_NAMELIST.txt: %s\n", j, row);
@@ -243,14 +259,14 @@ void malloc_Outnamelist(
     {
         *out_SW_Percolation_Lower = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_SW_Percolation_Lower, "SW_Percolation_Lower");
     }
-    if (outnl.SW_Run_Infil == 1)
-    {
-        *out_SW_Run_Infil = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_SW_Run_Infil, "SW_Run_Infil");
-    }
-    if (outnl.SW_Run_Satur == 1)
-    {
-        *out_SW_Run_Satur = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_SW_Run_Satur, "SW_Run_Satur");
-    }
+    // if (outnl.SW_Run_Infil == 1)
+    // {
+    //     *out_SW_Run_Infil = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_SW_Run_Infil, "SW_Run_Infil");
+    // }
+    // if (outnl.SW_Run_Satur == 1)
+    // {
+    //     *out_SW_Run_Satur = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_SW_Run_Satur, "SW_Run_Satur");
+    // }
 }
 
 void malloc_memory_error(
