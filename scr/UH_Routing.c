@@ -82,7 +82,7 @@ void UH_Import(
 
 
 void UH_Routing(
-    int *data_RUNOFF_sf,  // unit: m 
+    int *data_RUNOFF_sf,  // unit: 0.1mm 
     double *data_UH,
     double *Qout,
     int UH_steps,
@@ -123,7 +123,7 @@ void UH_Routing(
                         index_geo = i * ncols + j;
                         if (IsNODATA(*(data_UH + index_geo), NODATA_value) != 1)
                         {
-                            *(Qout + r) += *(data_UH + index_uh + index_geo) * *(data_RUNOFF_sf + index_run + index_geo);
+                            *(Qout + r) += *(data_UH + index_uh + index_geo) * *(data_RUNOFF_sf + index_run + index_geo) / 10000;
                         }
                     }
                 }
