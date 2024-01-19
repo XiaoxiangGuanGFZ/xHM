@@ -13,6 +13,12 @@ void Initialize_ET(
 void Initialize_SOIL(
     CELL_VAR_SOIL *st);
 
+void Initialize_Soil_Satur(
+    CELL_VAR_SOIL *data_SOIL,
+    int *data_DEM,
+    int NODATA_value,
+    int ncols,
+    int nrows);
 
 #endif
 

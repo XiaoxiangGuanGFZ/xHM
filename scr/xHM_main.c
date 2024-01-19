@@ -487,11 +487,11 @@ int main(int argc, char *argv[])
 
     double Soil_thickness_upper = 0.2;
     double Soil_thickness_lower = 0.5;
-    double Soil_Thickness;
-    double Soil_d1;
-    double Soil_d2;
-    double stream_depth;
-    double stream_width;
+    double Soil_Thickness = 1;
+    double Soil_d1 = 0.1;
+    double Soil_d2 = 0.2;
+    double stream_depth = 1;
+    double stream_width = 10;
 
     /***********************************************************************************
      *                       xHM model iteration
@@ -724,32 +724,32 @@ int main(int argc, char *argv[])
     // UH method for multiple outlets
     int index_UH_gap;
     index_UH_gap = 0;
-    for (size_t s = 0; s < outlet_count; s++)
-    {
-        UH_Routing(
-            out_SW_Run_Infil, 
-            data_UH + index_UH_gap,
-            Qout_SF_Infil + time_steps_run * s,
-            UH_steps[s],
-            GEO_header.ncols,
-            GEO_header.nrows,
-            time_steps_run,
-            cellsize_m,
-            GEO_header.NODATA_value,
-            GP.STEP_TIME);
-        UH_Routing(
-            out_SW_Run_Satur, 
-            data_UH + index_UH_gap,
-            Qout_SF_Satur + time_steps_run * s,
-            UH_steps[s],
-            GEO_header.ncols,
-            GEO_header.nrows,
-            time_steps_run,
-            cellsize_m,
-            GEO_header.NODATA_value,
-            GP.STEP_TIME);
-        index_UH_gap += UH_steps[s] * cell_counts_total;
-    }
+    // for (size_t s = 0; s < outlet_count; s++)
+    // {
+    //     UH_Routing(
+    //         out_SW_Run_Infil, 
+    //         data_UH + index_UH_gap,
+    //         Qout_SF_Infil + time_steps_run * s,
+    //         UH_steps[s],
+    //         GEO_header.ncols,
+    //         GEO_header.nrows,
+    //         time_steps_run,
+    //         cellsize_m,
+    //         GEO_header.NODATA_value,
+    //         GP.STEP_TIME);
+    //     UH_Routing(
+    //         out_SW_Run_Satur, 
+    //         data_UH + index_UH_gap,
+    //         Qout_SF_Satur + time_steps_run * s,
+    //         UH_steps[s],
+    //         GEO_header.ncols,
+    //         GEO_header.nrows,
+    //         time_steps_run,
+    //         cellsize_m,
+    //         GEO_header.NODATA_value,
+    //         GP.STEP_TIME);
+    //     index_UH_gap += UH_steps[s] * cell_counts_total;
+    // }
 
     /******************** total discharge at outlets ************************/
     Route_Outlet(

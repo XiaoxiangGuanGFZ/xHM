@@ -29,13 +29,6 @@ void Soil_Satu_Outflow(
     double b
 );
 
-void Initialize_Soil_Satur(
-    CELL_VAR_SOIL *data_SOIL,
-    int *data_DEM,
-    int NODATA_value,
-    int ncols,
-    int nrows);
-
 
 double Soil_Satu_Stream(
     double z,
