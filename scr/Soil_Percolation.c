@@ -33,7 +33,7 @@
  * double Soil_Porosity          - soil porosity, [FRAC, 0-1.0]
  * double Soil_Residual          - residual soil moisture content, [FRAC, 0-1.0]
  * double Soil_Conduct_Sat       - soil vertical saturated hydraulic conductivity, [m/h]
- * double Soil_PoreSize_index    - the pore size distribution index, [dimensionless]
+ * double Soil_PoreSize_index    - the pore size distribution index, b, [dimensionless]
  * int step_time                 - time step, [h] 
  * double Soil_Conduct           - soil vertical unsaturated hydraulic conductivity, [m/h]
  * 
@@ -86,11 +86,15 @@ double Soil_Hydro_Conductivity(
      *  [Brooks and Corey, 1964]
     */
     double Soil_Conduct;
-    if (Soil_Moisture < 1.0)
+    if (Soil_Moisture <= Soil_Residual)
+    {
+        Soil_Conduct = 0.0;
+    }
+    else if (Soil_Moisture < Soil_Porosity)
     {
         Soil_Conduct = Soil_Conduct_Sat * pow(
                                               (Soil_Moisture - Soil_Residual) / (Soil_Porosity - Soil_Residual),
-                                              (2 / Soil_PoreSize_index + 3));
+                                              (2 * Soil_PoreSize_index + 3));
     }
     else
     {

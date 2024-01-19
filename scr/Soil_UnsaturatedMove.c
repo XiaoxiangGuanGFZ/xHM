@@ -106,7 +106,7 @@ void UnsaturatedWaterMove(
         cell_soil_lib->Topsoil->Porosity / 100,
         cell_soil_lib->Topsoil->Residual / 100,
         cell_soil_lib->Topsoil->SatHydrauCond,
-        1 / cell_soil_lib->Topsoil->PoreSizeDisP,
+        cell_soil_lib->Topsoil->PoreSizeDisP,
         STEP_TIME);
     
     *SW_Percolation_Lower = Percolation(
@@ -116,7 +116,7 @@ void UnsaturatedWaterMove(
         cell_soil_lib->Subsoil->Porosity / 100,
         cell_soil_lib->Subsoil->Residual / 100,
         cell_soil_lib->Subsoil->SatHydrauCond,
-        1 / cell_soil_lib->Subsoil->PoreSizeDisP,
+        cell_soil_lib->Subsoil->PoreSizeDisP,
         STEP_TIME);
 
     double SM_buff;
