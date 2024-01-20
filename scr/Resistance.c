@@ -78,9 +78,9 @@ double Resist_aero_o(
     Air_ws_zr = WindSpeed_Profile(
         ws_obs_z, zr, Air_ws_obs,
         dg, z0_g);
-    if (Air_ws_zr < 0.1)
+    if (Air_ws_zr < 0.0001)
     {
-        Air_ws_zr = 0.1;
+        Air_ws_zr = 0.0001;
     }
     
     zw = 1.5 * Canopy_h - 0.5 * d;
@@ -116,14 +116,14 @@ double Resist_aero_u(
         ws_obs_z, za, Air_ws_obs,
         d, z0);
 
-    if (Air_ws_za < 0.1)
+    if (Air_ws_za < 0.0001)
     {
         /*****
          * when Air_ws_za equals 0.0, then the 
          * aerodynamic resistance formula is invalid. 
          * we just assume the minimum valid wind speed is 0.1 m/s
         */
-        Air_ws_za = 0.1;   
+        Air_ws_za = 0.0001;   
     }
     Rau = pow(log((za - d) / z0), 2) / (Air_ws_za * k * k); // unit: s/m
     return Rau / 3600;                                      // unit: h/m
