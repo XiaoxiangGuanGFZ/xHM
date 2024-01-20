@@ -151,6 +151,30 @@ void Import_GlobalPara(
                 {
                     strcpy(global_para->FP_UH, S2);
                 }
+                else if (strcmp(S1, "SOIL_D") == 0)
+                {
+                    global_para->SOIL_D = atof(S2);
+                }
+                else if (strcmp(S1, "SOIL_d1") == 0)
+                {
+                    global_para->SOIL_d1 = atof(S2);
+                }
+                else if (strcmp(S1, "SOIL_d2") == 0)
+                {
+                    global_para->SOIL_d2 = atof(S2);
+                }
+                else if (strcmp(S1, "STREAM_D") == 0)
+                {
+                    global_para->STREAM_D = atof(S2);
+                }
+                else if (strcmp(S1, "STREAM_W") == 0)
+                {
+                    global_para->STREAM_W = atof(S2);
+                }
+                else if (strcmp(S1, "WIN_H") == 0)
+                {
+                    global_para->WIN_H = atof(S2);
+                }
                 else if (strcmp(S1, "Velocity_avg") == 0)
                 {
                     global_para->Velocity_avg = atof(S2);

@@ -130,6 +130,12 @@ typedef struct
     char FP_VEGLIB[MAXCHAR];
     char FP_SOILLIB[MAXCHAR];
     char FP_SOIL_HWSD_ID[MAXCHAR];
+    double SOIL_D;
+    double SOIL_d1;
+    double SOIL_d2;
+    double STREAM_D;
+    double STREAM_W;
+    double WIN_H;
     /* model setup parameters */
     int START_YEAR;
     int START_MONTH;
