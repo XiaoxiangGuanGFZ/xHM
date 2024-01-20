@@ -35,9 +35,9 @@
 
 #include <stdio.h>
 #include <math.h>
-#include "SnowAccuMelt.h"
+#include "Constants.h"
 #include "Resistance.h"
-#include "Evapotranspiration.h"
+#include "Func_Tem.h"
 
 /*********** aerodynamic resistance ************/
 
@@ -309,3 +309,124 @@ double Factor_4(
     }
     return f4;
 }
+
+
+// double PotentialEvaporation(
+//     double Air_tem_avg, /*scalar: average air tempeature (℃)*/
+//     double Air_tem_min, /*scalar: minimum air temperature (℃)*/
+//     double Air_tem_max, /*scalar: maximum air temperature (℃)*/
+//     double Air_pres,    /* air pressure, kPa */ 
+//     double Air_rhu,     /* relative humidity, % */ 
+//     double Radia_net,   /* the net radiation flux density, kJ/h/m2 */ 
+//     double Resist_aero
+//     /***
+//      * Resist_aero: the aerodynamic resistance to vapor transport
+//      * between the overstory and the reference height, with the unit of h/m
+//      */
+// )
+// {
+//     /******
+//      * calculate the potential evaporation rate [m/h], following (Wigmosta et al., 1994)
+//      * this is the maximum water that can be evaporated and absorbed by the atmosphre,
+//      * under the weather conditions. The estimated real evaporation and transpiration 
+//      * are restricted under the potential evaporation.
+//      * 
+//     */
+//     double delta;  // the slope of saturation vapor pressure curve (kPa/℃)
+//     double es, ea; // saturated, and actual vapor pressure (kPa)
+    
+//     double gamma;  // psychrometric constant, kPa/℃
+//     double Ep;
+
+//     es = 0.5 * (e0(Air_tem_max) + e0(Air_tem_min));
+//     ea = Air_rhu * es / 100;
+    
+//     delta = VaporPresSlope(
+//         Air_tem_avg, Air_tem_min, Air_tem_max);
+//     gamma = Const_psychrometric(Air_pres);
+    
+//     Ep = (delta * Radia_net +
+//           Density_air * SpecificHeat_air * (es - ea) / Resist_aero) /
+//          (lambda_v * (delta + gamma)); // unit: kg/m2/h
+//     Ep = Ep / 1000;  // m/h
+//     return Ep;
+// }
+
+// double PotentialEvaporation(
+//     double Air_tem_avg, /*scalar: average air tempeature (℃)*/
+//     double Air_tem_min, /*scalar: minimum air temperature (℃)*/
+//     double Air_tem_max, /*scalar: maximum air temperature (℃)*/
+//     double Air_pres,    /* air pressure, kPa */ 
+//     double Air_rhu,     /* relative humidity, % */ 
+//     double Radia_net,   /* the net radiation flux density, kJ/h/m2 */ 
+//     double Resist_aero
+//     /***
+//      * Resist_aero: the aerodynamic resistance to vapor transport
+//      * between the overstory and the reference height, with the unit of h/m
+//      */
+// );
+// int main(int argc, char const *argv[])
+// {
+//     double ws_obs_z = 10;
+//     double Air_ws_obs[18] = {0, 0.1, 0.2, 0.3, 0.5, 0.8, 1.0, 1.2, 1.5, 1.8,2.0, 2.5, 2.8, 3.0, 3.2, 3.4, 3.8, 4.0};
+//     double zr = 50;
+//     double Canopy_h = 14;
+//     double d = 6.7;
+//     double z0 = 1.23;
+//     double dg = 0.2;
+//     double z0_g = 0.05;
+
+//     double Resist_aero;
+//     double Resist_aero_under;
+//     double C_aero;
+//     double Ep;
+//     double Ep_u;
+
+//     double Air_pres = 98;
+//     double Air_rhu = 85;
+//     double Air_tem_avg = 10;
+//     double Air_tem_max = 15;
+//     double Air_tem_min = 5.7;
+//     double Radia_net = 245;
+//     for (size_t i = 0; i < 18; i++)
+//     {
+//         Resist_aero = Resist_aero_o(
+//             Air_ws_obs[i], /* wind speed at the measurement height, [m/s] */
+//             ws_obs_z,      /* the measurement height, m */
+//             zr,            /* (above canopy) reference height, a value greater than Canopy_h, [m] */
+//             Canopy_h,      /* height of canopy, m */
+//             d,             /* displacement height of canopy, m */
+//             z0,            /* the roughness height of canopy, m */
+//             dg,            /* displacement height of ground/surface, m */
+//             z0_g           /* the roughness height of ground/surface, m */
+//         );
+
+//         Resist_aero_under = Resist_aero_u(
+//             Air_ws_obs[i], /* wind speed at the measurement height, m/s */
+//             ws_obs_z,      /* the measurement height, m */
+//             d,             /* displacement height, m */
+//             z0             /* roughness length, m */
+//         );
+
+//         Ep = PotentialEvaporation(
+//             Air_tem_avg, /*scalar: average air tempeature (℃)*/
+//             Air_tem_min, /*scalar: minimum air temperature (℃)*/
+//             Air_tem_max, /*scalar: maximum air temperature (℃)*/
+//             Air_pres,    /* air pressure, kPa */
+//             Air_rhu,     /* relative humidity, % */
+//             Radia_net,   /* the net radiation flux density, kJ/h/m2 */
+//             Resist_aero);
+//         Ep_u = PotentialEvaporation(
+//             Air_tem_avg, /*scalar: average air tempeature (℃)*/
+//             Air_tem_min, /*scalar: minimum air temperature (℃)*/
+//             Air_tem_max, /*scalar: maximum air temperature (℃)*/
+//             Air_pres,    /* air pressure, kPa */
+//             Air_rhu,     /* relative humidity, % */
+//             Radia_net,   /* the net radiation flux density, kJ/h/m2 */
+//             Resist_aero_under);
+//         C_aero = 1 / Resist_aero;
+//         printf("%.1f %10.4f %10.4f %6.2f %6.2f\n", Air_ws_obs[i], C_aero, 1/Resist_aero_under, Ep * 24 * 1000, Ep_u *24*1000);
+//     }
+    
+//     return 0;
+// }
