@@ -72,7 +72,6 @@ void Route_Outlet(
     }
 }
 
-
 void Write_Qout(
     OUT_NAME_LIST outnl,
     char PATH_OUT[],
@@ -83,74 +82,71 @@ void Write_Qout(
     int *outlet_index_row,
     int *outlet_index_col,
     int outlet_count,
-    int time_steps_run
-)
+    int time_steps_run)
 {
     /***************************************
      * write the streamflow at outlets into text files
-    */
+     */
     int num_Qout;
     num_Qout = outnl.Qout_outlet + outnl.Qout_SF_Infil + outnl.Qout_SF_Satur + outnl.Qout_Sub;
     if (num_Qout >= 1)
     {
-        
-    }
-    
-    FILE *fp;
-    char FP[MAXCHAR];
-    int index_Qout = 0;
-    char numberString[4];
-    for (size_t s = 0; s < outlet_count; s++)
-    {
-        FP[0] = '\0';
-        sprintf(numberString, "%d", s);
-        strcat(strcat(strcat(strcat(FP, PATH_OUT), "Qout_outlet"), numberString), ".txt");
-        if ((fp = fopen(FP, "w")) == NULL)
+        FILE *fp;
+        char FP[MAXCHAR];
+        int index_Qout = 0;
+        char numberString[4];
+        for (size_t s = 0; s < outlet_count; s++)
         {
-            printf("File Error: cannot create or open output file: %s\n", FP);
-            exit(0);
-        }
-        /***** write the header *****/
-        fprintf(fp, "# outlet ID: %d\n# row: %d\n# col: %d\n# unit: m3/s\n# length: %d\n# variables: \n",
-                s, outlet_index_row[s], outlet_index_col[s], time_steps_run);
-        if (outnl.Qout_SF_Infil == 1)
-        {
-            fprintf(fp, "# - Qout_SF_Infil\n");
-        }
-        if (outnl.Qout_Sub == 1)
-        {
-            fprintf(fp, "# - Qout_Sub\n");
-        }
-        if (outnl.Qout_SF_Satur == 1)
-        {
-            fprintf(fp, "# - Qout_SF_Satur\n");
-        }
-        if (outnl.Qout_outlet == 1)
-        {
-            fprintf(fp, "# - Qout_outlet\n");
-        }
-        /***** write the data *****/
-        for (size_t i = 0; i < time_steps_run; i++)
-        {
+            FP[0] = '\0';
+            sprintf(numberString, "%d", s);
+            strcat(strcat(strcat(strcat(FP, PATH_OUT), "Qout_outlet"), numberString), ".txt");
+            if ((fp = fopen(FP, "w")) == NULL)
+            {
+                printf("File Error: cannot create or open output file: %s\n", FP);
+                exit(0);
+            }
+            /***** write the header *****/
+            fprintf(fp, "# outlet ID: %d\n# row: %d\n# col: %d\n# unit: m3/s\n# length: %d\n# variables: \n",
+                    s, outlet_index_row[s], outlet_index_col[s], time_steps_run);
             if (outnl.Qout_SF_Infil == 1)
             {
-                fprintf(fp, "%.3f ", *(Qout_SF_Infil + index_Qout + i));
+                fprintf(fp, "# - Qout_SF_Infil\n");
             }
             if (outnl.Qout_Sub == 1)
             {
-                fprintf(fp, "%.3f ", *(Qout_Sub + index_Qout + i));
+                fprintf(fp, "# - Qout_Sub\n");
             }
             if (outnl.Qout_SF_Satur == 1)
             {
-                fprintf(fp, "%.3f ", *(Qout_SF_Satur + index_Qout + i));
+                fprintf(fp, "# - Qout_SF_Satur\n");
             }
             if (outnl.Qout_outlet == 1)
             {
-                fprintf(fp, "%.3f ", *(Qout_outlet + index_Qout + i));
+                fprintf(fp, "# - Qout_outlet\n");
             }
-            fprintf(fp, "\n");
+            /***** write the data *****/
+            for (size_t i = 0; i < time_steps_run; i++)
+            {
+                if (outnl.Qout_SF_Infil == 1)
+                {
+                    fprintf(fp, "%.3f ", *(Qout_SF_Infil + index_Qout + i));
+                }
+                if (outnl.Qout_Sub == 1)
+                {
+                    fprintf(fp, "%.3f ", *(Qout_Sub + index_Qout + i));
+                }
+                if (outnl.Qout_SF_Satur == 1)
+                {
+                    fprintf(fp, "%.3f ", *(Qout_SF_Satur + index_Qout + i));
+                }
+                if (outnl.Qout_outlet == 1)
+                {
+                    fprintf(fp, "%.3f ", *(Qout_outlet + index_Qout + i));
+                }
+                fprintf(fp, "\n");
+            }
+            fclose(fp);
+            index_Qout += time_steps_run;
         }
-        fclose(fp);
-        index_Qout += time_steps_run;
     }
 }
