@@ -104,14 +104,14 @@ void Write_Qout(
     {
         FP[0] = '\0';
         sprintf(numberString, "%d", s);
-        strcat(strcat(strcat(FP, PATH_OUT), "outlet"), numberString);
+        strcat(strcat(strcat(strcat(FP, PATH_OUT), "Qout_outlet"), numberString), ".txt");
         if ((fp = fopen(FP, "w")) == NULL)
         {
             printf("File Error: cannot create or open output file: %s\n", FP);
             exit(0);
         }
         /***** write the header *****/
-        fprintf(fp, "# outlet: %d\n# row: %d\n# col: %d\n# unit: m3/s\n# length: %d\n# variables: \n",
+        fprintf(fp, "# outlet ID: %d\n# row: %d\n# col: %d\n# unit: m3/s\n# length: %d\n# variables: \n",
                 s, outlet_index_row[s], outlet_index_col[s], time_steps_run);
         if (outnl.Qout_SF_Infil == 1)
         {
