@@ -52,6 +52,7 @@ set(ET
 )
 
 set(xHM
+    Func_Tem.c
     Evaporation_soil.c
     Evapotranspiration.c
 	Evapotranspiration_Energy.c
