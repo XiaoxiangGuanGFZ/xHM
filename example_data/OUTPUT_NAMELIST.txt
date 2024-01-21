@@ -1,15 +1,15 @@
 # --------- radiation variables ------------------------
 # received downward shortwave radiation (the cloudiness effect is considered), [kJ/m2/h]
-Rs,1
+Rs,0
 
 # received downward longwave radiation, [kJ/m2/h]
-L_sky,1
+L_sky,0
 
 # canopy (overstory) received net radiation, [kJ/m2/h]
-Rno,1
+Rno,0
 
 # net radiation for understory, [kJ/m2/h]
-Rnu,1
+Rnu,0
 
 # --------- variables in evapotranspiration ------------
 
@@ -17,25 +17,25 @@ Rnu,1
 Ep,1
 
 # evaporation from overstory, [mm]
-EI_o,1
+EI_o,0
 
 # transpiration from overstory, [mm]
-ET_o,1
+ET_o,0
 
 # evaporation from understory, [mm]
-EI_u,1
+EI_u,0
 
 # transpiration from understory, [mm]
-ET_u,1
+ET_u,0
 
 # soil evaporation, [mm]
-ET_s,1
+ET_s,0
 
 # canopy (overstory) intercepted water, [mm]
-Interception_o,1
+Interception_o,0
 
 # understory intercepted water, [mm]
-Interception_u,1
+Interception_u,0
 
 # net precipitation on the ground surface, [mm]
 Prec_net,1
@@ -62,16 +62,35 @@ SW_Run_Infil,1
 # surface runoff from soil layer saturation, [mm]
 SW_Run_Satur,1
 
+# subsurface inflow to the grid cell within the time step, [mm]
+SW_SUB_Qin,1
+
+# subsurface ourflow from the grid cell, [mm]
+SW_SUB_Qout,1
+
+# subsurface water table, positive downward, [m]
+SW_SUB_z,1
+
+# water supplied by rising subsurface water table to the upper soil layer, [mm]
+SW_SUB_rise_upper,1
+
+# water supplied by rising subsurface water table to the lower soil layer, [mm]
+SW_SUB_rise_lower,1
+
+# water volume of return flow, [mm]
+# (generated when a rising water table reaches the ground surface)
+SW_SUB_rf,1
+
 # --------- variables in routing ------------------------------
 
 # overland surface water flow at outlets from infiltration-excess, [m3/s]
-Qout_SF_Infil,1
+Qout_SF_Infil,0
 
 # overland surface water flow at outlets from saturation-excess, [m3/s]
-Qout_SF_Satur,1
+Qout_SF_Satur,0
 
 # subsurface water flow at outlets from saturated soil zone, [m3/s]
-Qout_Sub,1
+Qout_Sub,0
 
 # total streamflow at outlets, [m3/s]
-Qout_outlet,1
+Qout_outlet,0
