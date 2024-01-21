@@ -4,19 +4,21 @@
 
 typedef struct 
 {
-    int Code;                /* texture code */
-    char Texture[20];        /* USDA Texture */
-    double WiltingPoint;     /* Wilting point (%Vol) */
-    double FieldCapacity;    /* Field capacity (%Vol) */
-    double Saturation;       /* Saturation (%Vol) */
-    double Residual;         /* Residual content (%Vol) */
-    double AvailWater;       /* Available water (cm/cm) */
-    double SatHydrauCond;    /* Sat.Hydraulic Cond.(mm/hr) */
-    double BulkDensity;      /* Matric Bulk Density(g/cm3) */
-    double Porosity;         /* soil porosity (%Vol) */
-    double PoreSizeDisP;     /* pore size distribution parameter,b */
-    double AirEntryPresHead; /* air-entry pressure head (cm) */
-    double Bubbling;         /* Bubbling pressure (cm) */
+    int Code;                     /* texture code */
+    char Texture[20];             /* USDA Texture */
+    double WiltingPoint;          /* Wilting point (%Vol) */
+    double FieldCapacity;         /* Field capacity (%Vol) */
+    double Saturation;            /* Saturation (%Vol) */
+    double Residual;              /* Residual content (%Vol) */
+    double AvailWater;            /* Available water (cm/cm) */
+    double SatHydrauCond;         /* Sat.Hydraulic Cond.(m/hr) */
+    double BulkDensity;           /* Matric Bulk Density(g/cm3) */
+    double Porosity;              /* soil porosity (%Vol) */
+    double PoreSizeDisP;          /* pore size distribution parameter,b */
+    double AirEntryPresHead;      /* air-entry pressure head (cm) */
+    double Bubbling;              /* Bubbling pressure (cm) */
+    double SatHydrauCond_Lateral; /* lateral saturated hydraulic conductivity at the soil surface, (m/h) */
+    double DecayCoeff;            /* decaying coefficient of lateral saturated hydraulic conductivity */
 
 } ST_SoilLib;
 

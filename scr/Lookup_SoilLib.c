@@ -74,6 +74,8 @@ void Import_soillib(
             (soillib + j)->PoreSizeDisP = atof(strtok(NULL, "\t"));
             (soillib + j)->AirEntryPresHead = atof(strtok(NULL, "\t"));
             (soillib + j)->Bubbling = atof(strtok(NULL, "\t"));
+            (soillib + j)->SatHydrauCond_Lateral = atof(strtok(NULL, "\t"));
+            (soillib + j)->DecayCoeff = atof(strtok(NULL, "\t"));
             j++;
         }
     }
