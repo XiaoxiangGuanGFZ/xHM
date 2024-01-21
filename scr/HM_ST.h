@@ -108,6 +108,13 @@ typedef struct
     short SW_Percolation_Upper;
     short SW_Percolation_Lower;
 
+    short SW_SUB_Qin;
+    short SW_SUB_Qout;
+    short SW_SUB_z;
+    short SW_SUB_rise_upper;
+    short SW_SUB_rise_lower;
+    short SW_SUB_rf;
+
     short Qout_SF_Infil;
     short Qout_SF_Satur;
     short Qout_Sub;

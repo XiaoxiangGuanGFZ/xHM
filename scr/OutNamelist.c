@@ -117,6 +117,30 @@ void Import_Outnamelist(
                 {
                     outnl->SW_Run_Satur = atoi(S2);
                 }
+                else if (strcmp(S1, "SW_SUB_Qin") == 0)
+                {
+                    outnl->SW_SUB_Qin = atoi(S2);
+                }
+                else if (strcmp(S1, "SW_SUB_Qout") == 0)
+                {
+                    outnl->SW_SUB_Qout = atoi(S2);
+                }
+                else if (strcmp(S1, "SW_SUB_z") == 0)
+                {
+                    outnl->SW_SUB_z = atoi(S2);
+                }
+                else if (strcmp(S1, "SW_SUB_rise_upper") == 0)
+                {
+                    outnl->SW_SUB_rise_upper = atoi(S2);
+                }
+                else if (strcmp(S1, "SW_SUB_rise_lower") == 0)
+                {
+                    outnl->SW_SUB_rise_lower = atoi(S2);
+                }
+                else if (strcmp(S1, "SW_SUB_rf") == 0)
+                {
+                    outnl->SW_SUB_rf = atoi(S2);
+                }
                 else if (strcmp(S1, "Qout_SF_Infil") == 0)
                 {
                     outnl->Qout_SF_Infil = atoi(S2);
@@ -179,7 +203,13 @@ void malloc_Outnamelist(
     int **out_SW_Percolation_Lower,
     int **out_SW_Infiltration,
     int **out_SW_Run_Infil,
-    int **out_SW_Run_Satur
+    int **out_SW_Run_Satur,
+    int **out_SW_SUB_Qin, 
+    int **out_SW_SUB_Qout, 
+    int **out_SW_SUB_z, 
+    int **out_SW_SUB_rise_upper, 
+    int **out_SW_SUB_rise_lower, 
+    int **out_SW_SUB_rf
 )
 {
     long size;
@@ -267,6 +297,30 @@ void malloc_Outnamelist(
     // {
     //     *out_SW_Run_Satur = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_SW_Run_Satur, "SW_Run_Satur");
     // }
+    if (outnl.SW_SUB_Qin == 1)
+    {
+        *out_SW_SUB_Qin = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_SW_SUB_Qin, "SW_SUB_Qin");
+    }
+    if (outnl.SW_SUB_Qout == 1)
+    {
+        *out_SW_SUB_Qout = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_SW_SUB_Qout, "SW_SUB_Qout");
+    }
+    if (outnl.SW_SUB_z == 1)
+    {
+        *out_SW_SUB_z = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_SW_SUB_z, "SW_SUB_z");
+    }
+    if (outnl.SW_SUB_rise_lower == 1)
+    {
+        *out_SW_SUB_rise_lower = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_SW_SUB_rise_lower, "SW_SUB_rise_lower");
+    }
+    if (outnl.SW_SUB_rise_upper == 1)
+    {
+        *out_SW_SUB_rise_upper = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_SW_SUB_rise_upper, "SW_SUB_rise_upper");
+    }
+    if (outnl.SW_SUB_rf == 1)
+    {
+        *out_SW_SUB_rf = (int *)malloc(sizeof(int) * size); malloc_memory_error(*out_SW_SUB_rf, "SW_SUB_rf");
+    }
 }
 
 void malloc_memory_error(
@@ -303,6 +357,12 @@ void Write2NC_Outnamelist(
     int **out_SW_Infiltration,
     int **out_SW_Run_Infil,
     int **out_SW_Run_Satur,
+    int **out_SW_SUB_Qin, 
+    int **out_SW_SUB_Qout, 
+    int **out_SW_SUB_z, 
+    int **out_SW_SUB_rise_upper, 
+    int **out_SW_SUB_rise_lower, 
+    int **out_SW_SUB_rf,
     GLOBAL_PARA GP
 )
 {
@@ -452,7 +512,55 @@ void Write2NC_Outnamelist(
                  0.1, GP.FP_GEO, FP_OUT_VAR, out_SW_Run_Satur,
                  GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
     }
-    
+    // subsurface 
+    if (outnl.SW_SUB_Qin == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "SW_SUB_Qin.nc");
+        Write2NC("SW_SUB_Qin", "mm", "subsurface inflow to the grid cell",
+                 0.1, GP.FP_GEO, FP_OUT_VAR, out_SW_SUB_Qin,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
+    }
+    if (outnl.SW_SUB_Qout == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "SW_SUB_Qout.nc");
+        Write2NC("SW_SUB_Qout", "mm", "subsurface outflow from the grid cell",
+                 0.1, GP.FP_GEO, FP_OUT_VAR, out_SW_SUB_Qout,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
+    }
+    if (outnl.SW_SUB_z == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "SW_SUB_z.nc");
+        Write2NC("SW_SUB_z", "m", "subsurface water table",
+                 0.01, GP.FP_GEO, FP_OUT_VAR, out_SW_SUB_z,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
+    }
+    if (outnl.SW_SUB_rise_lower == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "SW_SUB_rise_lower.nc");
+        Write2NC("SW_SUB_rise_lower", "mm", "water supplied by rising water table to lower soil layer",
+                 0.1, GP.FP_GEO, FP_OUT_VAR, out_SW_SUB_rise_lower,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
+    }
+    if (outnl.SW_SUB_rise_upper == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "SW_SUB_rise_upper.nc");
+        Write2NC("SW_SUB_rise_upper", "mm", "water supplied by rising water table to upper soil layer",
+                 0.1, GP.FP_GEO, FP_OUT_VAR, out_SW_SUB_rise_upper,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
+    }
+    if (outnl.SW_SUB_rf == 1)
+    {
+        FP_OUT_VAR[0] = '\0';
+        strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "SW_SUB_rf.nc");
+        Write2NC("SW_SUB_rf", "mm", "water volume of returnflow",
+                 0.1, GP.FP_GEO, FP_OUT_VAR, out_SW_SUB_rf,
+                 GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
+    }
 }
 // int main(int argc, char const *argv[])
 // {
