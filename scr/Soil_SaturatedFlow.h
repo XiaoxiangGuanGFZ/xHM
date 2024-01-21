@@ -24,9 +24,9 @@ void Soil_Satu_Outflow(
     double *Cell_WT_rf,
     double *Cell_q,
     double *Qout,
-    double Soil_Conduct_Sat,
+    double Soil_Conduct_Sat_Lateral,
     double Soil_Thickness,
-    double b
+    double n
 );
 
 
@@ -35,9 +35,9 @@ double Soil_Satu_Stream(
     double stream_length,
     double stream_depth,
     double stream_width,
-    double Soil_Conduct_Sat,
+    double Soil_Conduct_Sat_Lateral,
     double Soil_Thickness,
-    double b
+    double n
 );
 
 
@@ -45,8 +45,8 @@ void Soil_Satu_Move(
     int *data_DEM,
     int *data_STR,
     int *data_SOILTYPE,
-    CELL_VAR_STREAM *data_STREAM,
-    CELL_VAR_SOIL *data_SOIL,
+    CELL_VAR_STREAM **data_STREAM,
+    CELL_VAR_SOIL **data_SOIL,
     ST_SoilLib *soillib,
     ST_SoilID *soilID,
     double Soil_Thickness,
