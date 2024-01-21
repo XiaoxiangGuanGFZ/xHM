@@ -1,13 +1,13 @@
 
 # ---------- model setup --------------------------
 
-START_YEAR,2005
-START_MONTH,4
-START_DAY,15
+START_YEAR,2001
+START_MONTH,1
+START_DAY,1
 START_HOUR,0
 END_YEAR,2005
-END_MONTH,6
-END_DAY,13
+END_MONTH,12
+END_DAY,31
 END_HOUR,23
 STEP_TIME,24 # hours
 
@@ -21,12 +21,18 @@ FP_WIN,D:/xHM/example_data/JN_GEO_1km/Weather/WIN.nc
 FP_TEM_AVG,D:/xHM/example_data/JN_GEO_1km/Weather/TEM_AVG.nc
 FP_TEM_MAX,D:/xHM/example_data/JN_GEO_1km/Weather/TEM_MAX.nc
 FP_TEM_MIN,D:/xHM/example_data/JN_GEO_1km/Weather/TEM_MIN.nc
+WIN_H,10
 
 # ---------- GEO, soil and vegetation lib ---------
 FP_GEO,D:/xHM/example_data/JN_GEO_1km/GEO_data.nc
 FP_VEGLIB,D:/xHM/example_data/VegeLib.txt
 FP_SOILLIB,D:/xHM/example_data/SOIL_LIB.txt
 FP_SOIL_HWSD_ID,D:/xHM/example_data/SOIL_HWSD_ID.txt
+SOIL_D,1.5
+SOIL_d1,0.2
+SOIL_d2,0.2
+STREAM_D,1.5
+STREAM_W,10
 
 # ---------- Surface runoff routing ---------------
 SURFACE_RUNOFF,UH
