@@ -210,7 +210,7 @@ void Lookup_Soil_CELL(
 //     }
 //     // ----- 
 //     int ID;
-//     ID = 11375;
+//     ID = 11805;
 //     ST_SOIL_LIB_CELL soil_cell_para;
 //     printf("ID: %d\n", ID);
 //     Lookup_Soil_CELL(ID, &soil_cell_para, soillib, soilID);
@@ -223,4 +223,10 @@ void Lookup_Soil_CELL(
 //            (soil_cell_para.Topsoil)->Residual,
 //            (soil_cell_para.Topsoil)->Porosity,
 //            (soil_cell_para.Topsoil)->Bubbling);
+//     printf("%10d%20s%10.1f%10.1f%10.1f\n",
+//            (soil_cell_para.Subsoil)->Code,
+//            (soil_cell_para.Subsoil)->Texture,
+//            (soil_cell_para.Subsoil)->Residual,
+//            (soil_cell_para.Subsoil)->Porosity,
+//            (soil_cell_para.Subsoil)->Bubbling);
 // }

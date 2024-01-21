@@ -60,7 +60,8 @@ int main(int argc, char *argv[])
     GLOBAL_PARA GP;
     Initialize_GlobalPara(&GP);
     Import_GlobalPara(*(++argv), &GP);
-    double ws_obs_z = 10.0; /* the height of wind measurement */
+    double ws_obs_z; /* the measurement height of wind speed, [m] */
+    ws_obs_z = GP.WIN_H;
     char WS_OUT[MAXCHAR];
     strcpy(WS_OUT, GP.PATH_OUT);
     OUT_NAME_LIST outnl;
@@ -422,14 +423,43 @@ int main(int argc, char *argv[])
             Initialize_SOIL(data_SOIL + index_geo);
         }
     }
-
+    index_geo = 25 * GEO_header.ncols + 23;
+    // printf(
+    //     "SW_Infiltration: %f\nSW_SR_Infil: %f\nSM_Upper: %f\nSM_Lower: %f\n",
+    //     (data_SOIL + index_geo)->SW_Infiltration,
+    //     (data_SOIL + index_geo)->SW_SR_Infil,
+    //     (data_SOIL + index_geo)->SM_Upper,
+    //     (data_SOIL + index_geo)->SM_Lower
+    // );
+    
     Initialize_Soil_Satur(
         data_SOIL,
         data_DEM,
         GEO_header.NODATA_value,
         GEO_header.ncols,
         GEO_header.nrows);
-
+    // index_geo = 25 * GEO_header.ncols + 23;
+    // printf(
+    //     "z: %f\nz_offset: %d\nQout: %f\n",
+    //     (data_SOIL + index_geo)->z,
+    //     (data_SOIL + index_geo)->z_offset,
+    //     (data_SOIL + index_geo)->Qout
+    // );
+    // printf(
+    //     "DEM_center:%d\n", *(data_DEM + index_geo)
+    // );
+    // printf(
+    //     "zoffset 8:\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n",
+    //     (data_SOIL + index_geo)->z_offset_neighbor[0],
+    //     (data_SOIL + index_geo)->z_offset_neighbor[1],
+    //     (data_SOIL + index_geo)->z_offset_neighbor[2],
+    //     (data_SOIL + index_geo)->z_offset_neighbor[3],
+    //     (data_SOIL + index_geo)->z_offset_neighbor[4],
+    //     (data_SOIL + index_geo)->z_offset_neighbor[5],
+    //     (data_SOIL + index_geo)->z_offset_neighbor[6],
+    //     (data_SOIL + index_geo)->z_offset_neighbor[7]
+    // );
+    // exit(0);
     Initialize_STREAM(
         data_STREAM,
         data_STR,
@@ -438,7 +468,7 @@ int main(int argc, char *argv[])
         GEO_header.nrows);
 
     /***********************************************************************************
-     *              define the ourput variables (results) from simulation
+     *              define the output variables (results) from simulation
      ***********************************************************************************/
     char FP_OUT_VAR[MAXCHAR] = "";
     int *out_Rs, *out_L_sky, *out_Rno, *out_Rnu;
@@ -485,14 +515,15 @@ int main(int argc, char *argv[])
     struct tm *tm_run;
     double Soil_Fe = 0.0;
 
-    double Soil_thickness_upper = 0.2;
-    double Soil_thickness_lower = 0.5;
-    double Soil_Thickness = 1;
-    double Soil_d1 = 0.1;
-    double Soil_d2 = 0.2;
-    double stream_depth = 1;
-    double stream_width = 10;
-
+    /***********************************************************************************
+     *                     hydrological parameters
+    ************************************************************************************/
+    double Soil_Thickness, Soil_d1, Soil_d2, stream_depth, stream_width;
+    Soil_Thickness = GP.SOIL_D;
+    Soil_d1 = GP.SOIL_d1;
+    Soil_d2 = GP.SOIL_d2;
+    stream_depth = GP.STREAM_D;
+    stream_width = GP.STREAM_W;
     /***********************************************************************************
      *                       xHM model iteration
      ***********************************************************************************/
@@ -591,7 +622,7 @@ int main(int argc, char *argv[])
 
                     /**************** unsaturated soil zone water movement *****************/
                     UnsaturatedWaterMove(
-                        (data_ET + index_geo)->Prec_net,
+                        (data_ET + index_geo)->Prec_net / GP.STEP_TIME,
                         (data_ET + index_geo)->ET_o,
                         (data_ET + index_geo)->ET_u,
                         (data_ET + index_geo)->ET_s,
@@ -604,8 +635,8 @@ int main(int argc, char *argv[])
                         (data_SOIL + index_geo)->SW_rise_upper,
                         &((data_SOIL + index_geo)->SW_SR_Infil),
                         &((data_SOIL + index_geo)->SW_SR_Satur),
-                        Soil_thickness_upper,
-                        Soil_thickness_lower,
+                        Soil_d1,
+                        Soil_d2,
                         &cell_soil,
                         GP.STEP_TIME);
 
@@ -684,37 +715,37 @@ int main(int argc, char *argv[])
         }
         /**************** water movement in saturated soil zone *****************/
 
-        Soil_Satu_Move(
-            data_DEM,
-            data_STR,
-            data_SOILTYPE,
-            data_STREAM,
-            data_SOIL,
-            soillib,
-            soilID,
-            Soil_Thickness,
-            Soil_d1,
-            Soil_d2,
-            stream_depth,
-            stream_width,
-            GEO_header.NODATA_value,
-            GEO_header.ncols,
-            GEO_header.nrows,
-            cellsize_m,
-            GP.STEP_TIME);
+        // Soil_Satu_Move(
+        //     data_DEM,
+        //     data_STR,
+        //     data_SOILTYPE,
+        //     data_STREAM,
+        //     data_SOIL,
+        //     soillib,
+        //     soilID,
+        //     Soil_Thickness,
+        //     Soil_d1,
+        //     Soil_d2,
+        //     stream_depth,
+        //     stream_width,
+        //     GEO_header.NODATA_value,
+        //     GEO_header.ncols,
+        //     GEO_header.nrows,
+        //     cellsize_m,
+        //     GP.STEP_TIME);
 
         /********************* river channel flow routing ****************/
-        Channel_Routing_ITER(
-            data_STREAM,
-            data_STR,
-            GEO_header.NODATA_value,
-            GEO_header.ncols,
-            GEO_header.nrows,
-            GP.STEP_TIME);
-        for (size_t s = 0; s < outlet_count; s++)
-        {
-            *(Qout_Sub + s * time_steps_run + t) = (data_STREAM + outlet_index_row[s] * GEO_header.ncols + outlet_index_col[s])->Q;
-        }
+        // Channel_Routing_ITER(
+        //     data_STREAM,
+        //     data_STR,
+        //     GEO_header.NODATA_value,
+        //     GEO_header.ncols,
+        //     GEO_header.nrows,
+        //     GP.STEP_TIME);
+        // for (size_t s = 0; s < outlet_count; s++)
+        // {
+        //     *(Qout_Sub + s * time_steps_run + t) = (data_STREAM + outlet_index_row[s] * GEO_header.ncols + outlet_index_col[s])->Q;
+        // }
 
         /********************* next iteration ****************/
         t += 1;
@@ -752,13 +783,13 @@ int main(int argc, char *argv[])
     // }
 
     /******************** total discharge at outlets ************************/
-    Route_Outlet(
-        Qout_SF_Infil,
-        Qout_SF_Satur,
-        Qout_Sub,
-        Qout_outlet,
-        outlet_count,
-        time_steps_run);
+    // Route_Outlet(
+    //     Qout_SF_Infil,
+    //     Qout_SF_Satur,
+    //     Qout_Sub,
+    //     Qout_outlet,
+    //     outlet_count,
+    //     time_steps_run);
 
     Write_Qout(
         outnl,
