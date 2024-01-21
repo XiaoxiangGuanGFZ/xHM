@@ -58,6 +58,8 @@ double Percolation(
 {
     double Percolation_out;
     double Soil_Conduct, Soil_Conduct_end;
+    double Soil_Conduct_AVG;
+    double Soil_Moisture_AVG;
     Soil_Conduct = Soil_Hydro_Conductivity(
         Soil_Moisture, Soil_Porosity, Soil_Residual, 
         Soil_Conduct_Sat, Soil_PoreSize_index
@@ -67,8 +69,26 @@ double Percolation(
         Soil_Porosity, Soil_Residual, 
         Soil_Conduct_Sat, Soil_PoreSize_index
     );
-    Percolation_out = 0.5 * (Soil_Conduct_end + Soil_Conduct) * (double) step_time;
+    /************************
+     * Soil_Conduct_end >= Soil_Conduct; 
+     * Soil_Conduct_AVG >= Soil_Conduct;
+     * Soil_Moisture_AVG >= Soil_Moisture;
+     * SW_avail >= 0.0;
+    */
+    Soil_Conduct_AVG = 0.5 * (Soil_Conduct_end + Soil_Conduct);
+    Soil_Moisture_AVG = pow(Soil_Conduct_AVG / Soil_Conduct_Sat, 1 / (2 * Soil_PoreSize_index + 3)) * (Soil_Porosity - Soil_Residual) + Soil_Residual;
+    
+    Percolation_out = Soil_Conduct_AVG * ((double)step_time);
 
+    double SW_avail;
+    SW_avail = Percolation_in + (Soil_Moisture - Soil_Moisture_AVG) * Soil_layer_thickness;
+    if (SW_avail < 0)
+    {
+        Percolation_out = 0.0;
+    } else if (SW_avail < Percolation_out)
+    {
+        Percolation_out = SW_avail;
+    }
     return Percolation_out;
 }
 
@@ -90,7 +110,7 @@ double Soil_Hydro_Conductivity(
     {
         Soil_Conduct = 0.0;
     }
-    else if (Soil_Moisture < Soil_Porosity)
+    else if (Soil_Moisture <= Soil_Porosity)
     {
         Soil_Conduct = Soil_Conduct_Sat * pow(
                                               (Soil_Moisture - Soil_Residual) / (Soil_Porosity - Soil_Residual),

@@ -98,7 +98,7 @@ void UnsaturatedWaterMove(
         *SW_Infiltration = 0.0;
         *SW_Run_Infil = 0.0;
     }
-
+    
     *SW_Percolation_Upper = Percolation(
         *Soil_Moisture_upper,
         *SW_Infiltration,
@@ -120,22 +120,32 @@ void UnsaturatedWaterMove(
         STEP_TIME);
 
     double SM_buff;
+    double SM_d;
+    double ET_o_lowersoil;
     *SW_Run_Satur = 0.0;
-    /********
+    /************************************************
      * upper soil layer
-    */
-    SM_buff = (SW_Infiltration - SW_Percolation_Upper - ET_o - ET_u - Es + SW_rise_upper) /
-                  Soil_thickness_upper +
-              *Soil_Moisture_upper;
+     * the canopy could transpire water from both upper and lower soil layer
+     ************************************************/
+    SM_d = *Soil_Moisture_upper * Soil_thickness_upper + *SW_Infiltration - *SW_Percolation_Upper - ET_u - Es + SW_rise_upper - ET_o;
+    if (SM_d >= 0.0)
+    {
+        ET_o_lowersoil = 0.0;
+        SM_buff = SM_d / Soil_thickness_upper;
+    }
+    else
+    {
+        ET_o_lowersoil = - SM_d; // positive, [m]
+        SM_buff = 0.0;
+    }
+
+    // SM_buff = (*SW_Infiltration - *SW_Percolation_Upper - ET_o - ET_u - Es + SW_rise_upper) /
+    //               Soil_thickness_upper +
+    //           *Soil_Moisture_upper;
     if (SM_buff > cell_soil_lib->Topsoil->Porosity / 100)
     {
         *SW_Run_Satur += (SM_buff - cell_soil_lib->Topsoil->Porosity / 100) * Soil_thickness_upper;
         *Soil_Moisture_upper = cell_soil_lib->Topsoil->Porosity / 100;
-    }
-    else if (SM_buff < 0.0)
-    {
-        *SW_Run_Satur += 0.0;
-        *Soil_Moisture_upper = 0.0;
     }
     else
     {
@@ -143,21 +153,25 @@ void UnsaturatedWaterMove(
         *Soil_Moisture_upper = SM_buff;
     }
 
-    /********
+    /**************************************************
      * lower soil layer
-    */
-    SM_buff = (*SW_Percolation_Upper - *SW_Percolation_Lower - ET_o + SW_rise_lower) /
-                  Soil_thickness_lower +
-              *Soil_Moisture_lower;
+     **************************************************/
+    SM_d = *Soil_Moisture_lower * Soil_thickness_lower + *SW_Percolation_Upper - *SW_Percolation_Lower - ET_o_lowersoil + SW_rise_lower;
+    if (SM_d >= 0.0)
+    {
+        SM_buff = SM_d / Soil_thickness_lower;
+    }
+    else
+    {
+        SM_buff = 0.0;
+    }
+    // SM_buff = (*SW_Percolation_Upper - *SW_Percolation_Lower - ET_o_lowersoil + SW_rise_lower) /
+    //               Soil_thickness_lower +
+    //           *Soil_Moisture_lower;
     if (SM_buff > cell_soil_lib->Subsoil->Porosity / 100)
     {
-        *SW_Run_Satur += (SM_buff - cell_soil_lib->Subsoil->Porosity / 100) * Soil_thickness_upper;
+        *SW_Run_Satur += (SM_buff - cell_soil_lib->Subsoil->Porosity / 100) * Soil_thickness_lower;
         *Soil_Moisture_lower = cell_soil_lib->Subsoil->Porosity / 100;
-    }
-    else if (SM_buff < 0.0)
-    {
-        *SW_Run_Satur += 0.0;
-        *Soil_Moisture_lower = 0.0;
     }
     else
     {
