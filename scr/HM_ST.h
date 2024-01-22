@@ -115,6 +115,9 @@ typedef struct
     short SW_SUB_rise_lower;
     short SW_SUB_rf;
 
+    short SW_SUB_Qc;
+    short Q_Channel;
+
     short Qout_SF_Infil;
     short Qout_SF_Satur;
     short Qout_Sub;

@@ -40,7 +40,9 @@ void malloc_Outnamelist(
     int **out_SW_SUB_z, 
     int **out_SW_SUB_rise_upper, 
     int **out_SW_SUB_rise_lower, 
-    int **out_SW_SUB_rf
+    int **out_SW_SUB_rf,
+    int **out_SW_SUB_Qc,
+    int **out_Q_Channel
 );
 
 void malloc_memory_error(
@@ -77,6 +79,8 @@ void Write2NC_Outnamelist(
     int **out_SW_SUB_rise_upper, 
     int **out_SW_SUB_rise_lower, 
     int **out_SW_SUB_rf,
+    int **out_SW_SUB_Qc,
+    int **out_Q_Channel,
     GLOBAL_PARA GP
 );
 
