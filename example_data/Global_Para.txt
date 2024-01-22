@@ -33,6 +33,7 @@ SOIL_d1,0.2
 SOIL_d2,0.2
 STREAM_D,1.5
 STREAM_W,10
+ROUTE_CHANNEL_k,0.03
 
 # ---------- Surface runoff routing ---------------
 SURFACE_RUNOFF,UH
