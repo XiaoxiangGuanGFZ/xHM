@@ -153,9 +153,16 @@ double Soil_Satu_Stream(
      *********************/
     double Trans;
     double Qc;
-    Trans = Soil_Conduct_Sat_Lateral * Soil_Thickness / n * pow(1 - z/Soil_Thickness, n);
-    // Qc = 2 * stream_length * (stream_depth - z) / (0.5 * stream_width) * Trans;
-    Qc = 4 * stream_length * (stream_depth - z) / stream_width * Trans;
+    if (stream_depth > z)
+    {
+        Trans = Soil_Conduct_Sat_Lateral * Soil_Thickness / n * pow(1 - z / Soil_Thickness, n);
+        // Qc = 2 * stream_length * (stream_depth - z) / (0.5 * stream_width) * Trans;
+        Qc = 4 * stream_length * (stream_depth - z) / stream_width * Trans;
+    }
+    else
+    {
+        Qc = 0.0;
+    }
     return Qc;
 }
 
