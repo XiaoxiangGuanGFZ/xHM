@@ -72,7 +72,7 @@ void UH_Import(
     int index_begin = 0;
     for (size_t i = 0; i < outlet_count; i++)
     {
-        printf("varID_UH: %d\nUH_STEPs: %d\n", *(varID_UH + i), *(UH_steps + i));
+        // printf("varID_UH: %d\nUH_STEPs: %d\n", *(varID_UH + i), *(UH_steps + i));
         nc_get_var_double(
             ncID_UH, *(varID_UH + i), (*data_UH + index_begin)
         );
