@@ -52,21 +52,30 @@
 void malloc_error(
     int *data);
 
+char *DateString(
+    time_t *tm
+);
+
 int main(int argc, char *argv[])
 {
+    time_t tm;  //datatype from <time.h>
+    
     /******************************************************************************
      *                        read global parameter file
      ******************************************************************************/
+    time(&tm); printf("--------- %s read global parameter: ", DateString(&tm));
     GLOBAL_PARA GP;
     Initialize_GlobalPara(&GP);
-    Import_GlobalPara(*(++argv), &GP);
+    Import_GlobalPara(*(++argv), &GP); printf("Done! \n");
+    Print_GlobalPara(&GP);
     double ws_obs_z; /* the measurement height of wind speed, [m] */
     ws_obs_z = GP.WIN_H;
+    time(&tm); printf("--------- %s read outnamelist: ", DateString(&tm));
     char WS_OUT[MAXCHAR];
     strcpy(WS_OUT, GP.PATH_OUT);
     OUT_NAME_LIST outnl;
     Initialize_Outnamelist(&outnl);
-    Import_Outnamelist(GP.FP_OUTNAMELIST, &outnl);
+    Import_Outnamelist(GP.FP_OUTNAMELIST, &outnl); printf("Done! \n");
     /*****************************************************************************
      *                          model simulation period
      ******************************************************************************/
@@ -101,6 +110,7 @@ int main(int argc, char *argv[])
     /******************************************************************************
      *                              read GEO info
      ******************************************************************************/
+    time(&tm); printf("--------- %s read GEO data: \n", DateString(&tm));
     int status_nc;
     int ncID_GEO;
     ST_Header GEO_header;
@@ -117,10 +127,10 @@ int main(int argc, char *argv[])
 
     int cell_counts_total;
     cell_counts_total = GEO_header.ncols * GEO_header.nrows;
-    printf("cell_counts_total: %d\n", cell_counts_total);
-    printf("ncols: %d\nnrows: %d\nxllcorner: %.12f\nyllcorner: %.12f\ncellsize: %.12f\n",
+    printf("* cell_counts_total: %d\n", cell_counts_total);
+    printf("* ncols: %d\n* nrows: %d\n* xllcorner: %.12f\n* yllcorner: %.12f\n* cellsize: %.12f\n",
            GEO_header.ncols, GEO_header.nrows, GEO_header.xllcorner, GEO_header.yllcorner, GEO_header.cellsize);
-
+    printf("* cellsize (m): %.1f\n", (double) cellsize_m);
     int varID_VEGTYPE, varID_VEGFRAC, varID_lon, varID_lat, varID_SOILTYPE, varID_STR, varID_DEM;
     int *data_VEGTYPE;
     int *data_VEGFRAC;
@@ -153,26 +163,30 @@ int main(int argc, char *argv[])
     nc_get_var_int(ncID_GEO, varID_STR, data_STR);
     nc_get_var_double(ncID_GEO, varID_lon, data_lon);
     nc_get_var_double(ncID_GEO, varID_lat, data_lat);
-    printf("lat: %.2f\n", *(data_lat + 25));
-    printf("SOIL: %d\n", *(data_SOILTYPE + 25 * GEO_header.ncols + 25));
-    printf("VEG: %d\n", *(data_VEGTYPE + 25 * GEO_header.ncols + 25));
-    printf("VEGFRAC: %d\n", *(data_VEGFRAC + 25 * GEO_header.ncols + 25));
-
+    // printf("lat: %.2f\n", *(data_lat + 25));
+    // printf("SOIL: %d\n", *(data_SOILTYPE + 25 * GEO_header.ncols + 25));
+    // printf("VEG: %d\n", *(data_VEGTYPE + 25 * GEO_header.ncols + 25));
+    // printf("VEGFRAC: %d\n", *(data_VEGFRAC + 25 * GEO_header.ncols + 25));
+    
     // check the GEO data
-    Check_GEO(ncID_GEO);
+    Check_GEO(ncID_GEO); 
+    time(&tm); printf("--------- %s read GEO data: ", DateString(&tm)); printf("Done! \n");
+
+    time(&tm); printf("--------- %s read vegetation and soil library: ", DateString(&tm));
     // import the vegetation library
     ST_VegLib veglib[11];
     Import_veglib(GP.FP_VEGLIB, veglib);
-
     // import the soil property library abd HWSD IDs
     ST_SoilLib soillib[13];
     Import_soillib(GP.FP_SOILLIB, soillib);
     ST_SoilID soilID[1000];
     Import_soil_HWSD_ID(GP.FP_SOIL_HWSD_ID, soilID);
+    printf("Done! \n");
 
     /******************************************************************************
      *                      read gridded weather data
      ******************************************************************************/
+    time(&tm); printf("--------- %s read weather forcing: \n", DateString(&tm));
     int ncID_PRE, ncID_PRS, ncID_RHU, ncID_SSD, ncID_WIN, ncID_TEM_AVG, ncID_TEM_MAX, ncID_TEM_MIN;
     int varID_PRE, varID_PRS, varID_RHU, varID_SSD, varID_WIN, varID_TEM_AVG, varID_TEM_MAX, varID_TEM_MIN;
     int *data_PRE;
@@ -252,10 +266,16 @@ int main(int argc, char *argv[])
     nc_inq_dimid(ncID_TEM_MIN, "time", &dimID_time);
     nc_inq_dimlen(ncID_TEM_MIN, dimID_time, &time_steps_TEM_MIN);
 
-    // printf("length of PRE observation: %d\n", time_steps_PRE);
-    printf("start time of TEM_AVG: %ld\n", t_TEM_AVG);
-    printf("length of TEM_AVG observation: %d\n", time_steps_TEM_AVG);
-    printf("length of TEM_PRE observation: %d\n", time_steps_PRE);
+    time_t tm_buf;
+    printf("* %10s%25s%10s%10s\n", "forcing", "start_date", "length", "size(GB)");
+    tm_buf = t_PRE - 3600; printf("* %10s%25s%10d%10.3f\n", "PRE", DateString(&tm_buf), time_steps_PRE, (float)sizeof(int) * time_steps_PRE * cell_counts_total * 8 / 1024 / 1024 / 1024);
+    tm_buf = t_PRS - 3600; printf("* %10s%25s%10d%10.3f\n", "PRS", DateString(&tm_buf), time_steps_PRS, (float)sizeof(int) * time_steps_PRS * cell_counts_total * 8 / 1024 / 1024 / 1024);
+    tm_buf = t_RHU - 3600; printf("* %10s%25s%10d%10.3f\n", "RHU", DateString(&tm_buf), time_steps_RHU, (float)sizeof(int) * time_steps_RHU * cell_counts_total * 8 / 1024 / 1024 / 1024);
+    tm_buf = t_SSD - 3600; printf("* %10s%25s%10d%10.3f\n", "SSD", DateString(&tm_buf), time_steps_SSD, (float)sizeof(int) * time_steps_SSD * cell_counts_total * 8 / 1024 / 1024 / 1024);
+    tm_buf = t_WIN - 3600; printf("* %10s%25s%10d%10.3f\n", "WIN", DateString(&tm_buf), time_steps_WIN, (float)sizeof(int) * time_steps_WIN * cell_counts_total * 8 / 1024 / 1024 / 1024);
+    tm_buf = t_TEM_AVG - 3600; printf("* %10s%25s%10d%10.3f\n", "TEM_AVG", DateString(&tm_buf), time_steps_TEM_AVG, (float)sizeof(int) * time_steps_TEM_AVG * cell_counts_total * 8 / 1024 / 1024 / 1024);
+    tm_buf = t_TEM_MAX - 3600; printf("* %10s%25s%10d%10.3f\n", "TEM_MAX", DateString(&tm_buf), time_steps_TEM_MAX, (float)sizeof(int) * time_steps_TEM_MAX * cell_counts_total * 8 / 1024 / 1024 / 1024);
+    tm_buf = t_TEM_MIN - 3600; printf("* %10s%25s%10d%10.3f\n", "TEM_MIN", DateString(&tm_buf), time_steps_TEM_MIN, (float)sizeof(int) * time_steps_TEM_MIN * cell_counts_total * 8 / 1024 / 1024 / 1024);
 
     status_nc = nc_inq_varid(ncID_PRE, "PRE", &varID_PRE);
     handle_error(status_nc, GP.FP_PRE);
@@ -273,9 +293,9 @@ int main(int argc, char *argv[])
     handle_error(status_nc, GP.FP_TEM_MAX);
     status_nc = nc_inq_varid(ncID_TEM_MIN, "TEM_MIN", &varID_TEM_MIN);
     handle_error(status_nc, GP.FP_TEM_MIN);
-    printf("malloc for weather data: ");
-    printf("memory size required in total: %.2f GB\n",
-           (float)sizeof(int) * time_steps_PRE * cell_counts_total * 8 / 1024 / 1024 / 1024);
+    // printf("malloc for weather data: ");
+    // printf("memory size required in total: %.2f GB\n",
+    //        (float)sizeof(int) * time_steps_PRE * cell_counts_total * 8 / 1024 / 1024 / 1024);
     data_PRE = (int *)malloc(sizeof(int) * time_steps_PRE * cell_counts_total);
     malloc_error(data_PRE);
     data_PRS = (int *)malloc(sizeof(int) * time_steps_PRS * cell_counts_total);
@@ -309,10 +329,7 @@ int main(int argc, char *argv[])
     handle_error(status_nc, GP.FP_TEM_MAX);
     status_nc = nc_get_var_int(ncID_TEM_MIN, varID_TEM_MIN, data_TEM_MIN);
     handle_error(status_nc, GP.FP_TEM_MIN);
-    printf("check weather data at row15 col25:\n");
-    printf("PRE: %d\n", *(data_PRE + 25 * GEO_header.ncols + 25));
-    printf("RHU: %d\n", *(data_RHU + 25 * GEO_header.ncols + 25));
-    printf("TEM_AVG: %d\n", *(data_TEM_AVG + 25 * GEO_header.ncols + 25));
+    
     nc_get_att_int(ncID_PRE, varID_PRE, "NODATA_value", &GEO_header.NODATA_value);
 
     double scale_PRE, scale_PRS, scale_SSD, scale_RHU, scale_WIN, scale_TEM_AVG, scale_TEM_MAX, scale_TEM_MIN;
@@ -332,11 +349,11 @@ int main(int argc, char *argv[])
     handle_error(status_nc, GP.FP_TEM_MAX);
     status_nc = nc_get_att_double(ncID_TEM_MIN, varID_TEM_MIN, "scale_factor", &scale_TEM_MIN);
     handle_error(status_nc, GP.FP_TEM_MIN);
-    printf("check scale_factor:\n");
-    printf("PRE: %.1f\n", scale_PRE);
-    printf("RHU: %.1f\n", scale_RHU);
-    printf("TEM_AVG: %.1f\n", scale_TEM_AVG);
-    printf("import weather data from NetCDF files: DONE!\n");
+    // printf("check scale_factor:\n");
+    // printf("PRE: %.1f\n", scale_PRE);
+    // printf("RHU: %.1f\n", scale_RHU);
+    // printf("TEM_AVG: %.1f\n", scale_TEM_AVG);
+    time(&tm); printf("--------- %s read weather forcing: Done!\n", DateString(&tm));
     /***********************************************************************************
      *                          set model running period
      ************************************************************************************/
@@ -351,10 +368,10 @@ int main(int argc, char *argv[])
     t_offset_TEM_AVG = (start_time - t_TEM_AVG) / (GP.STEP_TIME * 3600);
     t_offset_TEM_MAX = (start_time - t_TEM_MAX) / (GP.STEP_TIME * 3600);
     t_offset_TEM_MIN = (start_time - t_TEM_MIN) / (GP.STEP_TIME * 3600);
-    printf("t_offset:\n");
-    printf("PRE: %d\n", t_offset_PRE);
-    printf("WIN: %d\n", t_offset_WIN);
-    printf("TEM_AVG: %d\n", t_offset_TEM_AVG);
+    // printf("t_offset:\n");
+    // printf("PRE: %d\n", t_offset_PRE);
+    // printf("WIN: %d\n", t_offset_WIN);
+    // printf("TEM_AVG: %d\n", t_offset_TEM_AVG);
     time_t run_time;
     run_time = start_time;
     int index_PRE, index_PRS, index_SSD, index_RHU, index_WIN, index_TEM_AVG, index_TEM_MAX, index_TEM_MIN;
@@ -364,6 +381,7 @@ int main(int argc, char *argv[])
     /***********************************************************************************
      *                      surface runoff routing - UH
      ************************************************************************************/
+    time(&tm); printf("--------- %s prepare UH: \n", DateString(&tm));
     UH_Generation(GP.FP_GEO, GP.FP_UH, GP.STEP_TIME,
                   GP.Velocity_avg, GP.Velocity_max, GP.Velocity_min, GP.b, GP.c);
 
@@ -382,14 +400,14 @@ int main(int argc, char *argv[])
         outlet_index_row,
         outlet_index_col,
         UH_steps);
-    printf("outlet_count: %d\n", outlet_count);
-    printf("%6s%6s%6s%6s\n", "outlet", "row", "col", "steps");
+    printf("* outlet_count: %d\n", outlet_count);
+    printf("* %6s%6s%6s%6s\n", "outlet", "row", "col", "steps");
     for (size_t s = 0; s < outlet_count; s++)
     {
-        printf("%6d%6d%6d%6d\n", s, outlet_index_row[s], outlet_index_col[s], UH_steps[s]);
+        printf("* %6d%6d%6d%6d\n", s, outlet_index_row[s], outlet_index_col[s], UH_steps[s]);
         UH_steps_total += UH_steps[s];
     }
-    printf("UH_steps_total: %d\n", UH_steps_total);
+    // printf("* UH_steps_total: %d\n", UH_steps_total);
     double *data_UH;
     data_UH = (double *)malloc(sizeof(double) * cell_counts_total * UH_steps_total);
     UH_Import(
@@ -399,22 +417,23 @@ int main(int argc, char *argv[])
         cell_counts_total,
         UH_steps,
         &data_UH);
-
+    time(&tm); printf("--------- %s prepare UH: ", DateString(&tm)); printf("Done!\n");
     /***********************************************************************************
      *              define and initialize the intermediate variables
      ***********************************************************************************/
+    time(&tm); printf("--------- %s initialize intermediate data structures: \n", DateString(&tm));
     CELL_VAR_RADIA *data_RADIA;
     data_RADIA = (CELL_VAR_RADIA *)malloc(sizeof(CELL_VAR_RADIA) * cell_counts_total);
-
+    
     CELL_VAR_ET *data_ET;
     data_ET = (CELL_VAR_ET *)malloc(sizeof(CELL_VAR_ET) * cell_counts_total);
-
+    
     CELL_VAR_SOIL *data_SOIL;
     data_SOIL = (CELL_VAR_SOIL *)malloc(sizeof(CELL_VAR_SOIL) * cell_counts_total);
-
+    
     CELL_VAR_STREAM *data_STREAM;
     data_STREAM = (CELL_VAR_STREAM *)malloc(sizeof(CELL_VAR_STREAM) * cell_counts_total);
-
+    
     for (size_t i = 0; i < GEO_header.nrows; i++)
     {
         for (size_t j = 0; j < GEO_header.ncols; j++)
@@ -425,7 +444,10 @@ int main(int argc, char *argv[])
             Initialize_SOIL(data_SOIL + index_geo);
         }
     }
-    index_geo = 25 * GEO_header.ncols + 23;
+    printf("* data_RADIA\n");
+    printf("* data_ET\n");
+    
+    // index_geo = 25 * GEO_header.ncols + 23;
     // printf(
     //     "SW_Infiltration: %f\nSW_SR_Infil: %f\nSM_Upper: %f\nSM_Lower: %f\n",
     //     (data_SOIL + index_geo)->SW_Infiltration,
@@ -440,6 +462,7 @@ int main(int argc, char *argv[])
         GEO_header.NODATA_value,
         GEO_header.ncols,
         GEO_header.nrows);
+    printf("* data_SOIL\n");
     // index_geo = 25 * GEO_header.ncols + 23;
     // printf(
     //     "z: %f\nz_offset: %d\nQout: %f\n",
@@ -469,10 +492,13 @@ int main(int argc, char *argv[])
         GEO_header.NODATA_value,
         GEO_header.ncols,
         GEO_header.nrows);
+    printf("* data_STREAM\n");
 
+    time(&tm); printf("--------- %s initialize intermediate data structures: ", DateString(&tm)); printf("Done!\n");
     /***********************************************************************************
      *              define the output variables (results) from simulation
      ***********************************************************************************/
+    time(&tm); printf("--------- %s allocate memory for output variables: ", DateString(&tm));
     char FP_OUT_VAR[MAXCHAR] = "";
     int *out_Rs, *out_L_sky, *out_Rno, *out_Rnu;
     int *out_Ep, *out_EI_o, *out_EI_u, *out_ET_o, *out_ET_u, *out_ET_s;
@@ -499,6 +525,7 @@ int main(int argc, char *argv[])
     Qout_SF_Satur = (double *)malloc(sizeof(double) * outlet_count * time_steps_run);
     Qout_Sub = (double *)malloc(sizeof(double) * outlet_count * time_steps_run);
     Qout_outlet = (double *)malloc(sizeof(double) * outlet_count * time_steps_run);
+    printf("Done!\n");
     /***********************************************************************************
      *                       define the iteration variables
      ***********************************************************************************/
@@ -535,13 +562,14 @@ int main(int argc, char *argv[])
     /***********************************************************************************
      *                       xHM model iteration
      ***********************************************************************************/
+    time(&tm); printf("--------- %s xHM simulating: \n", DateString(&tm));
     while (run_time <= end_time)
     {
         tm_run = gmtime(&run_time);
         year = tm_run->tm_year + 1900;
         month = tm_run->tm_mon + 1;
         day = tm_run->tm_mday;
-        printf("%d-%02d-%02d\n", year, month, day);
+        // printf("%d-%02d-%02d\n", year, month, day);
         for (size_t i = 0; i < GEO_header.nrows; i++)
         {
             for (size_t j = 0; j < GEO_header.ncols; j++)
@@ -824,6 +852,7 @@ int main(int argc, char *argv[])
     }
     /************************ surface runoff routing **********************/
     // UH method for multiple outlets
+    time(&tm); printf("--------- %s overland runoff routing with UH method: ", DateString(&tm));
     int index_UH_gap;
     index_UH_gap = 0;
     for (size_t s = 0; s < outlet_count; s++)
@@ -852,7 +881,7 @@ int main(int argc, char *argv[])
             GP.STEP_TIME);
         index_UH_gap += UH_steps[s] * cell_counts_total;
     }
-
+    printf("Done!\n");
     /******************** total discharge at outlets ************************/
     Route_Outlet(
         Qout_SF_Infil,
@@ -861,7 +890,7 @@ int main(int argc, char *argv[])
         Qout_outlet,
         outlet_count,
         time_steps_run);
-
+    time(&tm); printf("--------- %s write the output variables to NetCDF files: ", DateString(&tm));
     Write_Qout(
         outnl,
         GP.PATH_OUT,
@@ -873,7 +902,7 @@ int main(int argc, char *argv[])
         outlet_index_col,
         outlet_count,
         time_steps_run);
-
+    printf("Done! \n");
     /***************************************************************************************************
      *                               export the variables
      ****************************************************************************************************/
@@ -902,7 +931,7 @@ int main(int argc, char *argv[])
     nc_close(ncID_TEM_MIN);
     nc_close(ncID_GEO);
     nc_close(ncID_UH);
-    printf("-------------------- xHM modelling: done!\n");
+    time(&tm); printf("--------- %s xHM modelling: Done!\n", DateString(&tm));
     return 1;
 }
 
@@ -915,3 +944,16 @@ void malloc_error(
         exit(-3);
     }
 }
+
+char *DateString(
+    time_t *tm
+)
+{
+    struct tm *ptm;
+    static char buf[30] = {0};
+    ptm = localtime(tm);
+    ptm->tm_isdst = 0; 
+    strftime(buf, 30, "%Y-%m-%d %H:%M:%S", ptm);
+    return buf;
+}
+
