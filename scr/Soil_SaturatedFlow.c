@@ -242,11 +242,10 @@ void Soil_Satu_Move(
                     Soil_Thickness,
                     cell_soil.Topsoil->DecayCoeff
                     );
-                printf("%f,", (*data_SOIL + index_geo)->Qout);
+                // printf("%f,", (*data_SOIL + index_geo)->Qout);
             }
         }
     }
-    printf("\n");
     /*****************************
      * calculate the inflow of each grid cell
      */
@@ -291,12 +290,12 @@ void Soil_Satu_Move(
                         Soil_Thickness,
                         cell_soil.Topsoil->DecayCoeff);
                 }
-                
+
                 /*******************
                  * update:
                  * - the underground (subsurface) water table, z
                  * - the water volume transferred vertically, SW_sf, SW_rise
-                 ******/ 
+                 ******/
                 if (
                     (*data_SOIL + index_geo)->z <= Soil_d1)
                 {
@@ -306,35 +305,55 @@ void Soil_Satu_Move(
                 {
                     Porosity = cell_soil.Subsoil->Porosity / 100;
                 }
-                dW = ((*data_SOIL + index_geo)->Qout + 
-                    (*data_STREAM + index_geo)->Qc - 
-                    (*data_SOIL + index_geo)->Qin) / cell_area * step_time -
-                    (*data_SOIL + index_geo)->SW_Percolation_Lower;
+                /************
+                 * dW: the change of subsurface water volume:
+                 * - positive: net outflow
+                 * - negative: net inflow
+                 * the same for dZ
+                */
+                dW = ((*data_SOIL + index_geo)->Qout +
+                      (*data_STREAM + index_geo)->Qc -
+                      (*data_SOIL + index_geo)->Qin) /
+                         cell_area * step_time -
+                     (*data_SOIL + index_geo)->SW_Percolation_Lower;
                 dZ = dW / Porosity;
-                // (data_SOIL + index_geo)->z += dZ;
-                (*data_SOIL + index_geo)->SW_rise_lower = 0;
-                (*data_SOIL + index_geo)->SW_rise_upper = 0;
-                (*data_SOIL + index_geo)->SW_rf = 0;
+                
+                // initialize
+                (*data_SOIL + index_geo)->SW_rise_lower = 0.0;
+                (*data_SOIL + index_geo)->SW_rise_upper = 0.0;
+                (*data_SOIL + index_geo)->SW_rf = 0.0;
                 if ((*data_SOIL + index_geo)->z + dZ > Soil_Thickness)
                 {
+                    // groundwater is depleted
                     (*data_SOIL + index_geo)->z = Soil_Thickness;
                 }
                 else if ((*data_SOIL + index_geo)->z + dZ < 0)
                 {
-                    (*data_SOIL + index_geo)->SW_rf = -(dZ + (*data_SOIL + index_geo)->z) * Porosity;
+                    /****
+                     * the rising water table reaches ground surface, net inflow
+                     * dZ < 0
+                     * dW < 0
+                     * */ 
+                    (*data_SOIL + index_geo)->SW_rf = - (dZ + (*data_SOIL + index_geo)->z) * Porosity;
                     (*data_SOIL + index_geo)->SW_rise_upper = Porosity * (*data_SOIL + index_geo)->z;
                     (*data_SOIL + index_geo)->z = 0.0;
                 }
                 else
                 {
-                    if ((*data_SOIL + index_geo)->z > Soil_d1)
+                    /********
+                     * water table fluctuates under ground
+                     */
+                    (*data_SOIL + index_geo)->z += dZ;
+                    if (dW < 0.0) // net inflow
                     {
-                        (*data_SOIL + index_geo)->SW_rise_lower = -dW;
-                    }
-                    else if ((*data_SOIL + index_geo)->z <= Soil_d1)
-                    {
-
-                        (*data_SOIL + index_geo)->SW_rise_upper = -dW;
+                        if ((*data_SOIL + index_geo)->z > Soil_d1)
+                        {
+                            (*data_SOIL + index_geo)->SW_rise_lower = -dW;
+                        }
+                        else if ((*data_SOIL + index_geo)->z <= Soil_d1)
+                        {
+                            (*data_SOIL + index_geo)->SW_rise_upper = -dW;
+                        }
                     }
                 }
             }
