@@ -19,14 +19,14 @@ void Channel_Routing(
 );
 
 void Initialize_STREAM(
-    CELL_VAR_STREAM *data_STREAM,
+    CELL_VAR_STREAM **data_STREAM,
     int *data_STR,
     int NODATA_value,
     int ncols,
     int nrows);
 
 void Channel_Routing_ITER(
-    CELL_VAR_STREAM *data_STREAM,
+    CELL_VAR_STREAM **data_STREAM,
     int *data_STR,
     int NODATA_value,
     int ncols,
