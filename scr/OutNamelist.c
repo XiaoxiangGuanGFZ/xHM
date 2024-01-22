@@ -596,7 +596,7 @@ void Write2NC_Outnamelist(
     {
         FP_OUT_VAR[0] = '\0';
         strcat(strcat(FP_OUT_VAR, GP.PATH_OUT), "Q_Channel.nc");
-        Write2NC("Q_Channel", "m/3", "subsurface-induced discharge in river channels",
+        Write2NC("Q_Channel", "m3/s", "subsurface-induced discharge in river channels",
                  0.001, GP.FP_GEO, FP_OUT_VAR, out_Q_Channel,
                  GP.STEP_TIME, time_steps_run, GP.START_YEAR, GP.START_MONTH, GP.START_DAY, GP.START_HOUR);
     }
