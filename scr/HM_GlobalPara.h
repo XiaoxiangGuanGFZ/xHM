@@ -12,5 +12,9 @@ void Initialize_GlobalPara(
     GLOBAL_PARA *global_para
 );
 
+void Print_GlobalPara(
+    GLOBAL_PARA *gp
+);
+
 #endif
 

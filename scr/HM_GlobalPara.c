@@ -261,6 +261,56 @@ void Initialize_GlobalPara(
     strcpy(global_para->PATH_OUT, "\0");
 }
 
+void Print_GlobalPara(
+    GLOBAL_PARA *gp
+)
+{
+    printf("%19s %s\n", "FIELD", "VALUE");
+    printf("%19s %s\n", "***************", "***************");
+    printf("%18s: %d\n", "START_YEAR", gp->START_YEAR);
+    printf("%18s: %d\n", "START_MONTH", gp->START_MONTH);
+    printf("%18s: %d\n", "START_DAY", gp->START_DAY);
+    printf("%18s: %d\n", "START_HOUR", gp->START_HOUR);
+    printf("%18s: %d\n", "END_YEAR", gp->END_YEAR);
+    printf("%18s: %d\n", "END_MONTH", gp->END_MONTH);
+    printf("%18s: %d\n", "END_DAY", gp->END_DAY);
+    printf("%18s: %d\n", "END_HOUR", gp->END_HOUR);
+    printf("%18s: %d\n", "STEP_TIME", gp->STEP_TIME);
+
+    printf("%18s: %s\n", "FP_PRE", gp->FP_PRE);
+    printf("%18s: %s\n", "FP_PRS", gp->FP_PRS);
+    printf("%18s: %s\n", "FP_RHU", gp->FP_RHU);
+    printf("%18s: %s\n", "FP_SSD", gp->FP_SSD);
+    printf("%18s: %s\n", "FP_WIN", gp->FP_WIN);
+    printf("%18s: %s\n", "FP_TEM_AVG", gp->FP_TEM_AVG);
+    printf("%18s: %s\n", "FP_TEM_MAX", gp->FP_TEM_MAX);
+    printf("%18s: %s\n", "FP_TEM_MIN", gp->FP_TEM_MIN);
+    printf("%18s: %f\n", "WIN_H", gp->WIN_H);
+
+    printf("%18s: %s\n", "FP_RHU", gp->FP_GEO);
+    printf("%18s: %s\n", "FP_VEGLIB", gp->FP_VEGLIB);
+    printf("%18s: %s\n", "FP_SOILLIB", gp->FP_SOILLIB);
+    printf("%18s: %s\n", "FP_SOIL_HWSD_ID", gp->FP_SOIL_HWSD_ID);
+    printf("%18s: %f\n", "SOIL_D", gp->SOIL_D);
+    printf("%18s: %f\n", "SOIL_d1", gp->SOIL_d1);
+    printf("%18s: %f\n", "SOIL_d2", gp->SOIL_d2);
+    printf("%18s: %f\n", "STREAM_D", gp->STREAM_D);
+    printf("%18s: %f\n", "STREAM_W", gp->STREAM_W);
+    printf("%18s: %f\n", "ROUTE_CHANNEL_k", gp->ROUTE_CHANNEL_k);
+
+    printf("%18s: %s\n", "SURFACE_RUNOFF", gp->SURFACE_RUNOFF);
+    printf("%18s: %s\n", "FP_UH", gp->FP_UH);
+    printf("%18s: %f\n", "Velocity_avg", gp->Velocity_avg);
+    printf("%18s: %f\n", "Velocity_max", gp->Velocity_max);
+    printf("%18s: %f\n", "Velocity_min", gp->Velocity_min);
+    printf("%18s: %f\n", "b", gp->b);
+    printf("%18s: %f\n", "c", gp->c);
+
+    printf("%18s: %s\n", "PATH_OUT", gp->PATH_OUT);
+    printf("%18s: %s\n", "FP_OUTNAMELIST", gp->FP_OUTNAMELIST);
+
+    printf("%19s %s\n", "***************", "***************");
+}
 
 // int main(int argc, char const *argv[])
 // {
