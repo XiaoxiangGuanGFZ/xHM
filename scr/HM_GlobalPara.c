@@ -171,6 +171,10 @@ void Import_GlobalPara(
                 {
                     global_para->STREAM_W = atof(S2);
                 }
+                else if (strcmp(S1, "ROUTE_CHANNEL_k") == 0)
+                {
+                    global_para->ROUTE_CHANNEL_k = atof(S2);
+                }
                 else if (strcmp(S1, "WIN_H") == 0)
                 {
                     global_para->WIN_H = atof(S2);
@@ -234,6 +238,15 @@ void Initialize_GlobalPara(
     global_para->START_MONTH = 1; global_para->END_MONTH = 1;
     global_para->START_YEAR = 1900; global_para->END_YEAR = 1900;
     global_para->STEP_TIME = 24;
+    
+    /* hydrological modeling parameters */
+    global_para->ROUTE_CHANNEL_k = 0.3;
+    global_para->WIN_H = 10.0;
+    global_para->SOIL_d1 = 0.1;
+    global_para->SOIL_d2 = 0.2;
+    global_para->SOIL_D = 1.5;
+    global_para->STREAM_D = 1;
+    global_para->STREAM_W = 10;
 
     /* UH parameters */
     strcpy(global_para->SURFACE_RUNOFF, "UH");

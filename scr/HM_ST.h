@@ -146,6 +146,7 @@ typedef struct
     double STREAM_D;
     double STREAM_W;
     double WIN_H;
+    double ROUTE_CHANNEL_k;
     /* model setup parameters */
     int START_YEAR;
     int START_MONTH;
