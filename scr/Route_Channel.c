@@ -34,19 +34,6 @@
 #include "HM_ST.h"
 #include "Route_Channel.h"
 
-// void Channel_Routing(
-//     double *Qin,
-//     double *Qout,
-//     double *Vin,
-//     double *Vout,
-//     double k,
-//     int step_time)
-// {
-//     *Vout = *Qin / k +
-//             (*Vin - *Qin / k) * exp(-k * (double)step_time);
-//     *Qout = *Qin - (*Vout - *Vin) / (double)step_time;
-// }
-
 void Channel_Routing(
     double *Q,
     double *V,
@@ -75,6 +62,7 @@ void Channel_Routing(
 void Initialize_STREAM(
     CELL_VAR_STREAM **data_STREAM,
     int *data_STR,
+    double ROUTE_CHANNEL_k,
     int NODATA_value,
     int ncols,
     int nrows)
@@ -101,7 +89,7 @@ void Initialize_STREAM(
             }
             else if (*(data_STR + index_geo) == 1)
             {
-                (*data_STREAM + index_geo)->k = 0.3;
+                (*data_STREAM + index_geo)->k = ROUTE_CHANNEL_k;
                 (*data_STREAM + index_geo)->Q = 0.0;
                 (*data_STREAM + index_geo)->Qc = 0.0;
                 (*data_STREAM + index_geo)->V = 0.0;
@@ -113,7 +101,6 @@ void Initialize_STREAM(
 void Channel_Routing_ITER(
     CELL_VAR_STREAM **data_STREAM,
     int *data_STR,
-    int NODATA_value,
     int ncols,
     int nrows,
     int step_time

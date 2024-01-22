@@ -105,6 +105,7 @@ int main(int argc, char *argv[])
     int ncID_GEO;
     ST_Header GEO_header;
     int cellsize_m;
+    int cellarea_m;
     nc_open(GP.FP_GEO, NC_NOWRITE, &ncID_GEO);
     nc_get_att_int(ncID_GEO, NC_GLOBAL, "ncols", &GEO_header.ncols);
     nc_get_att_int(ncID_GEO, NC_GLOBAL, "nrows", &GEO_header.nrows);
@@ -112,6 +113,7 @@ int main(int argc, char *argv[])
     nc_get_att_double(ncID_GEO, NC_GLOBAL, "xllcorner", &GEO_header.xllcorner);
     nc_get_att_double(ncID_GEO, NC_GLOBAL, "yllcorner", &GEO_header.yllcorner);
     nc_get_att_double(ncID_GEO, NC_GLOBAL, "cellsize", &GEO_header.cellsize);
+    cellarea_m = cellsize_m * cellsize_m;
 
     int cell_counts_total;
     cell_counts_total = GEO_header.ncols * GEO_header.nrows;
@@ -461,8 +463,9 @@ int main(int argc, char *argv[])
     // );
     // exit(0);
     Initialize_STREAM(
-        data_STREAM,
+        &data_STREAM,
         data_STR,
+        GP.ROUTE_CHANNEL_k,
         GEO_header.NODATA_value,
         GEO_header.ncols,
         GEO_header.nrows);
@@ -476,13 +479,18 @@ int main(int argc, char *argv[])
     int *out_Interception_o, *out_Interception_u, *out_Prec_net;
     int *out_SM_Upper, *out_SM_Lower, *out_SW_Percolation_Upper, *out_SW_Percolation_Lower;
     int *out_SW_Infiltration, *out_SW_Run_Infil, *out_SW_Run_Satur;
+    int *out_SW_SUB_Qin, *out_SW_SUB_Qout, *out_SW_SUB_z, *out_SW_SUB_rise_upper, *out_SW_SUB_rise_lower, *out_SW_SUB_rf;
+    int *out_SW_SUB_Qc, *out_Q_Channel;
     malloc_Outnamelist(
         outnl, cell_counts_total, time_steps_run,
         &out_Rs, &out_L_sky, &out_Rno, &out_Rnu,
         &out_Ep, &out_EI_o, &out_EI_u, &out_ET_o, &out_ET_u, &out_ET_s,
         &out_Interception_o, &out_Interception_u, &out_Prec_net,
         &out_SM_Upper, &out_SM_Lower, &out_SW_Percolation_Upper, &out_SW_Percolation_Lower,
-        &out_SW_Infiltration, &out_SW_Run_Infil, &out_SW_Run_Satur);
+        &out_SW_Infiltration, &out_SW_Run_Infil, &out_SW_Run_Satur,
+        &out_SW_SUB_Qin, &out_SW_SUB_Qout, &out_SW_SUB_z, 
+        &out_SW_SUB_rise_upper, &out_SW_SUB_rise_lower, &out_SW_SUB_rf,
+        &out_SW_SUB_Qc, &out_Q_Channel);
     out_SW_Run_Infil = (int *)malloc(sizeof(int) * time_steps_run * cell_counts_total);
     out_SW_Run_Satur = (int *)malloc(sizeof(int) * time_steps_run * cell_counts_total);
 
@@ -715,37 +723,100 @@ int main(int argc, char *argv[])
         }
         /**************** water movement in saturated soil zone *****************/
 
-        // Soil_Satu_Move(
-        //     data_DEM,
-        //     data_STR,
-        //     data_SOILTYPE,
-        //     data_STREAM,
-        //     data_SOIL,
-        //     soillib,
-        //     soilID,
-        //     Soil_Thickness,
-        //     Soil_d1,
-        //     Soil_d2,
-        //     stream_depth,
-        //     stream_width,
-        //     GEO_header.NODATA_value,
-        //     GEO_header.ncols,
-        //     GEO_header.nrows,
-        //     cellsize_m,
-        //     GP.STEP_TIME);
-
+        Soil_Satu_Move(
+            data_DEM,
+            data_STR,
+            data_SOILTYPE,
+            &data_STREAM,
+            &data_SOIL,
+            soillib,
+            soilID,
+            Soil_Thickness,
+            Soil_d1,
+            Soil_d2,
+            stream_depth,
+            stream_width,
+            GEO_header.NODATA_value,
+            GEO_header.ncols,
+            GEO_header.nrows,
+            (double) cellsize_m,
+            GP.STEP_TIME);
+        
+        int tog;
+        tog = outnl.SW_SUB_Qin + outnl.SW_SUB_Qout + outnl.SW_SUB_z + outnl.SW_SUB_rise_lower + outnl.SW_SUB_rise_upper + outnl.SW_SUB_rf; 
+        if (tog > 0)
+        {
+            for (size_t i = 0; i < GEO_header.nrows; i++)
+            {
+                for (size_t j = 0; j < GEO_header.ncols; j++)
+                {
+                    index_geo = i * GEO_header.ncols + j;
+                    if (*(data_DEM + index_geo) != GEO_header.NODATA_value)
+                    {
+                        index_run = t * cell_counts_total + index_geo;
+                        if (outnl.SW_SUB_Qin == 1)
+                        {
+                            *(out_SW_SUB_Qin + index_run) = (int)((data_SOIL + index_geo)->Qin / cellarea_m * GP.STEP_TIME * 10000);
+                        }
+                        if (outnl.SW_SUB_Qout == 1)
+                        {
+                            *(out_SW_SUB_Qout + index_run) = (int)((data_SOIL + index_geo)->Qout / cellarea_m * GP.STEP_TIME * 10000);
+                        }
+                        if (outnl.SW_SUB_z == 1)
+                        {
+                            *(out_SW_SUB_z + index_run) = (int)((data_SOIL + index_geo)->z * 100);
+                        }
+                        if (outnl.SW_SUB_rise_lower == 1)
+                        {
+                            *(out_SW_SUB_rise_lower + index_run) = (int)((data_SOIL + index_geo)->SW_rise_lower * 10000);
+                        }
+                        if (outnl.SW_SUB_rise_upper == 1)
+                        {
+                            *(out_SW_SUB_rise_upper + index_run) = (int)((data_SOIL + index_geo)->SW_rise_upper * 10000);
+                        }
+                        if (outnl.SW_SUB_rf == 1)
+                        {
+                            *(out_SW_SUB_rf + index_run) = (int)((data_SOIL + index_geo)->SW_rf * 10000);
+                        }
+                    }
+                }
+            }
+        }
+        
         /********************* river channel flow routing ****************/
-        // Channel_Routing_ITER(
-        //     data_STREAM,
-        //     data_STR,
-        //     GEO_header.NODATA_value,
-        //     GEO_header.ncols,
-        //     GEO_header.nrows,
-        //     GP.STEP_TIME);
-        // for (size_t s = 0; s < outlet_count; s++)
-        // {
-        //     *(Qout_Sub + s * time_steps_run + t) = (data_STREAM + outlet_index_row[s] * GEO_header.ncols + outlet_index_col[s])->Q;
-        // }
+        Channel_Routing_ITER(
+            &data_STREAM,
+            data_STR,
+            GEO_header.ncols,
+            GEO_header.nrows,
+            GP.STEP_TIME);
+        if (outnl.SW_SUB_Qc + outnl.Q_Channel > 0)
+        {
+            for (size_t i = 0; i < GEO_header.nrows; i++)
+            {
+                for (size_t j = 0; j < GEO_header.ncols; j++)
+                {
+                    index_geo = i * GEO_header.ncols + j;
+                    if (*(data_STR + index_geo) == 1)
+                    {
+                        index_run = t * cell_counts_total + index_geo;
+                        if (outnl.SW_SUB_Qc == 1)
+                        {
+                            *(out_SW_SUB_Qc + index_run) = (int)((data_STREAM + index_geo)->Qc / cellarea_m * GP.STEP_TIME * 10000);
+                        }
+                        if (outnl.Q_Channel == 1)
+                        {
+                            *(out_Q_Channel + index_run) = (int)((data_STREAM + index_geo)->Q / 3600 * 1000);
+                        }
+                    }
+                }
+            }
+        }
+        
+        for (size_t s = 0; s < outlet_count; s++)
+        {
+            *(Qout_Sub + s * time_steps_run + t) = (data_STREAM + outlet_index_row[s] * GEO_header.ncols + outlet_index_col[s])->Q;
+        }
 
         /********************* next iteration ****************/
         t += 1;
@@ -755,41 +826,41 @@ int main(int argc, char *argv[])
     // UH method for multiple outlets
     int index_UH_gap;
     index_UH_gap = 0;
-    // for (size_t s = 0; s < outlet_count; s++)
-    // {
-    //     UH_Routing(
-    //         out_SW_Run_Infil, 
-    //         data_UH + index_UH_gap,
-    //         Qout_SF_Infil + time_steps_run * s,
-    //         UH_steps[s],
-    //         GEO_header.ncols,
-    //         GEO_header.nrows,
-    //         time_steps_run,
-    //         cellsize_m,
-    //         GEO_header.NODATA_value,
-    //         GP.STEP_TIME);
-    //     UH_Routing(
-    //         out_SW_Run_Satur, 
-    //         data_UH + index_UH_gap,
-    //         Qout_SF_Satur + time_steps_run * s,
-    //         UH_steps[s],
-    //         GEO_header.ncols,
-    //         GEO_header.nrows,
-    //         time_steps_run,
-    //         cellsize_m,
-    //         GEO_header.NODATA_value,
-    //         GP.STEP_TIME);
-    //     index_UH_gap += UH_steps[s] * cell_counts_total;
-    // }
+    for (size_t s = 0; s < outlet_count; s++)
+    {
+        UH_Routing(
+            out_SW_Run_Infil, 
+            data_UH + index_UH_gap,
+            Qout_SF_Infil + time_steps_run * s,
+            UH_steps[s],
+            GEO_header.ncols,
+            GEO_header.nrows,
+            time_steps_run,
+            cellsize_m,
+            GEO_header.NODATA_value,
+            GP.STEP_TIME);
+        UH_Routing(
+            out_SW_Run_Satur, 
+            data_UH + index_UH_gap,
+            Qout_SF_Satur + time_steps_run * s,
+            UH_steps[s],
+            GEO_header.ncols,
+            GEO_header.nrows,
+            time_steps_run,
+            cellsize_m,
+            GEO_header.NODATA_value,
+            GP.STEP_TIME);
+        index_UH_gap += UH_steps[s] * cell_counts_total;
+    }
 
     /******************** total discharge at outlets ************************/
-    // Route_Outlet(
-    //     Qout_SF_Infil,
-    //     Qout_SF_Satur,
-    //     Qout_Sub,
-    //     Qout_outlet,
-    //     outlet_count,
-    //     time_steps_run);
+    Route_Outlet(
+        Qout_SF_Infil,
+        Qout_SF_Satur,
+        Qout_Sub,
+        Qout_outlet,
+        outlet_count,
+        time_steps_run);
 
     Write_Qout(
         outnl,
@@ -813,6 +884,9 @@ int main(int argc, char *argv[])
         &out_Interception_o, &out_Interception_u, &out_Prec_net,
         &out_SM_Upper, &out_SM_Lower, &out_SW_Percolation_Upper, &out_SW_Percolation_Lower,
         &out_SW_Infiltration, &out_SW_Run_Infil, &out_SW_Run_Satur,
+        &out_SW_SUB_Qin, &out_SW_SUB_Qout, &out_SW_SUB_z, 
+        &out_SW_SUB_rise_upper, &out_SW_SUB_rise_lower, &out_SW_SUB_rf,
+        &out_SW_SUB_Qc, &out_Q_Channel,
         GP);
 
     /***************************************************************************************************
