@@ -131,28 +131,25 @@ int main(int argc, char *argv[])
     printf("* ncols: %d\n* nrows: %d\n* xllcorner: %.12f\n* yllcorner: %.12f\n* cellsize: %.12f\n",
            GEO_header.ncols, GEO_header.nrows, GEO_header.xllcorner, GEO_header.yllcorner, GEO_header.cellsize);
     printf("* cellsize (m): %.1f\n", (double) cellsize_m);
-    int varID_VEGTYPE, varID_VEGFRAC, varID_lon, varID_lat, varID_SOILTYPE, varID_STR, varID_DEM;
-    int *data_VEGTYPE;
-    int *data_VEGFRAC;
-    int *data_STR;
-    int *data_DEM;
-    int *data_SOILTYPE;
-    double *data_lon;
-    double *data_lat;
+    int varID_VEGTYPE, varID_VEGFRAC, varID_lon, varID_lat, varID_SOILTYPE, varID_STR, varID_DEM, varID_FDR;
+    int *data_VEGTYPE, *data_VEGFRAC, *data_STR, *data_DEM, *data_SOILTYPE, *data_FDR;
+    double *data_lon, *data_lat;
 
     data_VEGTYPE = (int *)malloc(sizeof(int) * cell_counts_total);
     data_VEGFRAC = (int *)malloc(sizeof(int) * cell_counts_total);
     data_SOILTYPE = (int *)malloc(sizeof(int) * cell_counts_total);
     data_DEM = (int *)malloc(sizeof(int) * cell_counts_total);
     data_STR = (int *)malloc(sizeof(int) * cell_counts_total);
+    data_FDR = (int *)malloc(sizeof(int) * cell_counts_total);
     data_lat = (double *)malloc(sizeof(double) * GEO_header.nrows);
     data_lon = (double *)malloc(sizeof(double) * GEO_header.ncols);
-
+    
     nc_inq_varid(ncID_GEO, "VEGTYPE", &varID_VEGTYPE);
     nc_inq_varid(ncID_GEO, "VEGFRAC", &varID_VEGFRAC);
     nc_inq_varid(ncID_GEO, "SOILTYPE", &varID_SOILTYPE);
     nc_inq_varid(ncID_GEO, "DEM", &varID_DEM);
     nc_inq_varid(ncID_GEO, "STR", &varID_STR);
+    nc_inq_varid(ncID_GEO, "FDR", &varID_FDR);
     nc_inq_varid(ncID_GEO, "lon", &varID_lon);
     nc_inq_varid(ncID_GEO, "lat", &varID_lat);
 
@@ -161,13 +158,10 @@ int main(int argc, char *argv[])
     nc_get_var_int(ncID_GEO, varID_SOILTYPE, data_SOILTYPE);
     nc_get_var_int(ncID_GEO, varID_DEM, data_DEM);
     nc_get_var_int(ncID_GEO, varID_STR, data_STR);
+    nc_get_var_int(ncID_GEO, varID_FDR, data_FDR);
     nc_get_var_double(ncID_GEO, varID_lon, data_lon);
     nc_get_var_double(ncID_GEO, varID_lat, data_lat);
-    // printf("lat: %.2f\n", *(data_lat + 25));
-    // printf("SOIL: %d\n", *(data_SOILTYPE + 25 * GEO_header.ncols + 25));
-    // printf("VEG: %d\n", *(data_VEGTYPE + 25 * GEO_header.ncols + 25));
-    // printf("VEGFRAC: %d\n", *(data_VEGFRAC + 25 * GEO_header.ncols + 25));
-    
+
     // check the GEO data
     Check_GEO(ncID_GEO); 
     time(&tm); printf("--------- %s read GEO data: ", DateString(&tm)); printf("Done! \n");
@@ -446,16 +440,7 @@ int main(int argc, char *argv[])
     }
     printf("* data_RADIA\n");
     printf("* data_ET\n");
-    
-    // index_geo = 25 * GEO_header.ncols + 23;
-    // printf(
-    //     "SW_Infiltration: %f\nSW_SR_Infil: %f\nSM_Upper: %f\nSM_Lower: %f\n",
-    //     (data_SOIL + index_geo)->SW_Infiltration,
-    //     (data_SOIL + index_geo)->SW_SR_Infil,
-    //     (data_SOIL + index_geo)->SM_Upper,
-    //     (data_SOIL + index_geo)->SM_Lower
-    // );
-    
+
     Initialize_Soil_Satur(
         data_SOIL,
         data_DEM,
@@ -463,31 +448,11 @@ int main(int argc, char *argv[])
         GEO_header.ncols,
         GEO_header.nrows);
     printf("* data_SOIL\n");
-    // index_geo = 25 * GEO_header.ncols + 23;
-    // printf(
-    //     "z: %f\nz_offset: %d\nQout: %f\n",
-    //     (data_SOIL + index_geo)->z,
-    //     (data_SOIL + index_geo)->z_offset,
-    //     (data_SOIL + index_geo)->Qout
-    // );
-    // printf(
-    //     "DEM_center:%d\n", *(data_DEM + index_geo)
-    // );
-    // printf(
-    //     "zoffset 8:\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n",
-    //     (data_SOIL + index_geo)->z_offset_neighbor[0],
-    //     (data_SOIL + index_geo)->z_offset_neighbor[1],
-    //     (data_SOIL + index_geo)->z_offset_neighbor[2],
-    //     (data_SOIL + index_geo)->z_offset_neighbor[3],
-    //     (data_SOIL + index_geo)->z_offset_neighbor[4],
-    //     (data_SOIL + index_geo)->z_offset_neighbor[5],
-    //     (data_SOIL + index_geo)->z_offset_neighbor[6],
-    //     (data_SOIL + index_geo)->z_offset_neighbor[7]
-    // );
-    // exit(0);
+
     Initialize_STREAM(
         &data_STREAM,
         data_STR,
+        data_FDR,
         GP.ROUTE_CHANNEL_k,
         GEO_header.NODATA_value,
         GEO_header.ncols,
@@ -812,7 +777,7 @@ int main(int argc, char *argv[])
         }
         
         /********************* river channel flow routing ****************/
-        Channel_Routing_ITER(
+        Channel_Network_Routing(
             &data_STREAM,
             data_STR,
             GEO_header.ncols,
@@ -834,7 +799,7 @@ int main(int argc, char *argv[])
                         }
                         if (outnl.Q_Channel == 1)
                         {
-                            *(out_Q_Channel + index_run) = (int)((data_STREAM + index_geo)->Q / 3600 * 1000);
+                            *(out_Q_Channel + index_run) = (int)((data_STREAM + index_geo)->Qout / 3600 * 1000);
                         }
                     }
                 }
@@ -843,7 +808,7 @@ int main(int argc, char *argv[])
         
         for (size_t s = 0; s < outlet_count; s++)
         {
-            *(Qout_Sub + s * time_steps_run + t) = (data_STREAM + outlet_index_row[s] * GEO_header.ncols + outlet_index_col[s])->Q;
+            *(Qout_Sub + s * time_steps_run + t) = (data_STREAM + outlet_index_row[s] * GEO_header.ncols + outlet_index_col[s])->Qout;
         }
 
         /********************* next iteration ****************/
@@ -921,6 +886,12 @@ int main(int argc, char *argv[])
     /***************************************************************************************************
      *                               finalize the program
      ****************************************************************************************************/
+    free(data_lon);free(data_lat);
+    free(data_DEM);free(data_FDR);free(data_SOILTYPE);free(data_STR);free(data_VEGFRAC);free(data_VEGTYPE);
+    free(data_PRE);free(data_PRS);free(data_RHU);free(data_SSD);free(data_WIN);free(data_TEM_AVG);free(data_TEM_MAX);free(data_TEM_MIN);
+    free(data_UH);
+    free(data_RADIA);free(data_SOIL);free(data_STREAM);free(data_ET);
+
     nc_close(ncID_PRE);
     nc_close(ncID_PRS);
     nc_close(ncID_SSD);
