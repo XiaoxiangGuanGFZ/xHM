@@ -68,15 +68,16 @@ typedef struct
     double SW_rf;                /* water volume of return flow (generated when a rising water table reaches the ground surface), [m] */
 } CELL_VAR_SOIL;
 
-
-typedef struct 
+typedef struct
 {
-    double k;           /* channel storage parameter, [1/h] */
-    double Qc;          /* water flow from/into grid cell, [m3/h] */
-    double Q;           /* discharge of the channel, [m3/h] */
-    double V;           /* water volume of the channel, [m3] */
+    double k;     /* channel storage parameter, [1/h] */
+    double Qc;    /* water flow from/into grid cell, [m3/h] */
+    double Qin;   /* discharge into the channel, [m3/h] */
+    double Qout;  /* discharge out of the channel reach, [m3/s] */
+    double V;     /* water volume of the channel, [m3] */
+    int next_row; /* the row index of downstream cell */
+    int next_col; /* the col index of downstream cell */
 } CELL_VAR_STREAM;
-
 
 typedef struct
 {
