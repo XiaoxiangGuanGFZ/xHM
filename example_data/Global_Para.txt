@@ -1,11 +1,11 @@
 
 # ---------- model setup --------------------------
 
-START_YEAR,2001
-START_MONTH,1
+START_YEAR,2003
+START_MONTH,10
 START_DAY,1
 START_HOUR,0
-END_YEAR,2005
+END_YEAR,2013
 END_MONTH,12
 END_DAY,31
 END_HOUR,23
@@ -31,9 +31,9 @@ FP_SOIL_HWSD_ID,D:/xHM/example_data/SOIL_HWSD_ID.txt
 SOIL_D,1.5
 SOIL_d1,0.2
 SOIL_d2,0.2
-STREAM_D,1.5
+STREAM_D,1
 STREAM_W,10
-ROUTE_CHANNEL_k,0.03
+ROUTE_CHANNEL_k,3
 
 # ---------- Surface runoff routing ---------------
 SURFACE_RUNOFF,UH
