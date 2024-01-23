@@ -527,7 +527,7 @@ int main(int argc, char *argv[])
     /***********************************************************************************
      *                       xHM model iteration
      ***********************************************************************************/
-    time(&tm); printf("--------- %s xHM simulating: \n", DateString(&tm));
+    time(&tm); printf("--------- %s xHM simulating: ", DateString(&tm));
     while (run_time <= end_time)
     {
         tm_run = gmtime(&run_time);
@@ -535,6 +535,10 @@ int main(int argc, char *argv[])
         month = tm_run->tm_mon + 1;
         day = tm_run->tm_mday;
         // printf("%d-%02d-%02d\n", year, month, day);
+        if (t % 730 == 0)
+        {
+            printf("*");
+        }
         for (size_t i = 0; i < GEO_header.nrows; i++)
         {
             for (size_t j = 0; j < GEO_header.ncols; j++)
@@ -815,6 +819,7 @@ int main(int argc, char *argv[])
         t += 1;
         run_time += 3600 * GP.STEP_TIME;
     }
+    printf("\n");
     /************************ surface runoff routing **********************/
     // UH method for multiple outlets
     time(&tm); printf("--------- %s overland runoff routing with UH method: ", DateString(&tm));
