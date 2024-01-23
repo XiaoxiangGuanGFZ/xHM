@@ -1,29 +1,17 @@
 /*
- * SUMMARY:      Evapotranspiration.c
- * USAGE:        Calculate evapotranspiration (two layers model)
- *               overstory canopy and understory 
+ * SUMMARY:      Func_Tem.c
+ * USAGE:        air temperature related functions
  * AUTHOR:       Xiaoxiang Guan
  * ORG:          Section Hydrology, GFZ
  * E-MAIL:       guan@gfz-potsdam.de
  * ORIG-DATE:    Nov-2023
- * DESCRIPTION:  Calculate evapotranspiration
+ * DESCRIPTION:  Calculate air temperature related properties
  * DESCRIP-END.
- * FUNCTIONS:    PotentialEvaporation(), Transpiration(), VaporPresSlope()
- *                  Const_psychrometric(), e0(), Kelvin_tem(), WET_part(),
- *                  ET_iteration()
+ * FUNCTIONS:    VaporPresSlope(), Const_psychrometric(), e0(), Kelvin_tem()
  * 
  * COMMENTS:
  * 
- *
  * REFERENCES:
- * Wigmosta, M.S., L. W. Vail, and D. P. Lettenmaier,
- *      A distributed hydrologyvegetation model
- *      for complex terrain, Water Resources Research, 30 (6), 1665-1679, 1994.
- *
- * Dickinson, R. E., A. Henderson-Sellers, and P. J. Kennedy,
- *      Biosphere-atmosphere transfer scheme (BATS) Version leas coupled to the
- *      NCAR Community Climate Model, NCAR Technical Note, NCARITN-387+STR,
- *      Boulder, Colorado, 1993.
  *
  */
 

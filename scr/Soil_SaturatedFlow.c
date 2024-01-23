@@ -8,8 +8,8 @@
  * ORIG-DATE:    Jan-2024
  * DESCRIPTION:  Calculate saturated water movement
  * DESCRIP-END.
- * FUNCTIONS:    
- *               ()
+ * FUNCTIONS:    Soil_Satu_grad();Soil_Satu_Outflow();
+ *               Soil_Satu_Stream();Soil_Satu_Move();
  * COMMENTS:
  * 
  * 

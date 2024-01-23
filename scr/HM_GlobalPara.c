@@ -1,11 +1,11 @@
 /*
  * SUMMARY:      HM_GlobalPara.c
- * USAGE:        read in and initialize the global parameter structure 
+ * USAGE:        read and initialize the global parameter structure 
  * AUTHOR:       Xiaoxiang Guan
  * ORG:          Section Hydrology, GFZ
  * E-MAIL:       guan@gfz-potsdam.de
  * ORIG-DATE:    Jan-2024
- * DESCRIPTION:  deal with global parameter file
+ * DESCRIPTION:  handle (read and check) global parameter file
  * DESCRIP-END.
  * FUNCTIONS:    Import_GlobalPara(); Initialize_GlobalPara();
  * 

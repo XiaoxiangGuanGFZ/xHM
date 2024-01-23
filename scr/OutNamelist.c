@@ -1,4 +1,28 @@
 
+/*
+ * SUMMARY:      OutNamelist.c
+ * USAGE:        output variables
+ * AUTHOR:       Xiaoxiang Guan
+ * ORG:          Section Hydrology, GFZ
+ * E-MAIL:       guan@gfz-potsdam.de
+ * ORIG-DATE:    Dec-2023
+ * DESCRIPTION:  read the outnamelist file to inform the program
+ *               of the variables in simulation which should be saved and written 
+ *               to NetCDF files
+ * DESCRIP-END.
+ * FUNCTIONS:    Import_Outnamelist(); Initialize_Outnamelist(); 
+ *               malloc_Outnamelist(); Write2NC_Outnamelist()
+ * 
+ * COMMENTS:
+ * - read the outnamelist.txt file
+ * - initialize the outnamelist structure
+ * - allocate memory to the specified output variables
+ * - write the results into NetCDF files
+ *
+ * REFERENCES:
+ *
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

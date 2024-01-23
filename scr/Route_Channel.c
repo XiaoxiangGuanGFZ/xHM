@@ -7,9 +7,9 @@
  * ORIG-DATE:    Dec-2023
  * DESCRIPTION:  Calculate the flow routing process in the 
  *               river channels (segments or reaches), with a 
- *               linear storage method
+ *               linear reservoir method
  * DESCRIP-END.
- * FUNCTIONS:    
+ * FUNCTIONS:    Channel_Routing(); Initialize_STREAM(); Channel_Network_Routing();
  * 
  * COMMENTS:
  * 
@@ -22,7 +22,8 @@
 /******************************************************************
  * VARIABLES:
  * double Qc               - the (subsurface) water flow between grid cell and the river channel, [m3/h]
- * double Q                - the streamflow of the river reach, [m3/h]
+ * double Qin              - the inflow of the river reach, [m3/h]
+ * double Qout             - the outflow of the river reach, [m3/h]
  * double V                - the water volume of the river reach, [m3]
  * double k                - storage parameter: equal to the inverse of the average residence time, [1/h]
  * int step_time           - time step, interval, [h]
