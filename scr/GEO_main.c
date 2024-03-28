@@ -96,6 +96,7 @@ int main(int argc, char * argv[])
         // vegetation fraction
         ST_Header HD_VEGFRAC;
         int *rdata_vegfrac;
+        int index_geo;
         if (strcmp(GP.FP_VEGFRAC, "ALL_CELL_100") == 0)
         {
             /************
@@ -107,17 +108,18 @@ int main(int argc, char * argv[])
             {
                 for (size_t j = 0; j < HD_dem.ncols; j++)
                 {
-                    if (*(rdata_vegtype + i * HD_dem.ncols + j) == HD_dem.NODATA_value)
+                    index_geo = i * HD_dem.ncols + j;
+                    if (*(rdata_vegtype + index_geo) == HD_dem.NODATA_value)
                     {
                         // no data
-                        *(rdata_vegfrac + i * HD_dem.ncols + j) = HD_dem.NODATA_value;
-                    } else if (*(rdata_vegtype + i * HD_dem.ncols + j) <= 6)
+                        *(rdata_vegfrac + index_geo) = HD_dem.NODATA_value;
+                    } else if (*(rdata_vegtype + index_geo) <= 6 && *(rdata_vegtype + index_geo) > 0)
                     {
                         // cell with vegetation type of forest with a canopy
-                        *(rdata_vegfrac + i * HD_dem.ncols + j) = 100;
+                        *(rdata_vegfrac + index_geo) = 100;
                     } else {
-                        // cell with no canopy, like grassland et al.
-                        *(rdata_vegfrac + i * HD_dem.ncols + j) = 0;
+                        // cell with no canopy, like grassland, open water [vegtype == 0], and bare soil et al.
+                        *(rdata_vegfrac + index_geo) = 0;
                     }
                 }
             }

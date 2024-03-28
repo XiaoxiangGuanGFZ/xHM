@@ -209,9 +209,9 @@ void Initialize_Outnamelist(
 )
 {
 
-    for (size_t i = 0; i < sizeof(OUT_NAME_LIST) / sizeof(short); i++)
+    for (size_t i = 0; i < sizeof(OUT_NAME_LIST) / sizeof(int); i++)
     {
-        short *currentMember = ((short*)outnl) + i;
+        int *currentMember = ((int*)outnl) + i;
         *currentMember = 0;
     }
 }

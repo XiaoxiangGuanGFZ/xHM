@@ -81,6 +81,8 @@ double PotentialEvaporation(
     {
         Ep = 0.0;
     }
+    // printf("Radia_net: %f, Resist_aero: %f\n",Radia_net, Resist_aero);
+    // printf("Ep: %f\n", Ep);
     return Ep;
 }
 
@@ -468,7 +470,7 @@ void ET_CELL(
         Toggle_Overstory = 0;
         Frac_canopy = 0.0;
     }
-    
+    // printf("Toggle_Overstory: %d\n", Toggle_Overstory);
     double Tem_o;
     double Tem_u;
     double Tem_s;

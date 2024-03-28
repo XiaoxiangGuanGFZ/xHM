@@ -5,7 +5,7 @@
  * ORG:          Section Hydrology, GFZ
  * E-MAIL:       guan@gfz-potsdam.de
  * ORIG-DATE:    Jan-2024
- * DESCRIPTION:  simulate the multiple hydrological processes:
+ * DESCRIPTION:  simulate hydrological processes:
  *
  * DESCRIP-END.
  * FUNCTIONS:
@@ -67,8 +67,8 @@ int main(int argc, char *argv[])
     GLOBAL_PARA GP;
     Initialize_GlobalPara(&GP);
     Import_GlobalPara(*(++argv), &GP); printf("Done! \n");
-    Print_GlobalPara(&GP);
-    double ws_obs_z; /* the measurement height of wind speed, [m] */
+    Print_GlobalPara(&GP); // print the field-value pairs to screen
+    double ws_obs_z;       /* the measurement height of wind speed, [m] */
     ws_obs_z = GP.WIN_H;
     time(&tm); printf("--------- %s read outnamelist: ", DateString(&tm));
     char WS_OUT[MAXCHAR];
@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
     }
 
     time_steps_run = (end_time - start_time) / (3600 * GP.STEP_TIME) + 1;
-    printf("time_steps_run: %d\n", time_steps_run);
+    // printf("time_steps_run: %d\n", time_steps_run);
     /******************************************************************************
      *                              read GEO info
      ******************************************************************************/
@@ -115,8 +115,8 @@ int main(int argc, char *argv[])
     int status_nc;
     int ncID_GEO;
     ST_Header GEO_header;
-    int cellsize_m;
-    int cellarea_m;
+    int cellsize_m;  // unit: m
+    int cellarea_m;  // unit: m2
     nc_open(GP.FP_GEO, NC_NOWRITE, &ncID_GEO);
     nc_get_att_int(ncID_GEO, NC_GLOBAL, "ncols", &GEO_header.ncols);
     nc_get_att_int(ncID_GEO, NC_GLOBAL, "nrows", &GEO_header.nrows);
@@ -163,10 +163,12 @@ int main(int argc, char *argv[])
     nc_get_var_double(ncID_GEO, varID_lon, data_lon);
     nc_get_var_double(ncID_GEO, varID_lat, data_lat);
 
-    // check the GEO data
-    Check_GEO(ncID_GEO); 
+    Check_GEO(ncID_GEO);   // check the GEO data
     time(&tm); printf("--------- %s read GEO data: ", DateString(&tm)); printf("Done! \n");
 
+    /******************************************************************************
+     *                      read soil and vegetation library
+     ******************************************************************************/
     time(&tm); printf("--------- %s read vegetation and soil library: ", DateString(&tm));
     // import the vegetation library
     ST_VegLib veglib[11];
@@ -225,7 +227,7 @@ int main(int argc, char *argv[])
     nc_inq_varid(ncID_PRE, "time", &varID_time);
     nc_get_var1_long(ncID_PRE, varID_time, &index, &t_PRE); // the first value in the time series
     nc_inq_dimid(ncID_PRE, "time", &dimID_time);
-    nc_inq_dimlen(ncID_PRE, dimID_time, &time_steps_PRE); // the length of the time dimension
+    nc_inq_dimlen(ncID_PRE, dimID_time, &time_steps_PRE);   // the length of the time dimension
 
     nc_inq_varid(ncID_PRS, "time", &varID_time);
     nc_get_var1_long(ncID_PRS, varID_time, &index, &t_PRS);
@@ -264,6 +266,7 @@ int main(int argc, char *argv[])
 
     // print (preview) the info table of weather forcing NC datasets
     time_t tm_buf;
+    printf("* Info table of the forcing datasets:\n");
     printf("* %10s%25s%10s%10s\n", "forcing", "start_date", "length", "size(GB)");
     tm_buf = t_PRE - 3600; printf("* %10s%25s%10d%10.3f\n", "PRE", DateString(&tm_buf), time_steps_PRE, (float)sizeof(int) * time_steps_PRE * cell_counts_total / 1024 / 1024 / 1024);
     tm_buf = t_PRS - 3600; printf("* %10s%25s%10d%10.3f\n", "PRS", DateString(&tm_buf), time_steps_PRS, (float)sizeof(int) * time_steps_PRS * cell_counts_total / 1024 / 1024 / 1024);
@@ -286,7 +289,7 @@ int main(int argc, char *argv[])
     t_offset_TEM_MAX = (start_time - t_TEM_MAX) / (GP.STEP_TIME * 3600);
     t_offset_TEM_MIN = (start_time - t_TEM_MIN) / (GP.STEP_TIME * 3600);
 
-    // get the ids of the variables and read the variables into memory
+    // get the ids of the variables 
     status_nc = nc_inq_varid(ncID_PRE, "PRE", &varID_PRE);
     handle_error(status_nc, GP.FP_PRE);
     status_nc = nc_inq_varid(ncID_PRS, "PRS", &varID_PRS);
@@ -303,11 +306,8 @@ int main(int argc, char *argv[])
     handle_error(status_nc, GP.FP_TEM_MAX);
     status_nc = nc_inq_varid(ncID_TEM_MIN, "TEM_MIN", &varID_TEM_MIN);
     handle_error(status_nc, GP.FP_TEM_MIN);
-    // printf("malloc for weather data: ");
-    // printf("memory size required in total: %.2f GB\n",
-    //        (float)sizeof(int) * time_steps_PRE * cell_counts_total * 8 / 1024 / 1024 / 1024);
     
-    // allocate memory first
+    // allocate memory for only one-step data (2D raster)
     data_PRE = (int *)malloc(sizeof(int) * cell_counts_total);
     malloc_error(data_PRE);
     data_PRS = (int *)malloc(sizeof(int) * cell_counts_total);
@@ -332,31 +332,6 @@ int main(int argc, char *argv[])
     nc_count[0] = 1;
     nc_count[1] = GEO_header.nrows;
     nc_count[2] = GEO_header.ncols;
-
-    nc_start[0] = t_offset_PRE;
-    status_nc = nc_get_vara_int(ncID_PRE, varID_PRE, nc_start, nc_count, data_PRE); // status_nc = nc_get_var_int(ncID_PRE, varID_PRE, data_PRE);
-    handle_error(status_nc, GP.FP_PRE);
-
-    nc_start[0] = t_offset_PRS; status_nc = nc_get_vara_int(ncID_PRS, varID_PRS, nc_start, nc_count, data_PRS); 
-    handle_error(status_nc, GP.FP_PRS);
-
-    nc_start[0] = t_offset_SSD; status_nc = nc_get_vara_int(ncID_SSD, varID_SSD, nc_start, nc_count, data_SSD);
-    handle_error(status_nc, GP.FP_SSD);
-
-    nc_start[0] = t_offset_RHU; status_nc = nc_get_vara_int(ncID_RHU, varID_RHU, nc_start, nc_count, data_RHU);
-    handle_error(status_nc, GP.FP_RHU);
-
-    nc_start[0] = t_offset_WIN; status_nc = nc_get_vara_int(ncID_WIN, varID_WIN, nc_start, nc_count, data_WIN);
-    handle_error(status_nc, GP.FP_WIN);
-
-    nc_start[0] = t_offset_TEM_AVG; status_nc = nc_get_vara_int(ncID_TEM_AVG, varID_TEM_AVG, nc_start, nc_count, data_TEM_AVG);
-    handle_error(status_nc, GP.FP_TEM_AVG);
-
-    nc_start[0] = t_offset_TEM_MAX; status_nc = nc_get_vara_int(ncID_TEM_MAX, varID_TEM_MAX, nc_start, nc_count, data_TEM_MAX);
-    handle_error(status_nc, GP.FP_TEM_MAX);
-
-    nc_start[0] = t_offset_TEM_MIN; status_nc = nc_get_vara_int(ncID_TEM_MIN, varID_TEM_MIN, nc_start, nc_count, data_TEM_MIN);
-    handle_error(status_nc, GP.FP_TEM_MIN);
     
     nc_get_att_int(ncID_PRE, varID_PRE, "NODATA_value", &GEO_header.NODATA_value);
     // the scale_factor and offset parameters for NC variables
@@ -381,18 +356,13 @@ int main(int argc, char *argv[])
     // printf("PRE: %.1f\n", scale_PRE);
     // printf("RHU: %.1f\n", scale_RHU);
     // printf("TEM_AVG: %.1f\n", scale_TEM_AVG);
+
     time(&tm); printf("--------- %s read weather forcing: Done!\n", DateString(&tm));
     /***********************************************************************************
      *                          set model running period
      ************************************************************************************/
-
-    // printf("t_offset:\n");
-    // printf("PRE: %d\n", t_offset_PRE);
-    // printf("WIN: %d\n", t_offset_WIN);
-    // printf("TEM_AVG: %d\n", t_offset_TEM_AVG);
     time_t run_time;
     run_time = start_time;
-    // int index_PRE, index_PRS, index_SSD, index_RHU, index_WIN, index_TEM_AVG, index_TEM_MAX, index_TEM_MIN;
     int index_geo;
     int index_run;
 
@@ -521,14 +491,7 @@ int main(int argc, char *argv[])
      *                       define the iteration variables
      ***********************************************************************************/
     int t = 0;
-    double cell_PRE;
-    double cell_WIN;
-    double cell_SSD;
-    double cell_RHU;
-    double cell_PRS;
-    double cell_TEM_AVG;
-    double cell_TEM_MAX;
-    double cell_TEM_MIN;
+    double cell_PRE, cell_WIN, cell_SSD, cell_RHU, cell_PRS, cell_TEM_AVG, cell_TEM_MAX, cell_TEM_MIN;
 
     ST_CELL_VEG cell_veg;
     ST_SOIL_LIB_CELL cell_soil;
@@ -553,7 +516,7 @@ int main(int argc, char *argv[])
     /***********************************************************************************
      *                       xHM model iteration
      ***********************************************************************************/
-    time(&tm); printf("--------- %s xHM simulating: ", DateString(&tm));
+    time(&tm); printf("--------- %s xHM hydrological processes simulating: ", DateString(&tm));
     while (run_time <= end_time)
     {
         tm_run = gmtime(&run_time);
@@ -623,19 +586,23 @@ int main(int argc, char *argv[])
                     cell_TEM_MAX = *(data_TEM_MAX + index_geo) * scale_TEM_MAX;
                     cell_TEM_MIN = *(data_TEM_MIN + index_geo) * scale_TEM_MIN;
                     // printf(
-                    //     "%8s%8s%8s%8s%8s%8s%8s%8s\n",
+                    //     "\n%8s%8s%8s%8s%8s%8s%8s%8s\n",
                     //     "PRE", "TEM_AVG", "TEM_MAX", "TEM_MIN", "WIN", "SSD", "RHU", "PRS");
                     // printf("%8.2f%8.2f%8.2f%8.2f%8.1f%8.0f%8.1f%8.1f\n",
                     //        cell_PRE * 1000, cell_TEM_AVG, cell_TEM_MAX, cell_TEM_MIN, cell_WIN, cell_SSD, cell_RHU, cell_PRS);
                     /**************** parameter preparation *****************/
                     cell_lat = *(data_lat + i);
                     cell_VEG_class = *(data_VEGTYPE + index_geo);
-                    // printf("VEG_CLASS: %d\n", cell_VEG_class);
                     cell_SOIL_ID = *(data_SOILTYPE + index_geo);
                     cell_veg.CAN_FRAC = *(data_VEGFRAC + index_geo) / 100;
                     Lookup_VegLib_CELL(veglib, cell_VEG_class, &cell_veg);
                     Lookup_VegLib_CELL_MON(veglib, cell_VEG_class, month, &cell_veg);
                     Lookup_Soil_CELL(cell_SOIL_ID, &cell_soil, soillib, soilID);
+                    // printf("VEG_CLASS: %d\n", cell_VEG_class);
+                    // printf("cell_veg.Understory: %d\n", cell_veg.Understory);
+                    // printf("cell_veg.d_u:%f\n", cell_veg.d_u);
+                    // printf("cell_veg.CAN_FRAC: %f\n", cell_veg.CAN_FRAC);
+                    
                     /******************* evapotranspiration *******************/
                     Soil_Fe = Soil_Desorption(
                         (data_SOIL + index_geo)->SM_Upper,
@@ -681,7 +648,8 @@ int main(int argc, char *argv[])
                         &((data_ET + index_geo)->Interception_u),
                         cell_veg.Understory,
                         GP.STEP_TIME);
-                    // printf("ET\n");
+                    // printf("\n test ET i = %d, j = %d\n", i, j);
+                    // exit(-9);
                     /**************** unsaturated soil zone water movement *****************/
                     UnsaturatedWaterMove(
                         (data_ET + index_geo)->Prec_net / GP.STEP_TIME,
@@ -904,16 +872,16 @@ int main(int argc, char *argv[])
         t += 1;
         run_time += 3600 * GP.STEP_TIME;
     }
-    printf("\n");
     OUTVAR_nc_close(outnl, outnl_ncid);
     /***************************************************************************************************
      *                               export the variables: runoff generation
      ****************************************************************************************************/
     Write2NC_Outnamelist(outnl, time_steps_run, &out_SW_Run_Infil, &out_SW_Run_Satur, GP);
-
+    printf(" Done!\n");
+    exit(-9);
     /************************ surface runoff routing **********************/
     // UH method for multiple outlets
-    time(&tm); printf("--------- %s overland runoff routing with UH method: ", DateString(&tm));
+    time(&tm); printf("--------- %s xHM overland runoff routing with UH method: ", DateString(&tm));
     int index_UH_gap;
     index_UH_gap = 0;
     for (size_t s = 0; s < outlet_count; s++)
@@ -951,7 +919,7 @@ int main(int argc, char *argv[])
         Qout_outlet,
         outlet_count,
         time_steps_run);
-    time(&tm); printf("--------- %s write the output variables to NetCDF files: ", DateString(&tm));
+    time(&tm); printf("--------- %s xHM write the output variables to NetCDF files: ", DateString(&tm));
     Write_Qout(
         outnl,
         GP.PATH_OUT,
