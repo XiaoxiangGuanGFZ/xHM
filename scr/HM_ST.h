@@ -86,43 +86,43 @@ typedef struct
      * 1: yes, export the variable values into a separate nc file
      * default: 0
      */
-    short Rs;
-    short L_sky;
-    short Rno;
-    short Rnu;
+    int Rs;
+    int L_sky;
+    int Rno;
+    int Rnu;
 
-    short Ep;
-    short EI_o;
-    short EI_u;
-    short ET_o;
-    short ET_u;
-    short ET_s;
-    short Interception_o;
-    short Interception_u;
-    short Prec_net;
+    int Ep;
+    int EI_o;
+    int EI_u;
+    int ET_o;
+    int ET_u;
+    int ET_s;
+    int Interception_o;
+    int Interception_u;
+    int Prec_net;
 
-    short SM_Upper;
-    short SM_Lower;
-    short SW_Run_Infil;
-    short SW_Run_Satur;
-    short SW_Infiltration;
-    short SW_Percolation_Upper;
-    short SW_Percolation_Lower;
+    int SM_Upper;
+    int SM_Lower;
+    int SW_Run_Infil;
+    int SW_Run_Satur;
+    int SW_Infiltration;
+    int SW_Percolation_Upper;
+    int SW_Percolation_Lower;
 
-    short SW_SUB_Qin;
-    short SW_SUB_Qout;
-    short SW_SUB_z;
-    short SW_SUB_rise_upper;
-    short SW_SUB_rise_lower;
-    short SW_SUB_rf;
+    int SW_SUB_Qin;
+    int SW_SUB_Qout;
+    int SW_SUB_z;
+    int SW_SUB_rise_upper;
+    int SW_SUB_rise_lower;
+    int SW_SUB_rf;
 
-    short SW_SUB_Qc;
-    short Q_Channel;
+    int SW_SUB_Qc;
+    int Q_Channel;
 
-    short Qout_SF_Infil;
-    short Qout_SF_Satur;
-    short Qout_Sub;
-    short Qout_outlet;
+    int Qout_SF_Infil;
+    int Qout_SF_Satur;
+    int Qout_Sub;
+    int Qout_outlet;
 } OUT_NAME_LIST;
 
 typedef struct
