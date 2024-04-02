@@ -88,6 +88,16 @@ void Grid_UH(
     int NODATA_value
 );
 
+void UH_scale(
+    int *data_mask,
+    double **data_UH,
+    int time_steps,
+    int step_time,
+    int ncols,
+    int nrows,
+    int NODATA_value
+);
+
 void UH_Generation(
     char FP_GEO[],
     char FP_UH[],

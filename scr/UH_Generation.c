@@ -593,7 +593,6 @@ void Grid_UH(
     double Ts, Tr;
     for (t = 0; t < *time_steps; t++)
     {
-        
         for (i = 0; i < nrows; i++)
         {
             for (j = 0; j < ncols; j++)
@@ -622,7 +621,68 @@ void Grid_UH(
             }
         }
     }
+    UH_scale(data_mask, data_UH, *time_steps, step_time, ncols, nrows, NODATA_value);
     printf("Grid_UH: done!\n");
+}
+
+void UH_scale(
+    int *data_mask,
+    double **data_UH,
+    int time_steps,
+    int step_time,
+    int ncols,
+    int nrows,
+    int NODATA_value
+)
+{
+    int index;
+    int n;
+    n = ncols * nrows;
+    double *sum;
+    sum = (double *)malloc(sizeof(double) * n);
+
+    /*********
+     * calculate the sum (toals) of UH series
+     * for each grid cell.
+     */
+    for (size_t i = 0; i < nrows; i++)
+    {
+        for (size_t j = 0; j < ncols; j++)
+        {
+            index = i * ncols + j;
+            if (*(data_mask + index) == NODATA_value)
+            {
+                *(sum + index) = (double)NODATA_value;
+            }
+            else
+            {
+                *(sum + index) = 0.0;
+                for (size_t t = 0; t < time_steps; t++)
+                {
+                    *(sum + index) += *(*data_UH + t * n + index);
+                }
+                printf("%.6f\n", *(sum + index));
+            }
+        }
+    }
+    /**************
+     * scale
+     */
+    for (size_t i = 0; i < nrows; i++)
+    {
+        for (size_t j = 0; j < ncols; j++)
+        {
+            index = i * ncols + j;
+            if (*(data_mask + index) != NODATA_value)
+            {
+                for (size_t t = 0; t < time_steps; t++)
+                {
+                    *(*data_UH + t * n + index) = *(*data_UH + t * n + index) * 1.0 / step_time / *(sum + index);
+                }
+            }
+        }
+    }
+    free(sum);
 }
 
 void UH_Generation(
