@@ -11,6 +11,9 @@
 - river (channel) routing
 
 ## To-Do-List
+- check aerodynamic resistance of canopy: sensitivity analysis
+- the water balance: Ep, E and Robs [seem Ep and E are overestimated]
+
 - test snow model for other stations (areas), more test studies
 - test hourly scale snow modeling 
 
