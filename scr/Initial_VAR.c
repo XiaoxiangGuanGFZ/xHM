@@ -42,8 +42,8 @@ void Initialize_ET(
         double *currentMember = ((double *)st) + i;
         *currentMember = 0.0;
     }
-    st->Interception_o = 0.002;
-    st->Interception_u = 0.002;
+    // st->Interception_o = 0.0;
+    // st->Interception_u = 0.0;
 }
 
 void Initialize_SOIL(
@@ -54,8 +54,8 @@ void Initialize_SOIL(
     st->SW_Percolation_Upper = 0.0;
     st->SW_SR_Infil = 0.0;
     st->SW_SR_Satur = 0.0;
-    st->SM_Lower = 0.2;
-    st->SM_Upper = 0.2;
+    st->SM_Lower = 0.4;
+    st->SM_Upper = 0.4;
 }
 
 
@@ -80,7 +80,7 @@ void Initialize_Soil_Satur(
 
             if (*(data_DEM + index_geo) != NODATA_value)
             {
-                (data_SOIL + index_geo)->z = 0.3;
+                (data_SOIL + index_geo)->z = 0.05;
                 (data_SOIL + index_geo)->Qin = 0.0;
                 (data_SOIL + index_geo)->Qout = 0.0;
                 (data_SOIL + index_geo)->SW_rf = 0.0;
