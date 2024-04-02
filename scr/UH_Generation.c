@@ -661,7 +661,7 @@ void UH_scale(
                 {
                     *(sum + index) += *(*data_UH + t * n + index);
                 }
-                printf("%.6f\n", *(sum + index));
+                // printf("%.6f\n", *(sum + index));
             }
         }
     }

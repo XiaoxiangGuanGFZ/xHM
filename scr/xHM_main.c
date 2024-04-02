@@ -878,7 +878,7 @@ int main(int argc, char *argv[])
      ****************************************************************************************************/
     Write2NC_Outnamelist(outnl, time_steps_run, &out_SW_Run_Infil, &out_SW_Run_Satur, GP);
     printf(" Done!\n");
-    exit(-9);
+    //exit(-9);
     /************************ surface runoff routing **********************/
     // UH method for multiple outlets
     time(&tm); printf("--------- %s xHM overland runoff routing with UH method: ", DateString(&tm));
