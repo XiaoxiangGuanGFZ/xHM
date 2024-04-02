@@ -58,7 +58,7 @@ output/
 /example_data/CT_GEO_250m/
 /example_data/JN_GEO_1km/
 /example_data/Weather/
-
+/RMarkdowns/
 # net data files
 *.nc
 
