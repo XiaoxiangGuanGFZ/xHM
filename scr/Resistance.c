@@ -72,7 +72,7 @@ double Resist_aero_o(
      *      assuming a logarithm wind profile (between anemometer and ground surface, there is no canopy).
      * Wind speed at the above canopy reference height (it is high enough) is 
      *      the same throughout the calculating grid cell (area). 
-     * Wind speed is measured usually at the height of 10m above ground in China,
+     * Wind speed is measured usually at the height of 10m above ground,
      *      and the ground surface usually is either grassland or snowpack.
     */
     Air_ws_zr = WindSpeed_Profile(
@@ -82,7 +82,7 @@ double Resist_aero_o(
     {
         Air_ws_zr = 0.0001;
     }
-    
+    // Rao = pow(log((zr - d) / z0), 2) / (Air_ws_zr * k * k);
     zw = 1.5 * Canopy_h - 0.5 * d;
     Rao = log((zr - d) / z0) / (Air_ws_zr * k * k) *
           (Canopy_h / (na * (zw - d)) *
