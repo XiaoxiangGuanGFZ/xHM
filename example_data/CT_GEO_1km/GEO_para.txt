@@ -6,7 +6,7 @@ FP_OUTLET,D:/xHM/example_data/CT_GEO_1km/outlet.txt
 FP_VEGTYPE,D:/xHM/example_data/CT_GEO_1km/vegetype.txt
 FP_VEGFRAC,ALL_CELL_100
 FP_SOILTYPE,D:/xHM/example_data/CT_GEO_1km/soil.txt
-FP_GEONC,D:/xHM/example_data/CT_GEO_1km/GEO1km_data.nc
+FP_GEONC,D:/xHM/example_data/CT_GEO_1km/GEO_data.nc
 Projection,GEOGRAPHIC
 Datum,WGS84
 Spheroid,WGS84

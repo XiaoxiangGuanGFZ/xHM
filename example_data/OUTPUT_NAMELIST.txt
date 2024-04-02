@@ -17,19 +17,19 @@ Rnu,0
 Ep,1
 
 # evaporation from overstory, [mm]
-EI_o,0
+EI_o,1
 
 # transpiration from overstory, [mm]
-ET_o,0
+ET_o,1
 
 # evaporation from understory, [mm]
-EI_u,0
+EI_u,1
 
 # transpiration from understory, [mm]
-ET_u,0
+ET_u,1
 
 # soil evaporation, [mm]
-ET_s,0
+ET_s,1
 
 # canopy (overstory) intercepted water, [mm]
 Interception_o,0
@@ -38,56 +38,56 @@ Interception_o,0
 Interception_u,0
 
 # net precipitation on the ground surface, [mm]
-Prec_net,1
+Prec_net,0
 
 # --------- variables in soil water movement ------------
 # soil moisture from upper soil layer, [fraction]
-SM_Upper,1
+SM_Upper,0
 
 # soil moisture from lower soil layer, [fraction]
-SM_Lower,1
+SM_Lower,0
 
 # percolation water from upper soil layer, [mm]
-SW_Percolation_Upper,1
+SW_Percolation_Upper,0
 
 # percolation water from lower soil layer, [mm]
-SW_Percolation_Lower,1
+SW_Percolation_Lower,0
 
 # infiltration from ground surface into upper soil layer, [mm]
-SW_Infiltration,1
+SW_Infiltration,0
 
 # surface runoff generated from excess-infiltration, [mm]
-SW_Run_Infil,1
+SW_Run_Infil,0
 
 # surface runoff from soil layer saturation, [mm]
-SW_Run_Satur,1
+SW_Run_Satur,0
 
 # subsurface inflow to the grid cell within the time step, [mm]
-SW_SUB_Qin,1
+SW_SUB_Qin,0
 
 # subsurface ourflow from the grid cell, [mm]
-SW_SUB_Qout,1
+SW_SUB_Qout,0
 
 # subsurface water table, positive downward, [m]
-SW_SUB_z,1
+SW_SUB_z,0
 
 # water supplied by rising subsurface water table to the upper soil layer, [mm]
-SW_SUB_rise_upper,1
+SW_SUB_rise_upper,0
 
 # water supplied by rising subsurface water table to the lower soil layer, [mm]
-SW_SUB_rise_lower,1
+SW_SUB_rise_lower,0
 
 # water volume of return flow, [mm]
 # (generated when a rising water table reaches the ground surface)
-SW_SUB_rf,1
+SW_SUB_rf,0
 
 # --------- variables in routing ------------------------------
 
 # lateral water supplied by grid cell into the river channel, [mm]
-SW_SUB_Qc,1
+SW_SUB_Qc,0
 
 # the (subsurface-induced) discharge process in the river stream network, [m3/s]
-Q_Channel,1
+Q_Channel,0
 
 # overland surface water flow at outlets from infiltration-excess, [m3/s]
 Qout_SF_Infil,1
