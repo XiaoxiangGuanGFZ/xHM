@@ -42,8 +42,8 @@ void Initialize_ET(
         double *currentMember = ((double *)st) + i;
         *currentMember = 0.0;
     }
-    // st->Interception_o = 0.0;
-    // st->Interception_u = 0.0;
+    st->Interception_o = 0.0;
+    st->Interception_u = 0.0;
 }
 
 void Initialize_SOIL(

@@ -127,11 +127,11 @@ double WET_part(
     double Frac_canopy   /* scalar: the fraction of ground surface covered by the canopy */
 ){
     /*******
-     * every story (over and under) is partitioned into 
+     * every story (over and under) is partitioned into
      * a wet fraction (Aw) and a dry fraction (1 - Aw),
      * following Dickinson et al (1993)
-     * 
-    */
+     *
+     */
     double Ic;  // the maximum interception storage capacity (in meters)
     double Aw;  // wet fraction, value range: [0, 1] 
     Ic = 0.0001 * LAI * Frac_canopy;
@@ -172,7 +172,7 @@ void ET_story(
      * for overstory:
      * - Ep: estimated from function PotentialEvaporation()
      * - Prec_input: precipitation
-     * - Frac_canopy: canopy fraction, (0, 1]
+     * - Frac_canopy: canopy fraction, [0, 1]
      * - *Prec_throughfall: throughfall from overstory to understory
      * 
      * for understory:
@@ -182,20 +182,18 @@ void ET_story(
      * - *Prec_throughfall: excess precipitation into soil process (either infiltration or runoff)
     */
     double Ic;
-    // double Ep;
     double Et;
     double Aw;
     double tw;
 
-    Ic = 0.0001 * LAI * Frac_canopy;
+    Ic = 0.0001 * LAI * Frac_canopy;  // water holding capacity of story
     if (Ep > 0.0)
     {
         Et = Transpiration(
             Ep, Air_tem_avg, Air_tem_min, Air_tem_max,
             Air_pres, Resist_canopy, Resist_aero);
 
-        Aw = WET_part(
-            Prec_input, *Interception, LAI, Frac_canopy);
+        Aw = WET_part(Prec_input, *Interception, LAI, Frac_canopy);
 
         tw = (*Interception + Prec_input) / (Ep * Aw);
 
@@ -207,8 +205,7 @@ void ET_story(
              */
             *EI = (Ep * Aw) * tw;                     // evaporation from wet part, [m]
             *ET = Et * (1 - Aw) * tw +                // transpiration from wet part, [m]
-                  Et * Aw * ((double)step_time - tw); //  from dry part
-            
+                  Et * Aw * ((double)step_time - tw); // and transpiration from dry part
         }
         else
         {
@@ -227,7 +224,6 @@ void ET_story(
         {
             *ET = 0.0;
         }
-        
     }
     else
     {
@@ -239,7 +235,11 @@ void ET_story(
     /*** update the story state ***/
     double Prec_excess;
     Prec_excess = (*Interception + Prec_input) - *EI;
-    if (Prec_excess <= Ic)
+    if (Prec_excess <= 0.0)
+    {
+        *Interception = 0.0;
+        *Prec_throughfall = 0.0;
+    } else if (Prec_excess <= Ic)
     {
         *Interception = Prec_excess; // update the overstory interception water
         *Prec_throughfall = 0.0;

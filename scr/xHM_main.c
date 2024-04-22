@@ -719,6 +719,14 @@ int main(int argc, char *argv[])
                     {
                         *(out_Prec_net + index_geo) = (int)((data_ET + index_geo)->Prec_net * 10000);
                     }
+                    if (outnl.Interception_o == 1)
+                    {
+                        *(out_Interception_o + index_geo) = (int)((data_ET + index_geo)->Interception_o * 10000);
+                    }
+                    if (outnl.Interception_u == 1)
+                    {
+                        *(out_Interception_u + index_geo) = (int)((data_ET + index_geo)->Interception_u * 10000);
+                    }
                     if (outnl.SM_Upper == 1)
                     {
                         *(out_SM_Upper + index_geo) = (int)((data_SOIL + index_geo)->SM_Upper * 100);
