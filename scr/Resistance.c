@@ -82,13 +82,13 @@ double Resist_aero_o(
     {
         Air_ws_zr = 0.0001;
     }
-    // Rao = pow(log((zr - d) / z0), 2) / (Air_ws_zr * k * k);
-    zw = 1.5 * Canopy_h - 0.5 * d;
-    Rao = log((zr - d) / z0) / (Air_ws_zr * k * k) *
-          (Canopy_h / (na * (zw - d)) *
-               (exp(na * (1 - (d - z0) / Canopy_h) - 1)) +
-           (zw - Canopy_h) / (zw - d) +
-           log((zr - d) / (zw - d))); // unit: s/m
+    Rao = pow(log((zr - d) / z0), 2) / (Air_ws_zr * k * k);
+    // zw = 1.5 * Canopy_h - 0.5 * d;
+    // Rao = log((zr - d) / z0) / (Air_ws_zr * k * k) *
+    //       (Canopy_h / (na * (zw - d)) *
+    //            (exp(na * (1 - (d - z0) / Canopy_h) - 1)) +
+    //        (zw - Canopy_h) / (zw - d) +
+    //        log((zr - d) / (zw - d))); // unit: s/m
     // 1 h = 60 * 60 s
     // printf("Air_ws_obs: %f, d: %f, z0: %f, Rau: %f\n",Air_ws_obs, d, z0, Rao);
     return Rao / 3600; // unit: h/m

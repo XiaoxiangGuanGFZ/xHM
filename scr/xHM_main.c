@@ -648,33 +648,8 @@ int main(int argc, char *argv[])
                         &((data_ET + index_geo)->Interception_u),
                         cell_veg.Understory,
                         GP.STEP_TIME);
-                    // printf("\n test ET i = %d, j = %d\n", i, j);
-                    // exit(-9);
-                    /**************** unsaturated soil zone water movement *****************/
-                    UnsaturatedWaterMove(
-                        (data_ET + index_geo)->Prec_net / GP.STEP_TIME,
-                        (data_ET + index_geo)->ET_o,
-                        (data_ET + index_geo)->ET_u,
-                        (data_ET + index_geo)->ET_s,
-                        &((data_SOIL + index_geo)->SM_Upper),
-                        &((data_SOIL + index_geo)->SM_Lower),
-                        &((data_SOIL + index_geo)->SW_Infiltration),
-                        &((data_SOIL + index_geo)->SW_Percolation_Upper),
-                        &((data_SOIL + index_geo)->SW_Percolation_Lower),
-                        (data_SOIL + index_geo)->SW_rise_lower,
-                        (data_SOIL + index_geo)->SW_rise_upper,
-                        &((data_SOIL + index_geo)->SW_SR_Infil),
-                        &((data_SOIL + index_geo)->SW_SR_Satur),
-                        Soil_d1,
-                        Soil_d2,
-                        &cell_soil,
-                        GP.STEP_TIME);
-                    // printf("UnsaturatedWaterMove\n");
-                    /************************* save variables *************************/
-                    // mandatory
-                    *(out_SW_Run_Infil + index_run) = (int)((data_SOIL + index_geo)->SW_SR_Infil * 10000); // 0.1 mm
-                    *(out_SW_Run_Satur + index_run) = (int)((data_SOIL + index_geo)->SW_SR_Satur * 10000);
-                    // optional
+                        
+                    /******  save the intermiate stage variable values   ******/ 
                     if (outnl.Rs == 1)
                     {
                         *(out_Rs + index_geo) = (int)((data_RADIA + index_geo)->Rs * 10);
@@ -727,6 +702,31 @@ int main(int argc, char *argv[])
                     {
                         *(out_Interception_u + index_geo) = (int)((data_ET + index_geo)->Interception_u * 10000);
                     }
+                    /**************** unsaturated soil zone water movement *****************/
+                    UnsaturatedWaterMove(
+                        (data_ET + index_geo)->Prec_net / GP.STEP_TIME,
+                        (data_ET + index_geo)->ET_o,
+                        (data_ET + index_geo)->ET_u,
+                        (data_ET + index_geo)->ET_s,
+                        &((data_SOIL + index_geo)->SM_Upper),
+                        &((data_SOIL + index_geo)->SM_Lower),
+                        &((data_SOIL + index_geo)->SW_Infiltration),
+                        &((data_SOIL + index_geo)->SW_Percolation_Upper),
+                        &((data_SOIL + index_geo)->SW_Percolation_Lower),
+                        (data_SOIL + index_geo)->SW_rise_lower,
+                        (data_SOIL + index_geo)->SW_rise_upper,
+                        &((data_SOIL + index_geo)->SW_SR_Infil),
+                        &((data_SOIL + index_geo)->SW_SR_Satur),
+                        Soil_d1,
+                        Soil_d2,
+                        &cell_soil,
+                        GP.STEP_TIME);
+                    // printf("UnsaturatedWaterMove\n");
+                    /************************* save variables *************************/
+                    // mandatory
+                    *(out_SW_Run_Infil + index_run) = (int)((data_SOIL + index_geo)->SW_SR_Infil * 10000); // 0.1 mm
+                    *(out_SW_Run_Satur + index_run) = (int)((data_SOIL + index_geo)->SW_SR_Satur * 10000);
+                    
                     if (outnl.SM_Upper == 1)
                     {
                         *(out_SM_Upper + index_geo) = (int)((data_SOIL + index_geo)->SM_Upper * 100);
