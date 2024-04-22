@@ -88,25 +88,24 @@ double Soil_Infiltration(
                     1 + Water_input * Tp / Tension_effective / (Soil_Porosity - Soil_Moisture)
                 );
         Te = step_time - Tp + Tc;
-        if (Te < 0.0)
+        if (Tp >= step_time)
         {
-            // if (Water_input <= Soil_Conduct_Sat + 0.00082)
-            // {
-            //     Infiltration = Soil_Conduct_Sat * ((double)step_time);
-            // }
             /***************************
              * we found that for the clay soil type, the ponding time could be
              * extraordinarily long, longer than step_time + Tc, when the water input is
              * very close to the saturated hydraulic
-             * conductivity (of clay), therefore we increased infiltration threshold.
+             * conductivity (of clay).
+             * ---------
+             * from 0 to the ponding time Tp, 
+             * the infiltration rate is constant at the rainfall / input rate.
              */
-            Infiltration = Soil_Conduct_Sat * step_time;
+
+            Infiltration = Water_input * step_time;
         }
         else
         {
             Infiltration = Soil_Conduct_Sat * (0.529 * Te +
-                                               0.471 * pow(
-                                                           Tx * Te + Te * Te, 0.5) +
+                                               0.471 * pow(Tx * Te + Te * Te, 0.5) +
                                                0.138 * Tx * (log(Te + Tx) - log(Tx)) +
                                                0.471 * Tx * (log(Te + Tx / 2 + pow(Tx * Te + Te * Te, 0.5)) - log(Tx / 2)));
             // printf("Infiltration: %f\n", Infiltration);
@@ -115,8 +114,6 @@ double Soil_Infiltration(
                 Infiltration = Soil_Conduct_Sat * step_time;
             }
         }
-
-
     }
     return Infiltration;
 }
