@@ -60,9 +60,11 @@ $$
     T_p = \frac{
         K_\upsilon \cdot |\Psi_f| \cdot (\psi - \theta)
     }{
-        w \cdot (w - K_h)
+        w \cdot (w - {K_\upsilon})
     }
 $$
+
+when $t \in [0, T_p]$, the infiltration rate is constant at water input rate. 
 
 3). An effective time, $t_e$, defined as:
 
