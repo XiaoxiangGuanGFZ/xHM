@@ -221,73 +221,120 @@ void Lookup_VegLib_CELL(
         // actually this cell is open water
         // the model assumes it as bare soil, at present
         cell_veg->Understory = 0; 
-        cell_veg->z0_u = 0.0012;
-        cell_veg->d_u = 0.0;
+        // cell_veg->z0_u = 0.0012;
+        // cell_veg->d_u = 0.0;
     }
     else
     {
-        printf("Unrecognized vegetation type. Program failled\n");
+        printf("Unrecognized vegetation type: %d. Program failled\n", CLASS);
         exit(0);
     }
-        
-}
 
-void Lookup_VegLib_CELL_MON(
-    ST_VegLib veglib[],
-    int CLASS,
-    int month,
-    ST_CELL_VEG *cell_veg
-)
-{
-    /*******
-     * retrieve veg parameters to a certain grid cell
-     * 
-     * parameters:
-     * - albedo
-     * - displacement height (d) 
-     * - roughness (z0)
-     * - LAI
-     * 
-     * parameters depending on seasonality
-    */
     ST_VegLib *cell;
     ST_VegLib *cell_u;
     cell = veglib + CLASS - 1;
-    if (CLASS >=1 && CLASS <= 6)
+    if (CLASS >= 1 && CLASS <= 6)
     {
-        // overstory
-        cell_veg->LAI_o = cell->LAI[month - 1];
-        cell_veg->z0_o = cell->Roughness[month - 1];
-        cell_veg->Albedo_o = cell->Albedo[month - 1];
-        cell_veg->d_o = cell->Displacement[month - 1];
-        // understory
-        cell_u = veglib + 10 - 1;
-        cell_veg->LAI_u = cell_u->LAI[month - 1];
-        cell_veg->z0_u = cell_u->Roughness[month - 1];
-        cell_veg->Albedo_u = cell_u->Albedo[month - 1];
-        cell_veg->d_u = cell_u->Displacement[month - 1];
+        for (size_t i = 0; i < 12; i++)
+        {
+            // overstory
+            cell_veg->LAI_o[i] = cell->LAI[i];
+            cell_veg->z0_o[i] = cell->Roughness[i];
+            cell_veg->Albedo_o[i] = cell->Albedo[i];
+            cell_veg->d_o[i] = cell->Displacement[i];
+            // understory
+            cell_u = veglib + 10 - 1;
+            cell_veg->LAI_u[i] = cell_u->LAI[i];
+            cell_veg->z0_u[i] = cell_u->Roughness[i];
+            cell_veg->Albedo_u[i] = cell_u->Albedo[i];
+            cell_veg->d_u[i] = cell_u->Displacement[i];
+        }
     }
     else if (CLASS > 6 && CLASS <= 11)
     {
-        // only understory
-        cell_veg->LAI_u = cell->LAI[month - 1];
-        cell_veg->z0_u = cell->Roughness[month - 1];
-        cell_veg->Albedo_u = cell->Albedo[month - 1];
-        cell_veg->d_u = cell->Displacement[month - 1];
+
+        for (size_t i = 0; i < 12; i++)
+        {
+            // only understory
+            cell_veg->LAI_u[i] = cell->LAI[i];
+            cell_veg->z0_u[i] = cell->Roughness[i];
+            cell_veg->Albedo_u[i] = cell->Albedo[i];
+            cell_veg->d_u[i] = cell->Displacement[i];
+        }
     }
     else if (CLASS == 0)
     {
         // treated as bare soil/ground
-        cell_veg->z0_u = 0.05;
-        cell_veg->Albedo_u = 0.159;
-        cell_veg->d_u = 0.2;
+        for (size_t i = 0; i < 12; i++)
+        {
+            cell_veg->z0_u[i] = 0.05;
+            cell_veg->Albedo_u[i] = 0.159;
+            cell_veg->d_u[i] = 0.2;
+        }
     }
     else
     {
-        printf("Unrecognized Vegetation type. Program failled\n");
+        printf("Unrecognized vegetation type: %d. Program failled\n", CLASS);
         exit(0);
     }
 }
+
+// void Lookup_VegLib_CELL_MON(
+//     ST_VegLib veglib[],
+//     int CLASS,
+//     int month,
+//     ST_CELL_VEG *cell_veg
+// )
+// {
+//     /*******
+//      * retrieve veg parameters to a certain grid cell
+//      * 
+//      * parameters:
+//      * - albedo
+//      * - displacement height (d) 
+//      * - roughness (z0)
+//      * - LAI
+//      * 
+//      * parameters depending on seasonality
+//     */
+//     ST_VegLib *cell;
+//     ST_VegLib *cell_u;
+//     cell = veglib + CLASS - 1;
+//     if (CLASS >=1 && CLASS <= 6)
+//     {
+//         // overstory
+//         cell_veg->LAI_o = cell->LAI[month - 1];
+//         cell_veg->z0_o = cell->Roughness[month - 1];
+//         cell_veg->Albedo_o = cell->Albedo[month - 1];
+//         cell_veg->d_o = cell->Displacement[month - 1];
+//         // understory
+//         cell_u = veglib + 10 - 1;
+//         cell_veg->LAI_u = cell_u->LAI[month - 1];
+//         cell_veg->z0_u = cell_u->Roughness[month - 1];
+//         cell_veg->Albedo_u = cell_u->Albedo[month - 1];
+//         cell_veg->d_u = cell_u->Displacement[month - 1];
+//     }
+//     else if (CLASS > 6 && CLASS <= 11)
+//     {
+//         // only understory
+//         cell_veg->LAI_u = cell->LAI[month - 1];
+//         cell_veg->z0_u = cell->Roughness[month - 1];
+//         cell_veg->Albedo_u = cell->Albedo[month - 1];
+//         cell_veg->d_u = cell->Displacement[month - 1];
+//     }
+//     else if (CLASS == 0)
+//     {
+//         // treated as bare soil/ground
+//         cell_veg->z0_u = 0.05;
+//         cell_veg->Albedo_u = 0.159;
+//         cell_veg->d_u = 0.2;
+//     }
+//     else
+//     {
+//         printf("Unrecognized Vegetation type. Program failled\n");
+//         exit(0);
+//     }
+// }
 
 // void main()
 // {

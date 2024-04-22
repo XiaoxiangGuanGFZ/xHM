@@ -163,6 +163,8 @@ int main(int argc, char *argv[])
     nc_get_var_double(ncID_GEO, varID_lon, data_lon);
     nc_get_var_double(ncID_GEO, varID_lat, data_lat);
 
+    nc_get_att_int(ncID_GEO, varID_DEM, "NODATA_value", &GEO_header.NODATA_value);
+
     Check_GEO(ncID_GEO);   // check the GEO data
     time(&tm); printf("--------- %s read GEO data: ", DateString(&tm)); printf("Done! \n");
 
@@ -179,6 +181,25 @@ int main(int argc, char *argv[])
     ST_SoilID soilID[1000];
     Import_soil_HWSD_ID(GP.FP_SOIL_HWSD_ID, soilID);
     printf("Done! \n");
+
+    ST_CELL_VEG *cell_veg;
+    ST_SOIL_LIB_CELL *cell_soil;
+    cell_veg = (ST_CELL_VEG *)malloc(sizeof(ST_CELL_VEG) * cell_counts_total);
+    cell_soil = (ST_SOIL_LIB_CELL *)malloc(sizeof(ST_SOIL_LIB_CELL) * cell_counts_total);
+    int ig;
+    for (size_t i = 0; i < GEO_header.nrows; i++)
+    {
+        for (size_t j = 0; j < GEO_header.ncols; j++)
+        {
+            ig = i * GEO_header.ncols + j;
+            if (*(data_SOILTYPE + ig) != GEO_header.NODATA_value)
+            {
+                (cell_veg + ig)->CAN_FRAC = *(data_VEGFRAC + ig) / 100;
+                Lookup_VegLib_CELL(veglib, *(data_VEGTYPE + ig), cell_veg + ig);
+                Lookup_Soil_CELL(*(data_SOILTYPE + ig), cell_soil + ig, soillib, soilID);
+            }
+        }
+    }
 
     /******************************************************************************
      *                      read gridded weather data
@@ -352,10 +373,6 @@ int main(int argc, char *argv[])
     handle_error(status_nc, GP.FP_TEM_MAX);
     status_nc = nc_get_att_double(ncID_TEM_MIN, varID_TEM_MIN, "scale_factor", &scale_TEM_MIN);
     handle_error(status_nc, GP.FP_TEM_MIN);
-    // printf("check scale_factor:\n");
-    // printf("PRE: %.1f\n", scale_PRE);
-    // printf("RHU: %.1f\n", scale_RHU);
-    // printf("TEM_AVG: %.1f\n", scale_TEM_AVG);
 
     time(&tm); printf("--------- %s read weather forcing: Done!\n", DateString(&tm));
     /***********************************************************************************
@@ -363,8 +380,8 @@ int main(int argc, char *argv[])
      ************************************************************************************/
     time_t run_time;
     run_time = start_time;
-    int index_geo;
     int index_run;
+    int index_geo;
 
     /***********************************************************************************
      *                      surface runoff routing - UH
@@ -492,17 +509,13 @@ int main(int argc, char *argv[])
      ***********************************************************************************/
     int t = 0;
     double cell_PRE, cell_WIN, cell_SSD, cell_RHU, cell_PRS, cell_TEM_AVG, cell_TEM_MAX, cell_TEM_MIN;
-
-    ST_CELL_VEG cell_veg;
-    ST_SOIL_LIB_CELL cell_soil;
-    int cell_VEG_class;
-    int cell_SOIL_ID;
     double cell_lat;
     int year;
     int month;
     int day;
     struct tm *tm_run;
     double Soil_Fe = 0.0;
+    int i_m; // the index of month
 
     /***********************************************************************************
      *                     hydrological parameters
@@ -522,6 +535,7 @@ int main(int argc, char *argv[])
         tm_run = gmtime(&run_time);
         year = tm_run->tm_year + 1900;
         month = tm_run->tm_mon + 1;
+        i_m = month - 1;
         day = tm_run->tm_mday;
         // printf("%d-%02d-%02d\n", year, month, day);
         if (t % 730 == 0)
@@ -592,24 +606,14 @@ int main(int argc, char *argv[])
                     //        cell_PRE * 1000, cell_TEM_AVG, cell_TEM_MAX, cell_TEM_MIN, cell_WIN, cell_SSD, cell_RHU, cell_PRS);
                     /**************** parameter preparation *****************/
                     cell_lat = *(data_lat + i);
-                    cell_VEG_class = *(data_VEGTYPE + index_geo);
-                    cell_SOIL_ID = *(data_SOILTYPE + index_geo);
-                    cell_veg.CAN_FRAC = *(data_VEGFRAC + index_geo) / 100;
-                    Lookup_VegLib_CELL(veglib, cell_VEG_class, &cell_veg);
-                    Lookup_VegLib_CELL_MON(veglib, cell_VEG_class, month, &cell_veg);
-                    Lookup_Soil_CELL(cell_SOIL_ID, &cell_soil, soillib, soilID);
-                    // printf("VEG_CLASS: %d\n", cell_VEG_class);
-                    // printf("cell_veg.Understory: %d\n", cell_veg.Understory);
-                    // printf("cell_veg.d_u:%f\n", cell_veg.d_u);
-                    // printf("cell_veg.CAN_FRAC: %f\n", cell_veg.CAN_FRAC);
-                    
+
                     /******************* evapotranspiration *******************/
                     Soil_Fe = Soil_Desorption(
                         (data_SOIL + index_geo)->SM_Upper,
-                        cell_soil.Topsoil->SatHydrauCond,
-                        (1.0 / cell_soil.Topsoil->PoreSizeDisP),
-                        (cell_soil.Topsoil->Porosity / 100.0),
-                        cell_soil.Topsoil->Bubbling,
+                        (cell_soil + index_geo)->Topsoil->SatHydrauCond,
+                        (1.0 / (cell_soil + index_geo)->Topsoil->PoreSizeDisP),
+                        ((cell_soil + index_geo)->Topsoil->Porosity / 100.0),
+                        (cell_soil + index_geo)->Topsoil->Bubbling,
                         GP.STEP_TIME); // unit: m
                     // printf("Soil_Fe\n");
                     ET_CELL(
@@ -623,18 +627,18 @@ int main(int argc, char *argv[])
                         &((data_RADIA + index_geo)->Rnu),
                         &((data_RADIA + index_geo)->Rnu_short),
                         &((data_RADIA + index_geo)->Rns),
-                        cell_veg.CAN_FRAC,
-                        cell_veg.Albedo_o, cell_veg.Albedo_u, ALBEDO_SOIL,
-                        cell_veg.LAI_o, cell_veg.LAI_u,
-                        cell_veg.Rpc, cell_veg.rs_min_o, RS_MAX,
-                        cell_veg.Rpc, cell_veg.rs_min_o, RS_MAX,
+                        (cell_veg + index_geo)->CAN_FRAC,
+                        (cell_veg + index_geo)->Albedo_o[i_m], (cell_veg + index_geo)->Albedo_u[i_m], ALBEDO_SOIL,
+                        (cell_veg + index_geo)->LAI_o[i_m], (cell_veg + index_geo)->LAI_u[i_m],
+                        (cell_veg + index_geo)->Rpc, (cell_veg + index_geo)->rs_min_o, RS_MAX,
+                        (cell_veg + index_geo)->Rpc, (cell_veg + index_geo)->rs_min_o, RS_MAX,
 
-                        cell_veg.CAN_RZ, cell_veg.CAN_H,
-                        cell_veg.d_o, cell_veg.z0_o,
-                        cell_veg.d_u, cell_veg.z0_u,
+                        (cell_veg + index_geo)->CAN_RZ, (cell_veg + index_geo)->CAN_H,
+                        (cell_veg + index_geo)->d_o[i_m], (cell_veg + index_geo)->z0_o[i_m],
+                        (cell_veg + index_geo)->d_u[i_m], (cell_veg + index_geo)->z0_u[i_m],
                         (data_SOIL + index_geo)->SM_Upper,
-                        cell_soil.Topsoil->WiltingPoint / 100,
-                        cell_soil.Topsoil->FieldCapacity / 100,
+                        (cell_soil + index_geo)->Topsoil->WiltingPoint / 100,
+                        (cell_soil + index_geo)->Topsoil->FieldCapacity / 100,
                         Soil_Fe,
                         &((data_ET + index_geo)->Prec_throughfall),
                         &((data_ET + index_geo)->Prec_net),
@@ -646,7 +650,7 @@ int main(int argc, char *argv[])
                         &((data_ET + index_geo)->ET_s),
                         &((data_ET + index_geo)->Interception_o),
                         &((data_ET + index_geo)->Interception_u),
-                        cell_veg.Understory,
+                        (cell_veg + index_geo)->Understory,
                         GP.STEP_TIME);
                         
                     /******  save the intermiate stage variable values   ******/ 
@@ -719,14 +723,14 @@ int main(int argc, char *argv[])
                         &((data_SOIL + index_geo)->SW_SR_Satur),
                         Soil_d1,
                         Soil_d2,
-                        &cell_soil,
+                        cell_soil + index_geo,
                         GP.STEP_TIME);
-                    // printf("UnsaturatedWaterMove\n");
+                    
                     /************************* save variables *************************/
                     // mandatory
                     *(out_SW_Run_Infil + index_run) = (int)((data_SOIL + index_geo)->SW_SR_Infil * 10000); // 0.1 mm
                     *(out_SW_Run_Satur + index_run) = (int)((data_SOIL + index_geo)->SW_SR_Satur * 10000);
-                    
+                    // optional variable
                     if (outnl.SM_Upper == 1)
                     {
                         *(out_SM_Upper + index_geo) = (int)((data_SOIL + index_geo)->SM_Upper * 100);
@@ -771,6 +775,7 @@ int main(int argc, char *argv[])
             (double) cellsize_m,
             GP.STEP_TIME);
         
+        /***** save soil stage variables ******/
         int tog;
         tog = outnl.SW_SUB_Qin + outnl.SW_SUB_Qout + outnl.SW_SUB_z + outnl.SW_SUB_rise_lower + outnl.SW_SUB_rise_upper + outnl.SW_SUB_rf; 
         if (tog > 0)
@@ -886,7 +891,6 @@ int main(int argc, char *argv[])
      ****************************************************************************************************/
     Write2NC_Outnamelist(outnl, time_steps_run, &out_SW_Run_Infil, &out_SW_Run_Satur, GP);
     printf(" Done!\n");
-    //exit(-9);
     /************************ surface runoff routing **********************/
     // UH method for multiple outlets
     time(&tm); printf("--------- %s xHM overland runoff routing with UH method: ", DateString(&tm));

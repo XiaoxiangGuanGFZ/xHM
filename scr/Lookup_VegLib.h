@@ -58,11 +58,11 @@ void Lookup_VegLib_CELL(
     ST_CELL_VEG *cell_veg
 );
 
-void Lookup_VegLib_CELL_MON(
-    ST_VegLib veglib[],
-    int CLASS,
-    int month,
-    ST_CELL_VEG *cell_veg
-);
+// void Lookup_VegLib_CELL_MON(
+//     ST_VegLib veglib[],
+//     int CLASS,
+//     int month,
+//     ST_CELL_VEG *cell_veg
+// );
 
 #endif
