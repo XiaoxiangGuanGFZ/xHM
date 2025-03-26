@@ -9,12 +9,12 @@ The model will be implemented on a grid-based structure, where each cell represe
 ## Main processes
 
 - canopy interception :heavy_check_mark:
-- snow accumulation and melting
-- evapotranspiration from canopy and soil 
-- soil infiltration, percolation, desorption
-- subsurface (saturated) water movement
-- overland routing
-- river (channel) routing
+- snow accumulation and melting :heavy_check_mark:
+- evapotranspiration from canopy and soil :heavy_check_mark:
+- soil infiltration, percolation, desorption :heavy_check_mark:
+- subsurface (saturated) water movement :heavy_check_mark:
+- overland routing :heavy_check_mark:
+- river (channel) routing :heavy_check_mark:
 
 ## To-Do-List
 
