@@ -1,8 +1,14 @@
 # xHM
-(cross-scale难说) hydrological model
+
+Develop a raster-based distributed hydrological model to simulate catchment-scale hydrological processes with high spatial resolution. The model should support both daily and sub-daily discharge forecasting while improving process-based understanding of hydrological dynamics at the watershed scale.
+
+The model will be implemented on a grid-based structure, where each cell represents a hydrological response unit (HRU) that interacts with neighboring cells. Fundamental input datasets include raster-based Digital Elevation Models (DEM) for terrain-driven flow routing, land cover maps for vegetation and infiltration characteristics, and soil maps to parameterize water retention and percolation properties. 
+
+
 
 ## Main processes
-- canopy interception
+
+- canopy interception :heavy_check_mark:
 - snow accumulation and melting
 - evapotranspiration from canopy and soil 
 - soil infiltration, percolation, desorption
@@ -11,11 +17,18 @@
 - river (channel) routing
 
 ## To-Do-List
-- check aerodynamic resistance of canopy: sensitivity analysis
-- the water balance: Ep, E and Robs [seem Ep and E are overestimated]
 
-- test snow model for other stations (areas), more test studies
-- test hourly scale snow modeling 
+1. water conservation test for runoff generation module
+2. test hourly scale snow modeling and discharge simulation
+
+## Outlook
+
+- Employ parallel processing techniques to improve computational efficiency
+- Reservoirs, lakes, and human-induced modifications to natural flow regimes
+- Couple with groundwater models could enhance representation of baseflow contributions
+- Integrate remote sensing and machine learning-based corrections
+- Enhance applicability to urbanized catchments
 
 ## Contact
 [Xiaoxiang Guan](https://www.gfz-potsdam.de/staff/guan.xiaoxiang/sec44)
+
